@@ -1,4 +1,7 @@
 #### _Issue template for MAST for IBM DataPower_
+
+_Please give a brief description of the issue you are having_
+
 _Please answer each question as best as you can_
 
 1. **What were you trying to do?**
