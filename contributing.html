@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                background-color: #f5f5f5;
+                margin-left: 10%;
+                margin-right: 10%;
+                font-family: Sans-Serif;
+            }
+            #content {
+                background-color: #ffffff;
+                padding: 5px 5px 5px 5px;
+                box-shadow: 10px 10px 5px #888888;
+            }
+            #inner-content{
+                width: 75%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            pre {
+                overflow: auto;
+                padding: 5px 5px 5px 5px;
+            }
+            .codehilite .hll { background-color: #ffffcc }
+            .codehilite  { background: #f0f0f0;}
+            .codehilite .c { color: #408080; font-style: italic } /* Comment */
+            .codehilite .err { border: 1px solid #FF0000 } /* Error */
+            .codehilite .k { color: #008000; font-weight: bold } /* Keyword */
+            .codehilite .o { color: #666666 } /* Operator */
+            .codehilite .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+            .codehilite .cp { color: #BC7A00 } /* Comment.Preproc */
+            .codehilite .c1 { color: #408080; font-style: italic } /* Comment.Single */
+            .codehilite .cs { color: #408080; font-style: italic } /* Comment.Special */
+            .codehilite .gd { color: #A00000 } /* Generic.Deleted */
+            .codehilite .ge { font-style: italic } /* Generic.Emph */
+            .codehilite .gr { color: #FF0000 } /* Generic.Error */
+            .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+            .codehilite .gi { color: #00A000 } /* Generic.Inserted */
+            .codehilite .go { color: #808080 } /* Generic.Output */
+            .codehilite .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+            .codehilite .gs { font-weight: bold } /* Generic.Strong */
+            .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+            .codehilite .gt { color: #0040D0 } /* Generic.Traceback */
+            .codehilite .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+            .codehilite .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+            .codehilite .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+            .codehilite .kp { color: #008000 } /* Keyword.Pseudo */
+            .codehilite .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+            .codehilite .kt { color: #B00040 } /* Keyword.Type */
+            .codehilite .m { color: #666666 } /* Literal.Number */
+            .codehilite .s { color: #BA2121 } /* Literal.String */
+            .codehilite .na { color: #7D9029 } /* Name.Attribute */
+            .codehilite .nb { color: #008000 } /* Name.Builtin */
+            .codehilite .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+            .codehilite .no { color: #880000 } /* Name.Constant */
+            .codehilite .nd { color: #AA22FF } /* Name.Decorator */
+            .codehilite .ni { color: #999999; font-weight: bold } /* Name.Entity */
+            .codehilite .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+            .codehilite .nf { color: #0000FF } /* Name.Function */
+            .codehilite .nl { color: #A0A000 } /* Name.Label */
+            .codehilite .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+            .codehilite .nt { color: #008000; font-weight: bold } /* Name.Tag */
+            .codehilite .nv { color: #19177C } /* Name.Variable */
+            .codehilite .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+            .codehilite .w { color: #bbbbbb } /* Text.Whitespace */
+            .codehilite .mf { color: #666666 } /* Literal.Number.Float */
+            .codehilite .mh { color: #666666 } /* Literal.Number.Hex */
+            .codehilite .mi { color: #666666 } /* Literal.Number.Integer */
+            .codehilite .mo { color: #666666 } /* Literal.Number.Oct */
+            .codehilite .sb { color: #BA2121 } /* Literal.String.Backtick */
+            .codehilite .sc { color: #BA2121 } /* Literal.String.Char */
+            .codehilite .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+            .codehilite .s2 { color: #BA2121 } /* Literal.String.Double */
+            .codehilite .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+            .codehilite .sh { color: #BA2121 } /* Literal.String.Heredoc */
+            .codehilite .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+            .codehilite .sx { color: #008000 } /* Literal.String.Other */
+            .codehilite .sr { color: #BB6688 } /* Literal.String.Regex */
+            .codehilite .s1 { color: #BA2121 } /* Literal.String.Single */
+            .codehilite .ss { color: #19177C } /* Literal.String.Symbol */
+            .codehilite .bp { color: #008000 } /* Name.Builtin.Pseudo */
+            .codehilite .vc { color: #19177C } /* Name.Variable.Class */
+            .codehilite .vg { color: #19177C } /* Name.Variable.Global */
+            .codehilite .vi { color: #19177C } /* Name.Variable.Instance */
+            .codehilite .il { color: #666666 } /* Literal.Number.Integer.Long */
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <div id="inner-content">
+                <p><a href="./index.html">Back to index</a>
+<h1>MAST for IBM DataPower Version 2.1.0</h1>
+<h2>Contributing Guide</h2></p>
+<div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#basics">Basics</a></li>
+<li><a href="#building">Building</a><ul>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#building_1">building</a></li>
+<li><a href="#installing">Installing</a></li>
+<li><a href="#running-tests">Running tests</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h1 id="introduction">Introduction</h1>
+<p>This document will outline the basic flow of code and/or ideas to the MAST for IBM DataPower version 2.x.x.</p>
+<p>We will outline a process which, when followed, will lead to a much more auditable and controlable
+process for making changes to our code.</p>
+<h1 id="basics">Basics</h1>
+<p>We will list several guidelines here. It should be the goal of any contributer to follow each step in
+this section.</p>
+<ol>
+<li>Every change needs to start with an issue (the mast.installer repository is a good place to start). We will
+make use oof a new feature on GitHub which allows us to provide our users with issue and pull-request templates.</li>
+<li>The issue is where discussion should take place regarding the actual problem and possible solutions.</li>
+<li>A pull request normally won't be considered until the original issue is at least 24 hours old. This
+is to allow interested parties time to comment.</li>
+<li>Once a solution is agreed upon, a branch should be made, the desired changes implementated and a pull
+request should be submitted.</li>
+<li>The pull request is where code review takes place. Normally, the pull-request will not be merged until 24 hours
+has passed. This is meant to give interested parties time to submit a code review.</li>
+<li>(This rule won't take effect until a comprehensive untit test solution is decided upon) Any change should have
+a unit test associated with it.</li>
+<li>Wherever possible we should link to/from each issue and pull request and we should use
+<a href="https://github.com/blog/821-mention-somebody-they-re-notified">@mentions</a>to notify
+anyone who might be interested in a particular issue or pull request)</li>
+<li>If you are interested in updates to our project, you should
+<a href="https://help.github.com/articles/be-social/#watch-a-project">watch</a>
+the <a href="https://github.com/mcindi/mast.installer">mast.installer</a> project or one of the sub-projects,
+which can be found <a href="https://github.com/McIndi">here</a></li>
+</ol>
+<h1 id="building">Building</h1>
+<h2 id="requirements">Requirements</h2>
+<p>You must have the following software installed and on the <code>PATH</code> on the build machine:</p>
+<ul>
+<li>Python 2.7</li>
+<li>pyinstaller==2.1</li>
+<li>git (optional, but recomended for automated builds)</li>
+</ul>
+<h2 id="building_1">building</h2>
+<ol>
+<li>clone repository <code>git clone --recursive https://github.com/mcindi/mast.installer</code></li>
+<li>Change directory <code>cd mast.installer/mast/installer</code></li>
+<li>Execute build script <code>python build.py</code></li>
+<li>The installation binary will be in a subdirectory called <code>dist</code></li>
+</ol>
+<h2 id="installing">Installing</h2>
+<p>To install simply place the installer in a directory and execute.</p>
+<p>For more advanced installation options you can execute installer from a
+command line and pass in the <code>--help</code> flag.</p>
+<h2 id="running-tests">Running tests</h2>
+<p>This is not a user-facing feature yet. We are working on making our tests
+public, please bear with us while we make the transition.</p>
+            </div>
+        </div>
+    </body>
+</html>

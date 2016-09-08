@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                background-color: #f5f5f5;
+                margin-left: 10%;
+                margin-right: 10%;
+                font-family: Sans-Serif;
+            }
+            #content {
+                background-color: #ffffff;
+                padding: 5px 5px 5px 5px;
+                box-shadow: 10px 10px 5px #888888;
+            }
+            #inner-content{
+                width: 75%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            pre {
+                overflow: auto;
+                padding: 5px 5px 5px 5px;
+            }
+            .codehilite .hll { background-color: #ffffcc }
+            .codehilite  { background: #f0f0f0;}
+            .codehilite .c { color: #408080; font-style: italic } /* Comment */
+            .codehilite .err { border: 1px solid #FF0000 } /* Error */
+            .codehilite .k { color: #008000; font-weight: bold } /* Keyword */
+            .codehilite .o { color: #666666 } /* Operator */
+            .codehilite .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+            .codehilite .cp { color: #BC7A00 } /* Comment.Preproc */
+            .codehilite .c1 { color: #408080; font-style: italic } /* Comment.Single */
+            .codehilite .cs { color: #408080; font-style: italic } /* Comment.Special */
+            .codehilite .gd { color: #A00000 } /* Generic.Deleted */
+            .codehilite .ge { font-style: italic } /* Generic.Emph */
+            .codehilite .gr { color: #FF0000 } /* Generic.Error */
+            .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+            .codehilite .gi { color: #00A000 } /* Generic.Inserted */
+            .codehilite .go { color: #808080 } /* Generic.Output */
+            .codehilite .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+            .codehilite .gs { font-weight: bold } /* Generic.Strong */
+            .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+            .codehilite .gt { color: #0040D0 } /* Generic.Traceback */
+            .codehilite .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+            .codehilite .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+            .codehilite .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+            .codehilite .kp { color: #008000 } /* Keyword.Pseudo */
+            .codehilite .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+            .codehilite .kt { color: #B00040 } /* Keyword.Type */
+            .codehilite .m { color: #666666 } /* Literal.Number */
+            .codehilite .s { color: #BA2121 } /* Literal.String */
+            .codehilite .na { color: #7D9029 } /* Name.Attribute */
+            .codehilite .nb { color: #008000 } /* Name.Builtin */
+            .codehilite .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+            .codehilite .no { color: #880000 } /* Name.Constant */
+            .codehilite .nd { color: #AA22FF } /* Name.Decorator */
+            .codehilite .ni { color: #999999; font-weight: bold } /* Name.Entity */
+            .codehilite .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+            .codehilite .nf { color: #0000FF } /* Name.Function */
+            .codehilite .nl { color: #A0A000 } /* Name.Label */
+            .codehilite .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+            .codehilite .nt { color: #008000; font-weight: bold } /* Name.Tag */
+            .codehilite .nv { color: #19177C } /* Name.Variable */
+            .codehilite .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+            .codehilite .w { color: #bbbbbb } /* Text.Whitespace */
+            .codehilite .mf { color: #666666 } /* Literal.Number.Float */
+            .codehilite .mh { color: #666666 } /* Literal.Number.Hex */
+            .codehilite .mi { color: #666666 } /* Literal.Number.Integer */
+            .codehilite .mo { color: #666666 } /* Literal.Number.Oct */
+            .codehilite .sb { color: #BA2121 } /* Literal.String.Backtick */
+            .codehilite .sc { color: #BA2121 } /* Literal.String.Char */
+            .codehilite .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+            .codehilite .s2 { color: #BA2121 } /* Literal.String.Double */
+            .codehilite .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+            .codehilite .sh { color: #BA2121 } /* Literal.String.Heredoc */
+            .codehilite .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+            .codehilite .sx { color: #008000 } /* Literal.String.Other */
+            .codehilite .sr { color: #BB6688 } /* Literal.String.Regex */
+            .codehilite .s1 { color: #BA2121 } /* Literal.String.Single */
+            .codehilite .ss { color: #19177C } /* Literal.String.Symbol */
+            .codehilite .bp { color: #008000 } /* Name.Builtin.Pseudo */
+            .codehilite .vc { color: #19177C } /* Name.Variable.Class */
+            .codehilite .vg { color: #19177C } /* Name.Variable.Global */
+            .codehilite .vi { color: #19177C } /* Name.Variable.Instance */
+            .codehilite .il { color: #666666 } /* Literal.Number.Integer.Long */
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <div id="inner-content">
+                <p><a href="./index.html">Back to index</a>
+<h1>MAST for IBM DataPower version 2.1.0</h1>
+<h2>Product Sheet</h2></p>
+<div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#description">Description</a></li>
+<li><a href="#mast-for-datapower-stability-security-and-productivity-benefits">MAST for DataPower: Stability, Security and Productivity Benefits</a></li>
+<li><a href="#mast-for-ibm-datapower-features-to-simplify-and-enhance-devops-functions">MAST for IBM DataPower: Features to Simplify and Enhance DevOps functions</a></li>
+<li><a href="#support">Support</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+<li><a href="#contact-information">Contact information</a></li>
+<li><a href="#road-map-some-of-the-features-under-development">Road map (some of the features under development):</a></li>
+</ul>
+</div>
+<h3 id="description">Description</h3>
+<ul>
+<li>McIndi's Automated Solutions Tool (MAST) for IBM DataPower is a comprehensive
+Dev/Ops solution (administration, management, operations, monitoring,
+automation and deployment) designed specifically for the IBM DataPower
+product line.</li>
+<li>MAST provides highly modular, stable, reliable platform with the flexibility
+for on-going integration and enhancement, while adhering to IBM best practices.</li>
+<li>MAST is compatible with all currently supported IBM firmware and will remain
+so with future releases.</li>
+<li>The tool is a central location for supporting best practices, including
+separation of concerns, while simplifying and automating tasks such as firmware
+upgrades, checkpoints/exports/backups, service and domain troubleshooting,
+real-time monitoring, configuration auditing/versioning/deployment.</li>
+<li>Use of the tool reduces errors, minimizes downtime, simplifies development /
+administration / operations / management and saves time by streamlining
+repeated tasks so that personnel can more efficiently administrate, develop
+and operate the environment.</li>
+<li>The tool has a web based interface, API and command line that are all
+completely configurable, allowing for scheduled tasks and customization in
+situations where your organization has special needs.</li>
+<li>As an open source product with an API, MAST, provides for both in-house
+customization and input from the community, which can be submitted for future
+version inclusion.</li>
+<li>MAST was developed in-house by a team employing lessons learned from real world experience, with extensive IBM DataPower development, administration, support and security knowledge.</li>
+</ul>
+<h3 id="mast-for-datapower-stability-security-and-productivity-benefits">MAST for DataPower: Stability, Security and Productivity Benefits</h3>
+<ul>
+<li>Deploy services, configuration changes, firmware upgrades and perform secure/normal backups across multiple appliances at once; incorporating checkpoints, rollback capability and an audit trail of changes.</li>
+<li>Enforce and audit compliance and uniformity of configuration, security rules and policies across the enterprise.</li>
+<li>Assure the proper status of firmware, configurations, and services through the use of version control.</li>
+<li>Lower Total Cost of Ownership (TCO), by increasing productivity of administration staff through the use of an easily set up and mastered DevOps tool. No scripting or Regex expressions or knowledge of DataPower CLI required for use.</li>
+<li>Repositories to allow access, monitoring and alerting on changes to:<ul>
+<li>Firmware images</li>
+<li>Deployment files</li>
+<li>Deployment policies</li>
+<li>Secure backups</li>
+<li>Normal backups</li>
+<li>Configuration</li>
+<li>Certificates and keys</li>
+</ul>
+</li>
+<li>Examine any of the DataPower Status Providers ad-hoc (e.g. during maintenance and/or troubleshooting) or on a scheduled basis.</li>
+<li>View or manage a single appliance or a user defined environment (a set of appliances in a single configuration file) that can be referred to by name anywhere MAST asks for a hostname/IP.</li>
+<li>Post processing capabilities can be configured to output in numerous formats (raw, XML spreadsheet, csv, console based table, SQL lite....) to be viewed locally, sent to a file, or as an email alert.</li>
+<li>Cross platform compatibility (Windows and Linux, with OSX support in development) allows for staffing flexibility, uniform presentations and command commonality.</li>
+<li>To protect the company's infrastructure investments and for maximum flexibility, MAST can run in a dedicated workstation(s)/server(s), virtualized workstation(s)/server(s) or container(s) and is supported for both on-premises and in private / external clouds.</li>
+<li>MAST performance is maximized through lazy loading, reducing resource usage by only loading elements as needed, and a small foot print for the MAST installation itself.</li>
+</ul>
+<h3 id="mast-for-ibm-datapower-features-to-simplify-and-enhance-devops-functions">MAST for IBM DataPower: Features to Simplify and Enhance DevOps functions</h3>
+<ul>
+<li>Minimal required setup, installation and maintenance for all platforms can be performed quickly and is easily automated.<ul>
+<li>Save time with an extensive built-in tool set<ul>
+<li>Multi-host SSH client</li>
+<li>Cron-style scheduler for regular backups, configuration and performance monitoring or auditing</li>
+<li>Filesystem cleanup</li>
+<li>Error report and PMR information collection</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Three access points:<ul>
+<li>Web GUI - common parameters (such as the hostnames of the appliances) appear in a common area of the screen which always visible and affects any task you might perform.</li>
+<li>CLI client - each CLI command accepts a standard set of arguments which all behave the same way.</li>
+<li>Simple API - all of MAST's CLI commands are dynamically generated from functions based on their signature. These functions are also importable, so you can use them from our API without spawning a separate process.</li>
+</ul>
+</li>
+</ul>
+<h3 id="support">Support</h3>
+<ul>
+<li>Development<ul>
+<li>The MAST development team is continually seeking improved speed, functionality, feature extensions, and welcomes input and requests from clients and the open-source community.</li>
+<li>Hotfixes are available immediately after release from the Git Hub repository.</li>
+</ul>
+</li>
+<li>Documentation is regenerated with every hotfix and MAST version change and resides in the local installation.</li>
+<li>Contract Services<ul>
+<li>Service level options<ul>
+<li>24x7x4h</li>
+<li>24x7x1d</li>
+<li>8x5x1d</li>
+<li>8x5x2d</li>
+<li>Custom support options available</li>
+</ul>
+</li>
+<li>Feature requests<ul>
+<li>Prioritized feature and enhancement requests for customers that are under contract.</li>
+<li>Short engagements available for customizing and integrating, as a separate agreement.</li>
+</ul>
+</li>
+<li>Training<ul>
+<li>Contact Support for information on MAST user training programs</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="conclusion">Conclusion</h3>
+<ul>
+<li>Regardless of the DataPower use case, (Protocol Mediation, Application Security, Message Security, Data/Message Transformation, Enterprise Service Bus, API Management, iSAM Enforcement, etc.) McIndi's MAST for DataPower is the most powerful solution available.</li>
+</ul>
+<h3 id="contact-information">Contact information</h3>
+<ul>
+<li>Sales: <a href="www.mcindi.com/sales/mast">mcindi.com</a> &amp; <a href="mailto:mastsales@mcindi.com">email</a></li>
+<li>Support: <a href="www.mcindi.com/support/mast">mcindi.com/support</a> &amp; <a href="mailto:mastsupport@mcind.com">email</a></li>
+</ul>
+<h3 id="road-map-some-of-the-features-under-development">Road map (<em>some of the features under development</em>):</h3>
+<ul>
+<li>MAST Package Manager<ul>
+<li>Install services/objects into multiple appliances with a single setup</li>
+<li>Pre-configure deployment policies to ease the deployment of services</li>
+<li>Allow easy install/uninstall of objects/services</li>
+<li>Handle dependencies of files/objects/services</li>
+</ul>
+</li>
+</ul>
+            </div>
+        </div>
+    </body>
+</html>

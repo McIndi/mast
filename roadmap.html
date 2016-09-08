@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                background-color: #f5f5f5;
+                margin-left: 10%;
+                margin-right: 10%;
+                font-family: Sans-Serif;
+            }
+            #content {
+                background-color: #ffffff;
+                padding: 5px 5px 5px 5px;
+                box-shadow: 10px 10px 5px #888888;
+            }
+            #inner-content{
+                width: 75%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            pre {
+                overflow: auto;
+                padding: 5px 5px 5px 5px;
+            }
+            .codehilite .hll { background-color: #ffffcc }
+            .codehilite  { background: #f0f0f0;}
+            .codehilite .c { color: #408080; font-style: italic } /* Comment */
+            .codehilite .err { border: 1px solid #FF0000 } /* Error */
+            .codehilite .k { color: #008000; font-weight: bold } /* Keyword */
+            .codehilite .o { color: #666666 } /* Operator */
+            .codehilite .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+            .codehilite .cp { color: #BC7A00 } /* Comment.Preproc */
+            .codehilite .c1 { color: #408080; font-style: italic } /* Comment.Single */
+            .codehilite .cs { color: #408080; font-style: italic } /* Comment.Special */
+            .codehilite .gd { color: #A00000 } /* Generic.Deleted */
+            .codehilite .ge { font-style: italic } /* Generic.Emph */
+            .codehilite .gr { color: #FF0000 } /* Generic.Error */
+            .codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+            .codehilite .gi { color: #00A000 } /* Generic.Inserted */
+            .codehilite .go { color: #808080 } /* Generic.Output */
+            .codehilite .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+            .codehilite .gs { font-weight: bold } /* Generic.Strong */
+            .codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+            .codehilite .gt { color: #0040D0 } /* Generic.Traceback */
+            .codehilite .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+            .codehilite .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+            .codehilite .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+            .codehilite .kp { color: #008000 } /* Keyword.Pseudo */
+            .codehilite .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+            .codehilite .kt { color: #B00040 } /* Keyword.Type */
+            .codehilite .m { color: #666666 } /* Literal.Number */
+            .codehilite .s { color: #BA2121 } /* Literal.String */
+            .codehilite .na { color: #7D9029 } /* Name.Attribute */
+            .codehilite .nb { color: #008000 } /* Name.Builtin */
+            .codehilite .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+            .codehilite .no { color: #880000 } /* Name.Constant */
+            .codehilite .nd { color: #AA22FF } /* Name.Decorator */
+            .codehilite .ni { color: #999999; font-weight: bold } /* Name.Entity */
+            .codehilite .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+            .codehilite .nf { color: #0000FF } /* Name.Function */
+            .codehilite .nl { color: #A0A000 } /* Name.Label */
+            .codehilite .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+            .codehilite .nt { color: #008000; font-weight: bold } /* Name.Tag */
+            .codehilite .nv { color: #19177C } /* Name.Variable */
+            .codehilite .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+            .codehilite .w { color: #bbbbbb } /* Text.Whitespace */
+            .codehilite .mf { color: #666666 } /* Literal.Number.Float */
+            .codehilite .mh { color: #666666 } /* Literal.Number.Hex */
+            .codehilite .mi { color: #666666 } /* Literal.Number.Integer */
+            .codehilite .mo { color: #666666 } /* Literal.Number.Oct */
+            .codehilite .sb { color: #BA2121 } /* Literal.String.Backtick */
+            .codehilite .sc { color: #BA2121 } /* Literal.String.Char */
+            .codehilite .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+            .codehilite .s2 { color: #BA2121 } /* Literal.String.Double */
+            .codehilite .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+            .codehilite .sh { color: #BA2121 } /* Literal.String.Heredoc */
+            .codehilite .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+            .codehilite .sx { color: #008000 } /* Literal.String.Other */
+            .codehilite .sr { color: #BB6688 } /* Literal.String.Regex */
+            .codehilite .s1 { color: #BA2121 } /* Literal.String.Single */
+            .codehilite .ss { color: #19177C } /* Literal.String.Symbol */
+            .codehilite .bp { color: #008000 } /* Name.Builtin.Pseudo */
+            .codehilite .vc { color: #19177C } /* Name.Variable.Class */
+            .codehilite .vg { color: #19177C } /* Name.Variable.Global */
+            .codehilite .vi { color: #19177C } /* Name.Variable.Instance */
+            .codehilite .il { color: #666666 } /* Literal.Number.Integer.Long */
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <div id="inner-content">
+                <p><a href="./index.html">Back to index</a>
+<h1>MAST for IBM DataPower Version 2.1.0</h1>
+<h2>Release Notes</h2></p>
+<div class="toc"><span class="toctitle">Table of Contents</span><ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#major-milestones">Major Milestones</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+</div>
+<h1 id="introduction">Introduction</h1>
+<p>In this document we will keep track of where we are heading for the future of
+MAST. We will concentrate on features, enhancements and known-issues. Also,
+we will try to outline and explain our rationale for the decisions we have
+made in the past as well as decisions which we are currently making.</p>
+<h1 id="major-milestones">Major Milestones</h1>
+<ul>
+<li>Version 1 - Complete<ul>
+<li>Create a viable product which eases the common pains of administrating
+IBM DataPower appliances.</li>
+<li>Ease the process of querying, configuring or otherwise affecting multiple
+IBM DataPower appliances as a group.</li>
+<li>Create a system for allowing robust configuration without any additional pains
+and with a minimal learning curve for future contributers</li>
+<li>Create a CLI from functions based on their signature</li>
+<li>Dynamically generate a Web GUI from our CLI</li>
+<li>Provide an easy-to-use Python API for creating custom plugins and scripts</li>
+<li>Provide a plugin system for use with the Web GUI</li>
+<li>Provide an easy-to-use installer for Linux and Windows</li>
+</ul>
+</li>
+<li>Version 2 - Complete<ul>
+<li>Provide a daemon on Linux and a Service on Windows (mastd) with
+a plugin system which allows users/contributers to host threads
+performing tasks based on their environment</li>
+<li>Use the daemon to host the MAST Web GUI</li>
+<li>Use the daemon to host a cron-style scheduler</li>
+<li>Switch to using the Anaconda Python Distribution which provides many benifits including<ul>
+<li>The Anaconda Python distribution is the fastest growing data analytics platform
+today, and we believe that brining these analytics capabilities to the areas
+of systems administration, operations and development will be key to taking full
+advantage of the capabilities of our systems.</li>
+<li>The Anaconda Python distribution comes packaged with a number of utilities
+and libraries whose installation are common pain-points for organizations
+looking to adopt Python<ul>
+<li>py.test - A simple no-boilerplate testing framework</li>
+<li>spyder - A Python IDE useful for extending MAST's functionality</li>
+<li>IPython - An enhanced Python terminal useful for exploring MAST's
+Python API</li>
+<li>IPython notebook - An interactive computational environment, in
+which you can combine code execution, rich text, mathematics, plots
+and rich media.</li>
+<li>Python libraries to interact with Excel</li>
+<li>pandas - A library for data manipulation and analysis</li>
+<li>bokeh - An interactive visualization library that targets modern
+web browsers for presentation</li>
+</ul>
+</li>
+<li>And tons more, see <a href="https://www.continuum.io/why-anaconda">why anaconda</a></li>
+</ul>
+</li>
+<li>Bring a unified logging system based on Python's standard logging
+module to simplify the process of getting logs where they need to go</li>
+<li>Focus on stabilization</li>
+</ul>
+</li>
+<li>Version 2.0.1 - Complete<ul>
+<li>Start integrating Anaconda's capabilities in with contributed
+scripts which are not part of the core product for reasons of portability</li>
+<li>Focus on bug fixes, documentation and stabilization</li>
+<li>Start the process of decoupling MAST from MAST for IBM DataPower so
+each project can focus on their primary concern</li>
+</ul>
+</li>
+<li>Version 2.1.0 - Beta<ul>
+<li>Bring in the Python library <a href="https://github.com/jelmer/dulwich">dulwich</a>
+for native git integration, we have a number of uses for this functionality<ul>
+<li>Configuration (persisted and/or running) auditing<ul>
+<li>This is partially achieved in two POC contrib
+scripts <code>track-autoconfig.py</code> and <code>track-getconfig.py</code></li>
+</ul>
+</li>
+<li>Power our "net-install" feature which clones the latest versions
+of all our dependent libraries and installs them during installation</li>
+<li>Power our <code>build-hotfix.py</code> contrib script which allows our
+users to update MAST with a single command as well as build a
+hotfix which can be deployed to machines without internet access</li>
+<li>Integration with git for deployment automation</li>
+<li>Integrate a git server with mastd as a plugin</li>
+</ul>
+</li>
+<li>Focus on documentation<ul>
+<li>In particular, we have overhauled the process of generating our
+documentation.<ul>
+<li>Our documentation is now auto-generated from our source code
+and a couple of markdown files. This allows our users to update
+our product and generate the updated documentation on-the-fly</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Focus on bug fixes and stability</li>
+</ul>
+</li>
+<li>Version 3<ul>
+<li>Improve the process of contributing to our projects<ul>
+<li>Adopt a better, more modern development workflow
+really utilizing GitHub and all of it's community
+based features</li>
+</ul>
+</li>
+<li>Finish the process of decoupling MAST from MAST for IBM DataPower
+and start a couple of new projects like:<ul>
+<li>MAST for docker</li>
+<li>MAST for Linux</li>
+<li>MAST for Windows</li>
+</ul>
+</li>
+<li>Start migrating to Python 3<ul>
+<li>We will try to keep a code base compatible with
+both Python 2.5, 2.6, 2.7, 3.3, 3.4, 3.5, but if any
+problems arise, we will prioritize 2.7 and 3.5</li>
+</ul>
+</li>
+<li>Rewrite the Web GUI to have a more useful, modern UI
+based on bootstrap, JQuery and D3</li>
+</ul>
+</li>
+<li>Version 4<ul>
+<li>The sky is the limit, we will continue to develop our product
+based on the needs of our new and existing customers and community</li>
+</ul>
+</li>
+</ul>
+<h1 id="conclusion">Conclusion</h1>
+<p>This document is living and breathing, please check back to see updates
+to this document which will outline our direction for the future.</p>
+            </div>
+        </div>
+    </body>
+</html>
