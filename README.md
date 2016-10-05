@@ -4,6 +4,7 @@ Consolidated repository for MAST issues, documentation and website
 # links
 
 * [organization dashboard](https://github.com/orgs/McIndi/dashboard)
+* [current projects](https://github.com/McIndi/mast/projects)
 * [issue tracker](https://github.com/mcindi/mast/issues)
 * [main repository for code](https://github.com/mcindi/mast.installer)
 * [pull requests](https://github.com/mcindi/mast.installer/pulls)
