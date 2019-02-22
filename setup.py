@@ -31,6 +31,7 @@ setup(
         'mast.datapower', 
         'mast.datapower.accounts',
         'mast.datapower.backups',
+        'mast.datapower.crypto',
         'mast.datapower.datapower',
         'mast.datapower.datapower.et',
         'mast.datapower.deployment',
@@ -52,6 +53,7 @@ setup(
         'mast_web_plugin': [
             'accounts = mast.datapower.accounts:WebPlugin',
             'backups = mast.datapower.backups:WebPlugin',
+            'crypto = mast.datapower.crypto:WebPlugin',
             'deployment = mast.datapower.deployment:WebPlugin',
             'developer = mast.datapower.developer:WebPlugin',
             'network = mast.datapower.network:WebPlugin',
@@ -66,7 +68,15 @@ setup(
 
     },
     package_data={
-        "mast.datapower.backups": ["docroot/*"]
+        "mast.datapower.accounts": ["docroot/*"],
+        "mast.datapower.backups": ["docroot/*"],
+        "mast.datapower.crypto": ["docroot/*"],
+        "mast.datapower.deployment": ["docroot/*"],
+        "mast.datapower.developer": ["docroot/*"],
+        "mast.datapower.network": ["docroot/*"],
+        "mast.datapower.ssh": ["docroot/*"],
+        "mast.datapower.status": ["docroot/*"],
+        "mast.datapower.system": ["docroot/*"],
     },
     incude_package_data=True,
     long_description=read('README.md'),
