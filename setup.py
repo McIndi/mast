@@ -11,7 +11,7 @@ def read(fname):
         return fin.read()
 
 setup(
-    name="mast.datapower.backups",
+    name="mast",
     version="2.3.5",
     author="Clifford Bressette",
     author_email="cliffordbressette@mcindi.com",
