@@ -1,0 +1,38 @@
+#mast\.datapower\.deploymentButtons{
+    width: 12%;
+    text-align: right;
+    vertical-align: top;
+}
+
+.mast\.datapower\.deploymentButton{
+    width: 200px;
+    text-align: right;
+    background-color: #056BB0;
+    border-color: #056BB0;
+    color: white;
+}
+
+#mast\.datapower\.deploymentForm{
+    width: 35%;
+    vertical-align: top;
+}
+
+.mast\.datapower\.deploymentForm{
+    margin-left: auto;
+    margin-right: auto;
+    width: 99%;
+    text-align: left;
+}
+
+#mast\.datapower\.deploymentOutput{
+    width: 100%;
+    text-align: left;
+    vertical-align: top;
+}
+
+#mast\.datapower\.deploymentOutputResults{
+    width: 100%;
+    text-align: left;
+    vertical-align: top;
+}
+

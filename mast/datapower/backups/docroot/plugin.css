@@ -1,0 +1,38 @@
+#mast\.datapower\.backupsButtons{
+    width: 12%;
+    text-align: right;
+    vertical-align: top;
+}
+
+.mast\.datapower\.backupsButton{
+    width: 200px;
+    text-align: right;
+    background-color: #056BB0;
+    border-color: #056BB0;
+    color: white;
+}
+
+#mast\.datapower\.backupsForm{
+    width: 35%;
+    vertical-align: top;
+}
+
+.mast\.datapower\.backupsForm{
+    margin-left: auto;
+    margin-right: auto;
+    width: 99%;
+    text-align: left;
+}
+
+#mast\.datapower\.backupsOutput{
+    width: 100%;
+    text-align: left;
+    vertical-align: top;
+}
+
+#mast\.datapower\.backupsOutputResults{
+    width: 100%;
+    text-align: left;
+    vertical-align: top;
+}
+

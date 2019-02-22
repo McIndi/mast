@@ -1,0 +1,38 @@
+#mast\.datapower\.systemButtons{
+    width: 12%;
+    text-align: right;
+    vertical-align: top;
+}
+
+.mast\.datapower\.systemButton{
+    width: 200px;
+    text-align: right;
+    background-color: #056BB0;
+    border-color: #056BB0;
+    color: white;
+}
+
+#mast\.datapower\.systemForm{
+    width: 35%;
+    vertical-align: top;
+}
+
+.mast\.datapower\.systemForm{
+    margin-left: auto;
+    margin-right: auto;
+    width: 99%;
+    text-align: left;
+}
+
+#mast\.datapower\.systemOutput{
+    width: 100%;
+    text-align: left;
+    vertical-align: top;
+}
+
+#mast\.datapower\.systemOutputResults{
+    width: 100%;
+    text-align: left;
+    vertical-align: top;
+}
+

@@ -1,0 +1,9 @@
+.sshTranscript{
+    float: right;
+}
+
+input[name="sshCommandButton"]{
+    background-color: #056BB0;
+    border-color: #056BB0;
+    color: white;
+}

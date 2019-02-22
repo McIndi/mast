@@ -1,0 +1,24 @@
+<div id="mast.datapower.status">
+    <div id="status_top">
+        <input type="button" value="Start" name="statusCharting" /><br />
+        <a href="#" class="toggle" name="metrics">Show</a>
+        <div id="metrics" style="display: none;">
+            <label><input type="checkbox" class="statusCheckbox" value="CPUUsage.tenSeconds" checked="checked" />CPUUsage.tenSeconds</label><br />
+            <label><input type="checkbox" class="statusCheckbox" value="MemoryStatus.Usage" checked="checked" />MemoryStatus.Usage</label><br />
+            <label><input type="checkbox" class="statusCheckbox" value="TCPSummary.established" />TCPSummary.established</label><br />
+            <label><input type="checkbox" class="statusCheckbox" value="FilesystemStatus.FreeTemporary" />FilesystemStatus.FreeTemporary</label><br />
+            <label><input type="checkbox" class="statusCheckbox" value="FilesystemStatus.FreeEncrypted" />FilesystemStatus.FreeEncrypted</label><br />
+            <label><input type="checkbox" class="statusCheckbox" value="FilesystemStatus.FreeInternal" />FilesystemStatus.FreeInternal</label><br />
+            <label><input type="checkbox" class="statusCheckbox" value="SystemUsage.Load" checked="checked" />SystemUsage.Load</label><br />
+            <label><input type="checkbox" class="statusCheckbox" value="SystemUsage.WorkList" />SystemUsage.WorkList</label><br />
+        </div>
+    </div>
+    <div id="status_main"></div>
+<!--
+    <div class="bordered" id="statusCPUContainer"><h2>CPU Usage</h2><canvas id="statusCPU" width="1200" height="200"></canvas><div id="statusCPULegend"></div></div>
+    <div class="bordered" id="statusMEMContainer"><h2>Memory Usage</h2><canvas id="statusMEM" width="1200" height="200"></canvas><div id="statusMEMLegend"></div></div>
+    <div class="bordered" id="statusTCPContainer"><h2>Established TCP Connections</h2><canvas id="statusTCP" width="1200" height="200"></canvas><div id="statusTCPLegend"></div></div>
+    <div class="bordered" id="statusTEMPContainer"><h2>Free temporary: filespace</h2><canvas id="statusTEMP" width="1200" height="200"></canvas><div id="statusTEMPLegend"></div></div>
+-->
+</div>
+

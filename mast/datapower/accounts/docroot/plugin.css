@@ -1,0 +1,38 @@
+#mast\.datapower\.accountsButtons{
+    width: 12%;
+    text-align: right;
+    vertical-align: top;
+}
+
+.mast\.datapower\.accountsButton{
+    width: 200px;
+    text-align: right;
+    background-color: #056BB0;
+    border-color: #056BB0;
+    color: white;
+}
+
+#mast\.datapower\.accountsForm{
+    width: 35%;
+    vertical-align: top;
+}
+
+.mast\.datapower\.accountsForm{
+    margin-left: auto;
+    margin-right: auto;
+    width: 99%;
+    text-align: left;
+}
+
+#mast\.datapower\.accountsOutput{
+    width: 100%;
+    text-align: left;
+    vertical-align: top;
+}
+
+#mast\.datapower\.accountsOutputResults{
+    width: 100%;
+    text-align: left;
+    vertical-align: top;
+}
+
