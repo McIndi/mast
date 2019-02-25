@@ -13,9 +13,9 @@ if it is dead, it will be restarted. This process will continue until
 `mastd` is stopped.
 """
 import os
+from mast import __version__
 
 # This environment variable needs to be set for other imports to work
-os.environ["MAST_VERSION"] = "2.2.0"
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
+os.environ["MAST_VERSION"] = __version__
 
 from mast_daemon import *

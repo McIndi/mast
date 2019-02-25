@@ -1,10 +1,10 @@
 import os
 import sys
 import unittest
+from mast import __version__
 from mast.cli import Cli
 from mast.logging import make_logger
 
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
 here = os.path.dirname(__file__)
 
 unittest_dir = os.path.join(here, "unit")

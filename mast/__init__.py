@@ -1,1 +1,2 @@
-__import__('pkg_resources').declare_namespace(__name__)
+import pkg_resources  # part of setuptools
+__version__ = pkg_resources.require("mast")[0].version

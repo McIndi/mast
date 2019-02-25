@@ -21,8 +21,7 @@ security.
 import os
 import base64
 from itertools import cycle, izip
-
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
+from mast import __version__
 
 def xorencode(string, key="_"):
     """

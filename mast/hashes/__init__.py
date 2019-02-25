@@ -23,8 +23,7 @@ requested hash as a Python `str`.
 """
 import hashlib
 import os
-
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
+from mast import __version__
 
 def _get_file_hash(filename, cls):
     """

@@ -8,8 +8,7 @@ the current timestamp.
 from time import time
 from datetime import datetime
 import os
-
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
+from mast import __version__
 
 class Timestamp(object):
     """

@@ -34,9 +34,9 @@ from logging.handlers import RotatingFileHandler
 from mast.config import get_configs_dict
 import getpass
 import os
+from mast import __version__
 
 mast_home = os.environ["MAST_HOME"]
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
 
 config = get_configs_dict()
 config = config["logging.conf"]

@@ -22,7 +22,6 @@ setup(
     keywords="DataPower backup checkpoint accounts network ssh system",
     url="http://github.com/mcindi/mast",
     install_requires=["mock"],
-    namespace_packages=["mast", "mast.datapower"],
     packages=[
         'mast',
         'mast.cli',

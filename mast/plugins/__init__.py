@@ -21,5 +21,5 @@ creation of `mastd_plugin`s, but for now, you can just subclass
 """
 import os
 import web
+from mast import __version__
 
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])

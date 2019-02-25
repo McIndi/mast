@@ -10,8 +10,7 @@ McIndi Solutions LLC
 import os
 from developer import *
 from developer import _import
-
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
+from mast import __version__
 
 if __name__ == "__main__":
     cli.run()

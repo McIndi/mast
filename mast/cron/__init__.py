@@ -23,13 +23,12 @@ import calendar
 import threading
 import platform
 import subprocess
+from mast import __version__
 
 try:
     mast_home = os.environ["MAST_HOME"]
 except:
     mast_home = os.getcwd()
-
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
 
 __all__ = ["CronExpression", "parse_atom", "DEFAULT_EPOCH", "SUBSTITUTIONS"]
 __license__ = "Public Domain"

@@ -11,8 +11,7 @@ from cStringIO import StringIO
 from term_utils import *
 from pprint import pprint
 import xml.etree.cElementTree as etree
-
-__version__ = "{}-0".format(os.environ["MAST_VERSION"])
+from mast import __version__
 
 def term_highlight(text):
     """
