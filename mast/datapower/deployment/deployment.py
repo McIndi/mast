@@ -1157,7 +1157,7 @@ DO NOT USE.__"""
             AliasName=alias_name,
             Password=password,
         )
-        logger.info(str(response))
+        logger.info(repr(response))
         if web:
             output["{}-{}".format(appliance.hostname, "AddPasswordMapAlias")] = "\n".join(
                 response.xml.find(
@@ -1178,7 +1178,7 @@ DO NOT USE.__"""
             if not web:
                 print("\tSaving Configuration")
             response = appliance.SaveConfig(domain=Domain)
-            logger.info(str(response))
+            logger.info(repr(response))
             if web:
                 output["{}-{}".format(appliance.hostname, "SaveConfig")] = "\n".join(
                     response.xml.find(
@@ -1264,7 +1264,7 @@ DO NOT USE.__"""
             domain=Domain,
             AliasName=alias_name,
         )
-        logger.info(str(response))
+        logger.info(repr(response))
         if web:
             output["{}-{}".format(appliance.hostname, "DeletePasswordMapAlias")] = "\n".join(
                 response.xml.find(
@@ -1285,7 +1285,7 @@ DO NOT USE.__"""
             if not web:
                 print("\tSaving Configuration")
             response = appliance.SaveConfig(domain=Domain)
-            logger.info(str(response))
+            logger.info(repr(response))
             if web:
                 output["{}-{}".format(appliance.hostname, "SaveConfig")] = "\n".join(
                     response.xml.find(

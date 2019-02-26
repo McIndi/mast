@@ -49,6 +49,7 @@ from logging.handlers import RotatingFileHandler
 from mast.config import get_configs_dict
 import getpass
 import os
+import re
 from mast import __version__
 
 mast_home = os.environ["MAST_HOME"]
@@ -71,6 +72,34 @@ _format = "; ".join((
     "'line'='%(lineno)d'",
     "'message'='%(message)s'"))
 t = Timestamp()
+
+class RedactingFilter(logging.Filter):
+
+    def __init__(self):
+        super(RedactingFilter, self).__init__()
+        self._patterns = [
+            re.compile(r"(?i)'password'=[u]?'.*?'"),
+            re.compile(r"(?i)'password': u'.*?'"),
+            re.compile(r"(?i)'password', u'.*?'"),
+            re.compile(r"(?i)<password>.*?</password>"),
+            re.compile(r"(?i)\('credentials\[\]', u'.*?'\)"),
+            re.compile(r"(?i)'credentials': \[.*?\]"),
+        ]
+
+    def filter(self, record):
+        record.msg = self.redact(record.msg)
+        if isinstance(record.args, dict):
+            for k in record.args.keys():
+                record.args[k] = self.redact(record.args[k])
+        else:
+            record.args = tuple(self.redact(arg) for arg in record.args)
+        return True
+
+    def redact(self, msg):
+        msg = isinstance(msg, basestring) and msg or str(msg)
+        for pattern in self._patterns:
+               msg = re.sub(pattern, "**REDACTED**", msg)
+        return msg
 
 def make_logger(
         name,
@@ -161,6 +190,7 @@ def make_logger(
     )
     _handler.setFormatter(_formatter)
     _handler.setLevel(level)
+    _handler.addFilter(RedactingFilter())
     _logger.addHandler(_handler)
     _logger.propagate = propagate
     return _logger
@@ -272,7 +302,7 @@ def logged(name="mast"):
         def _wrapper(*args, **kwargs):
             logger = make_logger(name)
             arguments = _format_arguments(args, kwargs)
-            logger.info(
+            logger.debug(
                 "Attempting to execute {}({})".format(
                     func.__name__, arguments))
             try:
@@ -292,7 +322,7 @@ def logged(name="mast"):
                 arguments,
                 _result
             )
-            logger.info(msg)
+            logger.debug(msg)
             return result
         return _wrapper
     return _decorator

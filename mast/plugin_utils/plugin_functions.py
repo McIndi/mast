@@ -212,7 +212,6 @@ def _zipdir(path, z):
             z.write(os.path.join(root, f), filename)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def get_module(plugin):
     """Return the imported objects which correspond to plugin.
     These are all from bin (which is a module itself)."""
@@ -220,7 +219,6 @@ def get_module(plugin):
     return getattr(module, plugin)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def unescape(text):
     """Removes HTML or XML character references and entities from a text string.
     @param text The HTML (or XML) source text.
@@ -252,7 +250,7 @@ def unescape(text):
     return re.sub("&#?\w+;", fixup, text)
 
 
-@logged("mast.plugin_utils.plugin_functions")
+
 def html(plugin):
     """Return the html for plugin's tab"""
     htm = []
@@ -275,7 +273,6 @@ def html(plugin):
         'dynplugin.html', plugin=plugin, buttons=''.join(htm)))
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def _get_arguments(plugin, fn_name):
     """Return a list of two-tuples containing the argument names and
     default values for function name and the actual function."""
@@ -287,7 +284,6 @@ def _get_arguments(plugin, fn_name):
     return (list(zip(args, defaults)), item.callable)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def render_textbox(key, value):
     """Render a textbox for a dynamic form."""
     name = key
@@ -297,7 +293,6 @@ def render_textbox(key, value):
         label=label, value=value)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def render_password_box(key, value):
     """Render a textbox for a dynamic form."""
     name = key
@@ -307,7 +302,6 @@ def render_password_box(key, value):
         label=label, value=value)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def render_checkbox(key, checked=False):
     """Render a checkbox for a dynamic form."""
     name = key
@@ -318,7 +312,6 @@ def render_checkbox(key, checked=False):
         label=label, checked=checked)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def render_multitext(key):
     """Render a multi-value textbox for a dynamic form."""
     _id = key
@@ -326,7 +319,6 @@ def render_multitext(key):
     return flask.render_template("multitext.html", id=_id, label=label)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def render_file_upload(plugin, key):
     """Render our custom file upload form control for a dynamic form."""
     name = key
@@ -336,7 +328,6 @@ def render_file_upload(plugin, key):
         label=label, plugin=plugin)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def render_select_object_status(key, env):
     options = env.common_config(key)
     return flask.render_template(
@@ -346,7 +337,6 @@ def render_select_object_status(key, env):
         disclaimer=True)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def render_multiselect_object_status(key, env):
     options = env.common_config(key)
     return flask.render_template(
@@ -356,31 +346,26 @@ def render_multiselect_object_status(key, env):
         disclaimer=True)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def render_multiselect_status_provider(key):
     return flask.render_template("multiselect.html", options=STATUS_PROVIDERS,
         key=key, disclaimer=False)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def render_select_status_provider(key):
     return flask.render_template("dynselect.html", options=STATUS_PROVIDERS,
         name=key, disclaimer=False)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def render_multiselect_object_class(key):
     return flask.render_template("multiselect.html", options=OBJECT_STATUS_ARGS,
         key=key, disclaimer=False)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def render_select_object_class(key):
     return flask.render_template("dynselect.html", options=OBJECT_STATUS_ARGS,
         name=key, disclaimer=False)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def get_form(plugin, fn_name, appliances, credentials, no_check_hostname=True):
     """Return a form suitable for gathering arguments to function name"""
     check_hostname = not no_check_hostname
@@ -462,7 +447,6 @@ def get_form(plugin, fn_name, appliances, credentials, no_check_hostname=True):
     return '<br />\n'.join(forms)
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def _call_method(func, kwargs):
     """Call func with kwargs if web is in kwargs, func should return a
     two-tupple containing (html, request_history). Here, we write the hsitory
@@ -507,7 +491,6 @@ def _call_method(func, kwargs):
         return flask.Markup(out), _id
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def call_method(plugin, form):
     """Gather the arguments and function name from form then invoke
     _call_method. Wrap the results in html and return them."""
@@ -596,7 +579,6 @@ def call_method(plugin, form):
     return out
 
 
-@logged("mast.plugin_utils.plugin_functions")
 def handle(plugin):
     """main funcion which will be routed to the plugin's endpoint"""
     logger = make_logger("mast.plugin_functions")
@@ -626,3 +608,4 @@ def handle(plugin):
         except:
             logger.exception("An unhandled exception occurred during processing of request.")
             raise
+
