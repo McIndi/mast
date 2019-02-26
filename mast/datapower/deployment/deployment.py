@@ -1105,7 +1105,37 @@ def add_password_map_alias(
     web=False,
     ):
     """create a password map alias on the specified appliances
-    """
+
+Parameters:
+
+* `-a, --appliances`: The hostname(s), ip address(es), environment name(s)
+or alias(es) of the appliances you would like to affect. For details
+on configuring environments please see the comments in
+`environments.conf` located in `$MAST_HOME/etc/default`. For details
+on configuring aliases, please see the comments in `hosts.conf` located in
+`$MAST_HOME/etc/default`. To pass multiple arguments to this parameter,
+use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
+* `-c, --credentials`: The credentials to use for authenticating to the
+appliances. Should be either one set to use for all appliances
+or one set for each appliance. Credentials should be in the form
+`username:password`. To pass multiple credentials to this parameter, use
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
+there must be a one-to-one correspondence of credentials to appliances:
+`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+If you would prefer to not use plain-text passwords,
+you can use the output of `$ mast-system xor <username:password>`.
+* `-t, --timeout`: The timeout in seconds to wait for a response from
+an appliance for any single request. __NOTE__ Program execution may
+halt if a timeout is reached.
+* `-n, --no-check-hostname`: If specified SSL verification will be turned
+off when sending commands to the appliances.
+* `-A, --alias-name`: The name to use for the password map alias
+* `-P, --Password`: The password to use for the password map alias
+* `-N, --no-save-config`: If specified, the configuration of the domain will be
+persisted
+* `-w, --web`: __For Internel Use Only, will be removed in future versions.
+DO NOT USE.__"""
     check_hostname = not no_check_hostname
     logger = make_logger('mast.datapower.deployment')
 
@@ -1180,8 +1210,37 @@ def del_password_map_alias(
     save_config=True,
     web=False,
     ):
-    """create a password map alias on the specified appliances
-    """
+    """delete a password map alias on the specified appliances
+
+Parameters:
+
+* `-a, --appliances`: The hostname(s), ip address(es), environment name(s)
+or alias(es) of the appliances you would like to affect. For details
+on configuring environments please see the comments in
+`environments.conf` located in `$MAST_HOME/etc/default`. For details
+on configuring aliases, please see the comments in `hosts.conf` located in
+`$MAST_HOME/etc/default`. To pass multiple arguments to this parameter,
+use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
+* `-c, --credentials`: The credentials to use for authenticating to the
+appliances. Should be either one set to use for all appliances
+or one set for each appliance. Credentials should be in the form
+`username:password`. To pass multiple credentials to this parameter, use
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
+there must be a one-to-one correspondence of credentials to appliances:
+`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+If you would prefer to not use plain-text passwords,
+you can use the output of `$ mast-system xor <username:password>`.
+* `-t, --timeout`: The timeout in seconds to wait for a response from
+an appliance for any single request. __NOTE__ Program execution may
+halt if a timeout is reached.
+* `-n, --no-check-hostname`: If specified SSL verification will be turned
+off when sending commands to the appliances.
+* `-A, --alias-name`: The name of the password map alias to delete
+* `-N, --no-save-config`: If specified, the configuration of the domain will be
+persisted
+* `-w, --web`: __For Internel Use Only, will be removed in future versions.
+DO NOT USE.__"""
     check_hostname = not no_check_hostname
     logger = make_logger('mast.datapower.deployment')
 
