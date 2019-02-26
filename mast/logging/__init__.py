@@ -70,7 +70,7 @@ _format = "; ".join((
     "'module'='%(module)s'",
     "'line'='%(lineno)d'",
     "'message'='%(message)s'"))
-
+t = Timestamp()
 
 def make_logger(
         name,
@@ -130,7 +130,7 @@ def make_logger(
         logger.info("informational message")
         logger.debug("debug message")
     """
-    t = Timestamp()
+    global t
     _logger = logging.getLogger(name)
     if _logger.handlers:
         if len(_logger.handlers) >= 1:
