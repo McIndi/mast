@@ -1,11 +1,23 @@
+# This file is part of McIndi's Automated Solutions Tool (MAST).
+#
+# MAST is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 3
+# as published by the Free Software Foundation.
+#
+# MAST is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with MAST.  If not, see <https://www.gnu.org/licenses/>.
+#
+# Copyright 2015-2019, McIndi Solutions, All rights reserved.
 """
 mast system:
 
 A set of tools for automating routine system-administration
 tasks associated with IBM DataPower appliances.
-
-Copyright 2016, All Rights Reserved
-McIndi Solutions LLC
 """
 import os
 import sys
@@ -926,7 +938,6 @@ DO NOT USE.__"""
 #
 
 
-# Tested!
 @cli.command('save', category='configuration')
 def save_config(appliances=[],
                 credentials=[],
@@ -974,10 +985,12 @@ DO NOT USE.__"""
     if isinstance(Domain, basestring):
         Domain = [Domain]
 
+    # render_save_config_results_table will handle saving the config
     if web:
         return (
             util.render_save_config_results_table(env, Domain),
-            util.render_history(env))
+            util.render_history(env)
+        )
 
     for appliance in env.appliances:
         _domains = Domain
@@ -988,6 +1001,7 @@ DO NOT USE.__"""
                 appliance, domain))
             resp = appliance.SaveConfig(domain=domain)
             logger.debug("Response received: {}".format(resp))
+
 
 
 @cli.command("quiesce-service", category="configuration")
