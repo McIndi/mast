@@ -1151,6 +1151,7 @@ DO NOT USE.__"""
     for appliance in env.appliances:
         if not web:
             print(appliance.hostname)
+            print("\tAttempting to add Password Map Alias")
         response = appliance.AddPasswordMap(
             domain=Domain,
             AliasName=alias_name,
@@ -1165,15 +1166,17 @@ DO NOT USE.__"""
             )
         else:
             print(
-                "\t{}".format(
-                    "\n\t".join(
+                "\t\t{}".format(
+                    "\n\t\t".join(
                         response.xml.find(
                             ".//{http://www.datapower.com/schemas/management}result"
                         ).itertext()
-                    )
+                    ).strip()
                 )
             )
-        if save_config:
+        if save_config and response:
+            if not web:
+                print("\tSaving Configuration")
             response = appliance.SaveConfig(domain=Domain)
             logger.info(str(response))
             if web:
@@ -1184,12 +1187,12 @@ DO NOT USE.__"""
                 )
             else:
                 print(
-                    "\t{}".format(
-                        "\n\t".join(
+                    "\t\t{}".format(
+                        "\n\t\t".join(
                             response.xml.find(
                                 ".//{http://www.datapower.com/schemas/management}result"
                             ).itertext()
-                        )
+                        ).strip()
                     )
                 )
     if web:
@@ -1256,6 +1259,7 @@ DO NOT USE.__"""
     for appliance in env.appliances:
         if not web:
             print(appliance.hostname)
+            print("\tAttempting to remove Password Map Alias")
         response = appliance.DeletePasswordMap(
             domain=Domain,
             AliasName=alias_name,
@@ -1269,15 +1273,17 @@ DO NOT USE.__"""
             )
         else:
             print(
-                "\t{}".format(
-                    "\n\t".join(
+                "\t\t{}".format(
+                    "\n\t\t".join(
                         response.xml.find(
                             ".//{http://www.datapower.com/schemas/management}result"
                         ).itertext()
-                    )
+                    ).strip()
                 )
             )
-        if save_config:
+        if save_config and response:
+            if not web:
+                print("\tSaving Configuration")
             response = appliance.SaveConfig(domain=Domain)
             logger.info(str(response))
             if web:
@@ -1288,12 +1294,12 @@ DO NOT USE.__"""
                 )
             else:
                 print(
-                    "\t{}".format(
-                        "\n\t".join(
+                    "\t\t{}".format(
+                        "\n\t\t".join(
                             response.xml.find(
                                 ".//{http://www.datapower.com/schemas/management}result"
                             ).itertext()
-                        )
+                        ).strip()
                     )
                 )
     if web:
