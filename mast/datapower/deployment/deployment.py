@@ -13,8 +13,10 @@ import flask
 import commandr
 from time import sleep
 import subprocess
+from collections import OrderedDict
 from mast.datapower import datapower
 from mast.datapower.deployment.git_deploy import git_deploy
+from mast.plugin_utils.plugin_utils import render_results_table, render_history
 from mast.plugins.web import Plugin
 from mast.timestamp import Timestamp
 from pkg_resources import resource_string
@@ -1062,7 +1064,6 @@ DO NOT USE.__"""
             "finished executing Post-Deployment command '{}' at {}., output: {}".format(
                 postdeploy_command, str(Timestamp()), ";".join([out, err])))
         if web:
-            from mast.plugin_utils.plugin_utils import render_results_table
             results = {"postdeploy command": "{}\n\nout: {}\n\nerr: {}".format(postdeploy_command, out, err)}
             output += render_results_table(results)
         else:
@@ -1077,6 +1078,158 @@ def get_data_file(f):
 
 
 cli.command('git-deploy', category='deployment')(git_deploy)
+
+@logged('mast.datapower.deployment')
+@cli.command('add-password-map-alias', category='password map aliases')
+def add_password_map_alias(
+    appliances=[],
+    credentials=[],
+    timeout=120,
+    no_check_hostname=False,
+    Domain="",
+    alias_name="",
+    password="",
+    save_config=True,
+    web=False,
+    ):
+    """create a password map alias on the specified appliances
+    """
+    check_hostname = not no_check_hostname
+    logger = make_logger('mast.datapower.deployment')
+
+    env = datapower.Environment(
+        appliances,
+        credentials,
+        timeout,
+        check_hostname=check_hostname
+    )
+
+    if web:
+        output = OrderedDict()
+    for appliance in env.appliances:
+        if not web:
+            print(appliance.hostname)
+        response = appliance.AddPasswordMap(
+            domain=Domain,
+            AliasName=alias_name,
+            Password=password,
+        )
+        logger.info(str(response))
+        if web:
+            output["{}-{}".format(appliance.hostname, "AddPasswordMapAlias")] = "\n".join(
+                response.xml.find(
+                    ".//{http://www.datapower.com/schemas/management}result"
+                ).itertext()
+            )
+        else:
+            print(
+                "\t{}".format(
+                    "\n\t".join(
+                        response.xml.find(
+                            ".//{http://www.datapower.com/schemas/management}result"
+                        ).itertext()
+                    )
+                )
+            )
+        if save_config:
+            response = appliance.SaveConfig(domain=Domain)
+            logger.info(str(response))
+            if web:
+                output["{}-{}".format(appliance.hostname, "SaveConfig")] = "\n".join(
+                    response.xml.find(
+                        ".//{http://www.datapower.com/schemas/management}result"
+                    ).itertext()
+                )
+            else:
+                print(
+                    "\t{}".format(
+                        "\n\t".join(
+                            response.xml.find(
+                                ".//{http://www.datapower.com/schemas/management}result"
+                            ).itertext()
+                        )
+                    )
+                )
+    if web:
+        return (
+            render_results_table(output), 
+            render_history(env),
+        )        
+
+@logged('mast.datapower.deployment')
+@cli.command('del-password-map-alias', category='password map aliases')
+def del_password_map_alias(
+    appliances=[],
+    credentials=[],
+    timeout=120,
+    no_check_hostname=False,
+    Domain="",
+    alias_name="",
+    save_config=True,
+    web=False,
+    ):
+    """create a password map alias on the specified appliances
+    """
+    check_hostname = not no_check_hostname
+    logger = make_logger('mast.datapower.deployment')
+
+    env = datapower.Environment(
+        appliances,
+        credentials,
+        timeout,
+        check_hostname=check_hostname
+    )
+
+    if web:
+        output = OrderedDict()
+    for appliance in env.appliances:
+        if not web:
+            print(appliance.hostname)
+        response = appliance.DeletePasswordMap(
+            domain=Domain,
+            AliasName=alias_name,
+        )
+        logger.info(str(response))
+        if web:
+            output["{}-{}".format(appliance.hostname, "DeletePasswordMapAlias")] = "\n".join(
+                response.xml.find(
+                    ".//{http://www.datapower.com/schemas/management}result"
+                ).itertext()
+            )
+        else:
+            print(
+                "\t{}".format(
+                    "\n\t".join(
+                        response.xml.find(
+                            ".//{http://www.datapower.com/schemas/management}result"
+                        ).itertext()
+                    )
+                )
+            )
+        if save_config:
+            response = appliance.SaveConfig(domain=Domain)
+            logger.info(str(response))
+            if web:
+                output["{}-{}".format(appliance.hostname, "SaveConfig")] = "\n".join(
+                    response.xml.find(
+                        ".//{http://www.datapower.com/schemas/management}result"
+                    ).itertext()
+                )
+            else:
+                print(
+                    "\t{}".format(
+                        "\n\t".join(
+                            response.xml.find(
+                                ".//{http://www.datapower.com/schemas/management}result"
+                            ).itertext()
+                        )
+                    )
+                )
+    if web:
+        return (
+            render_results_table(output), 
+            render_history(env),
+        )        
 
 class WebPlugin(Plugin):
     def __init__(self):
