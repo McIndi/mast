@@ -27,7 +27,7 @@ def read(fname):
 
 setup(
     name="mast",
-    version="2.3.5",
+    version="2.4.0",
     author="Clifford Bressette",
     author_email="cliffordbressette@mcindi.com",
     description=(
@@ -43,7 +43,7 @@ setup(
         'mast.config',
         'mast.cron',
         'mast.daemon',
-        'mast.datapower', 
+        'mast.datapower',
         'mast.datapower.accounts',
         'mast.datapower.backups',
         'mast.datapower.crypto',
