@@ -58,11 +58,11 @@ class StdoutDisplay(Process):
     def __init__(self, q, *args, **kwargs):
         Process.__init__(self, *args, **kwargs)
         self.q = q
-    
+
     def close(self):
 #        self.q.put("END")
         self.gui_root.quit()
-        
+
     def run(self):
         self.gui_root = Tk()
         self.gui_root.title("MAST Git-Deployment Output")
@@ -79,8 +79,8 @@ class StdoutDisplay(Process):
         self.gui_root.mainloop()
 
 # This function takes the text widget and a queue as inputs.
-# It functions by waiting on new data entering the queue, when it 
-# finds new data it will insert it into the text widget 
+# It functions by waiting on new data entering the queue, when it
+# finds new data it will insert it into the text widget
 def text_catcher(parent, text_widget, queue):
     while True:
         msg = queue.get()
@@ -229,7 +229,7 @@ def wait_for_unquiesce(appliance, app_domain, services, timeout):
 
 
 class Plan(object):
-    """A class representing a plan of action for the deployment.                                                                                                                                                                                            	
+    """A class representing a plan of action for the deployment.
     """
     def __init__(self, config):
         self.config = config
@@ -286,7 +286,7 @@ class Plan(object):
                 output["Uploads"] += "{} -> {}{}".format(os.path.relpath(kwargs["file_in"], self.config["repo_dir"]), kwargs["file_out"], os.linesep)
             if self.deployment_policy is None:
                 output["Imports"] = ""
-            else:        
+            else:
                 output["Imports"] = "{}{}".format("merged_deployment_policy.xcfg", os.linesep)
             for kwargs in self._imports:
                 output["Imports"] += "{}{}".format(os.path.relpath(kwargs["zip_file"], self.config["repo_dir"]), os.linesep)
@@ -441,7 +441,7 @@ class Plan(object):
                     service = {
                         "type": obj.tag,
                         "name": obj.get("name"),
-                    }                    
+                    }
                     if service not in ret:
                         ret.append(service)
         return ret
@@ -476,7 +476,7 @@ class Plan(object):
                         "domain '{}' on appliance '{}' "
                         "needs to be saved. Use ignore_save_needed option "
                         "to deploy anyway".format(
-                            appliance.hostname, 
+                            appliance.hostname,
                             app_domain
                         )
                     )
@@ -872,7 +872,7 @@ class Plan(object):
                             name, password = line.split(":")
                         except:
                             raise ValueError("Unable to parse Password Map Alias")
-                        
+
                     ret.append(
                         {
                             "AliasName": name.strip(),
@@ -1126,6 +1126,7 @@ def _prepare_output_directories(config, out_dir):
         config["global"]["clone_dirs"],
         ntpath.normpath(ntpath.basename(config["repo"])),
     )
+    config["repo_dir"] = config["repo_dir"].rstrip("/\\")
 
     # Create the out and audit directories if needed
     if not os.path.exists(config["out_dir"]):
@@ -1154,7 +1155,7 @@ def _initialize_logging(config):
     formatter = logging.Formatter("%(asctime)s: %(levelname)s: %(relativeCreated)d: %(message)s")
     handler.setFormatter(formatter)
     log.addHandler(handler)
-    
+
     log_2 = make_logger("mast.datapower.deployment.results")
     handler_2 = logging.FileHandler(
         os.path.join(
@@ -1166,7 +1167,7 @@ def _initialize_logging(config):
     formatter_2 = logging.Formatter("%(message)s")
     handler_2.setFormatter(formatter_2)
     log_2.addHandler(handler_2)
-    
+
 
 def _clone_pull_and_checkout(config):
     """Either pull latest changes or clone the remote repository
@@ -1182,7 +1183,7 @@ def _clone_pull_and_checkout(config):
         if "git-credentials" in config:
             _remove_this = ":".join(
                 map(
-                    quote_plus, 
+                    quote_plus,
                     xordecode(
                         config["git-credentials"]
                     ).split(":")
@@ -1194,7 +1195,7 @@ def _clone_pull_and_checkout(config):
     print(out)
     print(err)
     log.info("stdout from git: '{}'".format(out))
-    log.info("stderr from git: '{}'".format(err)) 
+    log.info("stderr from git: '{}'".format(err))
     # If commit is provided, perform a git checkout
     if config["commit"]:
         with working_directory(config["repo_dir"]):
@@ -1242,7 +1243,7 @@ def git_deploy(
     configured in $MAST_HOME/etc/local/service-config.conf, please
     see $MAST_HOME/etc/default/service-config.conf for documentation
     on the format of this configuration file.
-				
+
 Parameters:
 
 * `-a, --appliances`: The hostname(s), ip address(es), environment name(s)
@@ -1273,7 +1274,7 @@ off when sending commands to the appliances.
 * `-o, --out_dir`: The directory in which to store the deployment artifacts
 * `-d, --dry_run`: If specified, nothing will be done to the appliances
 * `--ignore-save-needed`: If specified, deployment will proceed regardless of whether
-the app domain needs to be saved 
+the app domain needs to be saved
 * `--ignore-no-deployment-policy`: If specified, deployment will proceed even if
 there are no deployment policies
 * `--allow-files-in-export`: regardless of whether there are local
@@ -1296,11 +1297,11 @@ saved after the deployment is complete
 
     check_hostname = not no_check_hostname
     config = parse_config(
-        appliances, 
-        credentials, 
-        environment, 
-        service, 
-        check_hostname, 
+        appliances,
+        credentials,
+        environment,
+        service,
+        check_hostname,
         timeout,
     )
     config.update(
@@ -1362,4 +1363,3 @@ if __name__ == "__main__":
     except:
         make_logger("mast.datapower.deployment.git-deploy").exception("An unhandled exception occurred")
         raise
-
