@@ -825,7 +825,7 @@ class DataPower(object):
                 self.log_warn("Paramiko library not installed. Exiting")
                 raise NotImplementedError
             self._ssh = paramiko.SSHClient()
-            username, password = self.credentials.split(':')
+            username, password = self.credentials.split(':', 1)
 
             ssh_config = get_config("ssh.conf")
             if ssh_config.getboolean("ssh", "auto_add_keys"):
@@ -986,7 +986,7 @@ class DataPower(object):
         * `timeout`: The amount of time (in seconds) to wait for a
         response. Defaults to 120.
         """
-        username, password = self.credentials.split(":")
+        username, password = self.credentials.split(":", 1)
         # need to manually log in order to obfuscate credentials
         logger = make_logger("audit")
         logger.info(
@@ -1235,7 +1235,7 @@ class DataPower(object):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':')
+        username, password = self.credentials.split(':', 1)
         msg = msg.replace(password, "********")
         logger.debug(msg)
 
@@ -1265,7 +1265,7 @@ class DataPower(object):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':')
+        username, password = self.credentials.split(':', 1)
         msg = msg.replace(password, "********")
         logger.debug(msg)
 
@@ -1295,7 +1295,7 @@ class DataPower(object):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':')
+        username, password = self.credentials.split(':', 1)
         msg = msg.replace(password, "********")
         logger.info(msg)
 
@@ -1327,7 +1327,7 @@ class DataPower(object):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':')
+        username, password = self.credentials.split(':', 1)
         msg = msg.replace(password, "********")
         logger.error(msg)
 
@@ -1364,7 +1364,7 @@ class DataPower(object):
             _msg.append('"{0}": "{1}", '.format(k, v))
         _msg.append('"message": "{}"'.format(msg))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':')
+        username, password = self.credentials.split(':', 1)
         msg = msg.replace(password, "********")
         logger.critical(msg)
         self.log_debug("Request/Response History: {}".format(self.history))
@@ -1701,7 +1701,7 @@ class DataPower(object):
 
         This method accepts no arguments
         """
-        user = self.credentials.split(':')[0]
+        user = self.credentials.split(':', 1)[0]
         return {'hostname': self.hostname,
                 'domain': self.domain,
                 'user': user,
@@ -1998,7 +1998,7 @@ class DataPower(object):
         self.request.request.modify_config.User(
             name=username).Password(password)
         resp = self.send_request(boolean=True)
-        if username == self.credentials.split(':')[0]:
+        if username == self.credentials.split(':', 1)[0]:
             # Handles the case of changing the password of the user which
             # we are using to authenticate to DataPower
             self.credentials = '{}:{}'.format(username, password)

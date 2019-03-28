@@ -69,7 +69,7 @@ def initialize_appliances(env, domain='default', timeout=120):
     for appliance in env.appliances:
         _resp = appliance.ssh_connect(domain=domain, timeout=timeout)
         # Sanitize password from output
-        password = appliance.credentials.split(":")[1]
+        password = appliance.credentials.split(":", 1)[1]
         _resp = _resp.replace(password, "*"*8)
         responses.append(_resp)
     output = format_output(responses, env)

@@ -866,10 +866,10 @@ class Plan(object):
             with open(common_password_alias_file, "r") as fp:
                 for line in fp:
                     try:
-                        name, password = xordecode(line).split(":")
+                        name, password = xordecode(line).split(":", 1)
                     except (binascii.Error, ValueError):
                         try:
-                            name, password = line.split(":")
+                            name, password = line.split(":", 1)
                         except:
                             raise ValueError("Unable to parse Password Map Alias")
 
@@ -883,10 +883,10 @@ class Plan(object):
             with open(env_password_alias_file, "r") as fp:
                 for line in fp:
                     try:
-                        name, password = xordecode(line).split(":")
+                        name, password = xordecode(line).split(":", 1)
                     except (binascii.Error, ValueError):
                         try:
-                            name, password = line.split(":")
+                            name, password = line.split(":", 1)
                         except:
                             raise ValueError("Unable to parse Password Map Alias")
                     ret.append(
@@ -1101,7 +1101,7 @@ def parse_config(appliances, credentials, environment, service, check_hostname, 
         ret["domains"].append(domain)
     ret.update(config.items(service))
     if "git-credentials" in ret:
-        username, password = xordecode(ret["git-credentials"]).split(":")
+        username, password = xordecode(ret["git-credentials"]).split(":", 1)
         url = urlparse(ret["repo"])
         ret["repo"] = "{}://{}:{}@{}{}".format(
             url.scheme,
@@ -1186,7 +1186,7 @@ def _clone_pull_and_checkout(config):
                     quote_plus,
                     xordecode(
                         config["git-credentials"]
-                    ).split(":")
+                    ).split(":", 1)
                 )
             ) + "@"
             _repo = config["repo"].replace(_remove_this, "")
