@@ -1911,7 +1911,14 @@ class DataPower(object):
 
     @correlate
     @logged("audit")
-    def add_user(self, username, password, privileged=False, user_group=None):
+    def add_user(
+            self,
+            username,
+            password,
+            supress_force_password_change=False,
+            privileged=False,
+            user_group=None
+        ):
         """
         _method_: `mast.datapower.datapower.DataPower.add_user(self, username, password, privileged=False, user_group=None)`
 
@@ -1969,6 +1976,8 @@ class DataPower(object):
             groupname = user.GroupName
             groupname.set('class', 'UserGroup')
             groupname(user_group)
+        if supress_force_password_change:
+            user.SuppressPasswordChange("on")
         resp = self.send_request(boolean=True)
         return resp
 

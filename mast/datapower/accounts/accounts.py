@@ -57,11 +57,11 @@ use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
 appliances. Should be either one set to use for all appliances
 or one set for each appliance. Credentials should be in the form
 `username:password`. To pass multiple credentials to this parameter, use
-multiple entries of the form `[-c credential1 [-c credential2...]]`. 
-When referencing multiple appliances with multiple credentials, 
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
 there must be a one-to-one correspondence of credentials to appliances:
 `[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
-If you would prefer to not use plain-text passwords, 
+If you would prefer to not use plain-text passwords,
 you can use the output of `$ mast-system xor <username:password>`.
 * `-t, --timeout`: The timeout in seconds to wait for a response from
 an appliance for any single request. __NOTE__ Program execution may
@@ -127,11 +127,11 @@ use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
 appliances. Should be either one set to use for all appliances
 or one set for each appliance. Credentials should be in the form
 `username:password`. To pass multiple credentials to this parameter, use
-multiple entries of the form `[-c credential1 [-c credential2...]]`. 
-When referencing multiple appliances with multiple credentials, 
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
 there must be a one-to-one correspondence of credentials to appliances:
 `[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
-If you would prefer to not use plain-text passwords, 
+If you would prefer to not use plain-text passwords,
 you can use the output of `$ mast-system xor <username:password>`.
 * `-t, --timeout`: The timeout in seconds to wait for a response from
 an appliance for any single request. __NOTE__ Program execution may
@@ -210,11 +210,11 @@ use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
 appliances. Should be either one set to use for all appliances
 or one set for each appliance. Credentials should be in the form
 `username:password`. To pass multiple credentials to this parameter, use
-multiple entries of the form `[-c credential1 [-c credential2...]]`. 
-When referencing multiple appliances with multiple credentials, 
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
 there must be a one-to-one correspondence of credentials to appliances:
-`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]` 
-If you would prefer to not use plain-text passwords, 
+`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+If you would prefer to not use plain-text passwords,
 you can use the output of `$ mast-system xor <username:password>`.
 * `-t, --timeout`: The timeout in seconds to wait for a response from
 an appliance for any single request. __NOTE__ Program execution may
@@ -289,11 +289,11 @@ use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
 appliances. Should be either one set to use for all appliances
 or one set for each appliance. Credentials should be in the form
 `username:password`. To pass multiple credentials to this parameter, use
-multiple entries of the form `[-c credential1 [-c credential2...]]`. 
-When referencing multiple appliances with multiple credentials, 
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
 there must be a one-to-one correspondence of credentials to appliances:
-`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]` 
-If you would prefer to not use plain-text passwords, 
+`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+If you would prefer to not use plain-text passwords,
 you can use the output of `$ mast-system xor <username:password>`.
 * `-t, --timeout`: The timeout in seconds to wait for a response from
 an appliance for any single request. __NOTE__ Program execution may
@@ -344,6 +344,7 @@ def add_user(appliances=[],
              save_config=False,
              username=None,
              password="",
+             supress_force_password_change=False,
              privileged=False,
              group=None,
              web=False):
@@ -362,11 +363,11 @@ use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
 appliances. Should be either one set to use for all appliances
 or one set for each appliance. Credentials should be in the form
 `username:password`. To pass multiple credentials to this parameter, use
-multiple entries of the form `[-c credential1 [-c credential2...]]`. 
-When referencing multiple appliances with multiple credentials, 
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
 there must be a one-to-one correspondence of credentials to appliances:
-`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]` 
-If you would prefer to not use plain-text passwords, 
+`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+If you would prefer to not use plain-text passwords,
 you can use the output of `$ mast-system xor <username:password>`.
 * `-t, --timeout`: The timeout in seconds to wait for a response from
 an appliance for any single request. __NOTE__ Program execution may
@@ -399,7 +400,9 @@ It will fail to add the group"""
         'username': username,
         'password': password,
         'privileged': privileged,
-        'user_group': group}
+        'user_group': group,
+        'supress_force_password_change': supress_force_password_change,
+    }
     resp = env.perform_async_action('add_user', **kwargs)
     logger.debug("Responses received {}".format(str(resp)))
 
@@ -452,11 +455,11 @@ use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
 appliances. Should be either one set to use for all appliances
 or one set for each appliance. Credentials should be in the form
 `username:password`. To pass multiple credentials to this parameter, use
-multiple entries of the form `[-c credential1 [-c credential2...]]`. 
-When referencing multiple appliances with multiple credentials, 
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
 there must be a one-to-one correspondence of credentials to appliances:
-`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]` 
-If you would prefer to not use plain-text passwords, 
+`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+If you would prefer to not use plain-text passwords,
 you can use the output of`$ mast-system xor <username:password>`.
 * `-t, --timeout`: The timeout in seconds to wait for a response from
 an appliance for any single request. __NOTE__ Program execution may
@@ -534,11 +537,11 @@ use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
 appliances. Should be either one set to use for all appliances
 or one set for each appliance. Credentials should be in the form
 `username:password`. To pass multiple credentials to this parameter, use
-multiple entries of the form `[-c credential1 [-c credential2...]]`. 
-When referencing multiple appliances with multiple credentials, 
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
 there must be a one-to-one correspondence of credentials to appliances:
-`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]` 
-If you would prefer to not use plain-textpasswords, 
+`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+If you would prefer to not use plain-textpasswords,
 you can use the output of `$ mast-system xor <username:password>`.
 * `-t, --timeout`: The timeout in seconds to wait for a response from
 an appliance for any single request. __NOTE__ Program execution may
@@ -619,11 +622,11 @@ use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
 appliances. Should be either one set to use for all appliances
 or one set for each appliance. Credentials should be in the form
 `username:password`. To pass multiple credentials to this parameter, use
-multiple entries of the form `[-c credential1 [-c credential2...]]`. 
-When referencing multiple appliances with multiple credentials, 
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
 there must be a one-to-one correspondence of credentials to appliances:
-`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]` 
-If you would prefer to not use plain-text passwords, 
+`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+If you would prefer to not use plain-text passwords,
 you can use the output of `$ mast-system xor <username:password>`.
 * `-t, --timeout`: The timeout in seconds to wait for a response from
 an appliance for any single request. __NOTE__ Program execution may
@@ -702,11 +705,11 @@ use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
 appliances. Should be either one set to use for all appliances
 or one set for each appliance. Credentials should be in the form
 `username:password`. To pass multiple credentials to this parameter, use
-multiple entries of the form `[-c credential1 [-c credential2...]]`. 
-When referencing multiple appliances with multiple credentials, 
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
 there must be a one-to-one correspondence of credentials to appliances:
-`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]` 
-If you would prefer to not use plain-text passwords, 
+`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+If you would prefer to not use plain-text passwords,
 you can use the output of `$ mast-system xor <username:password>`.
 * `-t, --timeout`: The timeout in seconds to wait for a response from
 an appliance for any single request. __NOTE__ Program execution may
@@ -773,11 +776,11 @@ use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
 appliances. Should be either one set to use for all appliances
 or one set for each appliance. Credentials should be in the form
 `username:password`. To pass multiple credentials to this parameter, use
-multiple entries of the form `[-c credential1 [-c credential2...]]`. 
-When referencing multiple appliances with multiple credentials, 
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
 there must be a one-to-one correspondence of credentials to appliances:
-`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]` 
-If you would prefer to not use plain-text passwords, 
+`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+If you would prefer to not use plain-text passwords,
 you can use the output of `$ mast-system xor <username:password>`.
 * `-t, --timeout`: The timeout in seconds to wait for a response from
 an appliance for any single request. __NOTE__ Program execution may
@@ -854,11 +857,11 @@ use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
 appliances. Should be either one set to use for all appliances
 or one set for each appliance. Credentials should be in the form
 `username:password`. To pass multiple credentials to this parameter, use
-multiple entries of the form `[-c credential1 [-c credential2...]]`. 
-When referencing multiple appliances with multiple credentials, 
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
 there must be a one-to-one correspondence of credentials to appliances:
-`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]` 
-If you would prefer to not use plain-text passwords, 
+`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+If you would prefer to not use plain-text passwords,
 you can use the output of `$ mast-system xor <username:password>`.
 * `-t, --timeout`: The timeout in seconds to wait for a response from
 an appliance for any single request. __NOTE__ Program execution may
@@ -953,11 +956,11 @@ use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
 appliances. Should be either one set to use for all appliances
 or one set for each appliance. Credentials should be in the form
 `username:password`. To pass multiple credentials to this parameter, use
-multiple entries of the form `[-c credential1 [-c credential2...]]`. 
-When referencing multiple appliances with multiple credentials, 
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
 there must be a one-to-one correspondence of credentials to appliances:
-`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]` 
-If you would prefer to not use plain-text passwords, 
+`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+If you would prefer to not use plain-text passwords,
 you can use the output of `$ mast-system xor <username:password>`.
 * `-t, --timeout`: The timeout in seconds to wait for a response from
 an appliance for any single request. __NOTE__ Program execution may
@@ -1009,7 +1012,7 @@ Parameters:
 
 * `-a, --appliances`: The hostname(s), ip address(es), environment name(s)
 or alias(es) of the appliances you would like to affect. For details
-on configuring environments please see the comments in 
+on configuring environments please see the comments in
 `environments.conf` located in `$MAST_HOME/etc/default`. For details
 on configuring aliases, please see the comments in `hosts.conf` located in
 `$MAST_HOME/etc/default`. To pass multiple arguments to this parameter,
@@ -1018,11 +1021,11 @@ use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
 appliances. Should be either one set to use for all appliances
 or one set for each appliance. Credentials should be in the form
 `username:password`. To pass multiple credentials to this parameter, use
-multiple entries of the form `[-c credential1 [-c credential2...]]`. 
-When referencing multiple appliances with multiple credentials, 
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
 there must be a one-to-one correspondence of credentials to appliances:
-`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]` 
-If you would prefer to not use plain-text passwords, 
+`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+If you would prefer to not use plain-text passwords,
 you can use the output of `$ mast-system xor <username:password>`.
 * `-t, --timeout`: The timeout in seconds to wait for a response from
 an appliance for any single request. __NOTE__ Program execution may
@@ -1082,11 +1085,11 @@ use multiple entries of the form `[-a appliance1 [-a appliance2...]]`
 appliances. Should be either one set to use for all appliances
 or one set for each appliance. Credentials should be in the form
 `username:password`. To pass multiple credentials to this parameter, use
-multiple entries of the form `[-c credential1 [-c credential2...]]`. 
-When referencing multiple appliances with multiple credentials, 
+multiple entries of the form `[-c credential1 [-c credential2...]]`.
+When referencing multiple appliances with multiple credentials,
 there must be a one-to-one correspondence of credentials to appliances:
-`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]` 
-If you would prefer to not use plain-text passwords, 
+`[-a appliance1 [-a appliance2...]] [-c credential1 [-c credential2...]]`
+If you would prefer to not use plain-text passwords,
 you can use the output of `$ mast-system xor <username:password>`.
 * `-t, --timeout`: The timeout in seconds to wait for a response from
 an appliance for any single request. __NOTE__ Program execution may
