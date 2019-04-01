@@ -90,7 +90,6 @@ def text_catcher(parent, text_widget, queue):
             sleep(1)
             text_widget.delete("0.0", END)
             continue
-        sleep(0.1)
         text_widget.insert(END, msg)
         text_widget.see(END)
     parent.close()
@@ -119,9 +118,9 @@ def working_directory(path):
 
 def system_call(
         command,
-        stdin=subprocess.PIPE,
+        stdin=None,
         stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
+        stderr=subprocess.PIPE,
         shell=True,
     ):
     """
@@ -130,7 +129,6 @@ def system_call(
     helper function to shell out commands. This should be platform
     agnostic.
     """
-    stderr = subprocess.STDOUT
     pipe = subprocess.Popen(
         command,
         stdin=stdin,
@@ -1100,6 +1098,7 @@ def parse_config(appliances, credentials, environment, service, check_hostname, 
                 raise ValueError("Must provide either one set of credentials or one set for each appliance")
         ret["domains"].append(domain)
     ret.update(config.items(service))
+    ret["repo"] = ret["repo"].rstrip("/\\")
     if "git-credentials" in ret:
         username, password = xordecode(ret["git-credentials"]).split(":", 1)
         url = urlparse(ret["repo"])
@@ -1126,7 +1125,8 @@ def _prepare_output_directories(config, out_dir):
         config["global"]["clone_dirs"],
         ntpath.normpath(ntpath.basename(config["repo"])),
     )
-    config["repo_dir"] = config["repo_dir"].rstrip("/\\")
+    config["repo_dir"] = config["repo_dir"]
+    print(config["repo_dir"])
 
     # Create the out and audit directories if needed
     if not os.path.exists(config["out_dir"]):
@@ -1196,6 +1196,8 @@ def _clone_pull_and_checkout(config):
     print(err)
     log.info("stdout from git: '{}'".format(out))
     log.info("stderr from git: '{}'".format(err))
+    if err:
+        raise RuntimeError("\nError calling git:\n\n{}".format(err))
     # If commit is provided, perform a git checkout
     if config["commit"]:
         with working_directory(config["repo_dir"]):
