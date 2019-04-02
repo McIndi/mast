@@ -137,6 +137,8 @@ def system_call(
         shell=shell,
     )
     stdout, stderr = pipe.communicate()
+    if pipe.returncode > 0:
+        raise RuntimeError("\n\nError calling git:\n{}\n{}".format(stderr, stdout))
     return stdout, stderr
 
 def quit_for_local_uploads(config_dir):
@@ -1126,7 +1128,6 @@ def _prepare_output_directories(config, out_dir):
         ntpath.normpath(ntpath.basename(config["repo"])),
     )
     config["repo_dir"] = config["repo_dir"]
-    print(config["repo_dir"])
 
     # Create the out and audit directories if needed
     if not os.path.exists(config["out_dir"]):
@@ -1196,8 +1197,6 @@ def _clone_pull_and_checkout(config):
     print(err)
     log.info("stdout from git: '{}'".format(out))
     log.info("stderr from git: '{}'".format(err))
-    if err:
-        raise RuntimeError("\nError calling git:\n\n{}".format(err))
     # If commit is provided, perform a git checkout
     if config["commit"]:
         with working_directory(config["repo_dir"]):
