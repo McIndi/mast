@@ -377,6 +377,12 @@ DO NOT USE.__"""
         except:
             logger.exception("Must Provide both object name and object class")
             raise
+    if format == "ZIP":
+        extention = "zip"
+    elif format == "XML":
+        extention = "xcfg"
+    else:
+        raise ValueError("Format must be either 'ZIP' or 'XML', got '{}'".format(format))
 
     check_hostname = not no_check_hostname
     env = datapower.Environment(
@@ -405,7 +411,6 @@ DO NOT USE.__"""
     for hostname, _export in results.items():
         d = os.path.join(out_dir, hostname, t.timestamp)
         os.makedirs(d)
-        extention = format.lower()
         filename = os.path.join(d, '%s-%s-%s.%s' % (
             t.timestamp,
             hostname,
@@ -417,7 +422,7 @@ DO NOT USE.__"""
             print msg
         with open(filename, 'wb') as fout:
             fout.write(_export)
-    
+
     if web:
         return util.render_see_download_table(
             results, suffix="export"), util.render_history(env)
