@@ -23,15 +23,16 @@ Management Interface as well as some methods to interact with the CLI
 Management Interface (ssh).
 """
 from dpSOMALib import SomaRequest as Request
+from mast.logging import make_logger, logged
 import xml.etree.cElementTree as etree
 from functools import partial, wraps
 from mast.timestamp import Timestamp
 from mast.config import get_config
 from mast.hashes import get_sha1
-from mast.logging import make_logger, logged
+from mast.xor import xordecode
 from datetime import datetime
-from time import time, sleep
 from StringIO import StringIO
+from time import time, sleep
 import zipfile
 import logging
 import random
@@ -646,6 +647,11 @@ class DataPower(object):
             self._hostname = hosts_config.get("hosts", hostname)
         else:
             self._hostname = hostname
+
+        if ':' not in credentials:
+            credentials = xordecode(credentials)
+            if ':' not in credentials:
+                raise ValueError("Invalid credentials provided")
 
         self.credentials = credentials
         self.scheme = scheme
