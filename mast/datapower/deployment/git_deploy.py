@@ -45,6 +45,16 @@ from multiprocessing.queues import Queue
 from threading import Thread
 from Tkinter import *
 from ScrolledText import ScrolledText
+import errno
+import stat
+
+def handleRemoveReadonly(func, path, exc):
+  excvalue = exc[1]
+  if func in (os.rmdir, os.remove) and excvalue.errno == errno.EACCES:
+      os.chmod(path, stat.S_IRWXU| stat.S_IRWXG| stat.S_IRWXO) # 0777
+      func(path)
+  else:
+      raise
 
 def print(msg):
     log = make_logger("mast.datapower.deployment.results")
@@ -959,6 +969,7 @@ class Plan(object):
                         deppol.insert(i, node)
                         i += 1
             else:
+                # self.deployment_policy is None
                 try:
                     deployment_policy_filename = filter(lambda x: x.endswith(".xcfg"), os.listdir(common_deppol_dir))[0]
                 except IndexError:
@@ -1212,7 +1223,7 @@ def _clone_pull_and_checkout(config):
         ntpath.normpath(ntpath.basename(config["repo"])),
     )
     if os.path.exists(dst):
-        shutil.rmtree(dst)
+        shutil.rmtree(dst, onerror=handleRemoveReadonly)
     shutil.copytree(config["repo_dir"], dst)
 
 def git_deploy(
