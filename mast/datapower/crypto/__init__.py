@@ -126,7 +126,8 @@ DO NOT USE.__"""
         "issuer",
         "is-expired",
         "time-since-expiration",
-        "time-until-expiration"]
+        "time-until-expiration",
+    ]
     rows = [header_row]
     for appliance in env.appliances:
         logger.info("Checking appliance {}".format(appliance.hostname))
@@ -251,10 +252,13 @@ DO NOT USE.__"""
                 rows.append(row)
                 sleep(delay)
 
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    for row in rows:
-        ws.append(row)
+    try:
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        for row in rows:
+            ws.append(row)
+    except:
+        print("Error Adding certificate: '{}'".format(row))
     wb.save(out_file)
     if not web:
         print "\n\nCertificate Report (available at {}):".format(os.path.abspath(out_file))
