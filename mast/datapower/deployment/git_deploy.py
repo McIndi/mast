@@ -912,7 +912,6 @@ class Plan(object):
         project_root = self.config["repo_dir"]
         env_dir = os.path.join(project_root, self.config["environment"])
         env_deppol_dir = os.path.join(env_dir, "DeploymentPolicy")
-        common_deppol_dir = os.path.join(project_root, "DeploymentPolicy")
         self._merged_deployment_policies = []
         env_tree = None
         # Get deployment policy
@@ -934,54 +933,49 @@ class Plan(object):
         else:
             if not self.config["ignore_no_deployment_policy"]:
                 raise ValueError("Could not find expected DeploymentPolicy directory at '{}'".format(env_deppol_dir))
-        if exists(common_deppol_dir):
-            if self.deployment_policy is not None:
-                if len(filter(lambda x: x.endswith(".xcfg"), os.listdir(common_deppol_dir))) > 1:
-                    raise ValueError("Only one deployment policy permitted In an environmental directory.")
-                deployment_policy_filename = filter(lambda x: x.endswith(".xcfg"), os.listdir(common_deppol_dir))
-                if len(deployment_policy_filename):
-                    deployment_policy_filename = deployment_policy_filename[0]
-                    deployment_policy_filename = os.path.join(common_deppol_dir, deployment_policy_filename)
-                    self._merged_deployment_policies.append(os.path.relpath(deployment_policy_filename, self.config["repo_dir"]))
-                    common_tree = etree.parse(deployment_policy_filename)
-                    deppol = env_tree.find(".//ConfigDeploymentPolicy")
-                    # AcceptedConfig
-                    accepted = deppol.findall("AcceptedConfig")
-                    if accepted:
-                        i = list(deppol).index(accepted[-1]) + 1
-                    else:
-                        i = 0
-                    for node in common_tree.findall(".//ConfigDeploymentPolicy/AcceptedConfig"):
-                        deppol.insert(i, node)
-                        i += 1
-                    # FilteredConfig
-                    filtered = deppol.findall("FilteredConfig")
-                    if filtered:
-                        i = list(deppol).index(filtered[-1]) + 1
-                    for node in common_tree.findall(".//ConfigDeploymentPolicy/FilteredConfig"):
-                        deppol.insert(i, node)
-                        i += 1
-                    # ModifiedConfig
-                    modified = deppol.findall("ModifiedConfig")
-                    if modified:
-                        i = list(deppol).index(modified[-1]) + 1
-                    for node in common_tree.findall(".//ConfigDeploymentPolicy/ModifiedConfig"):
-                        deppol.insert(i, node)
-                        i += 1
+        if self.deployment_policy is not None:
+            # Thanks to Joe Morgan for his helpful feature request to make the common deployment
+            # policy be defined in the service-config.conf instead of in the repo
+            deployment_policy_filename = self.config["global"].get("common_deployment_policy")
+            if deployment_policy_filename:
+                self._merged_deployment_policies.append(deployment_policy_filename)
+                common_tree = etree.parse(deployment_policy_filename)
+                deppol = env_tree.find(".//ConfigDeploymentPolicy")
+                # AcceptedConfig
+                accepted = deppol.findall("AcceptedConfig")
+                if accepted:
+                    i = list(deppol).index(accepted[-1]) + 1
+                else:
+                    i = 0
+                for node in common_tree.findall(".//ConfigDeploymentPolicy/AcceptedConfig"):
+                    deppol.insert(i, node)
+                    i += 1
+                # FilteredConfig
+                filtered = deppol.findall("FilteredConfig")
+                if filtered:
+                    i = list(deppol).index(filtered[-1]) + 1
+                for node in common_tree.findall(".//ConfigDeploymentPolicy/FilteredConfig"):
+                    deppol.insert(i, node)
+                    i += 1
+                # ModifiedConfig
+                modified = deppol.findall("ModifiedConfig")
+                if modified:
+                    i = list(deppol).index(modified[-1]) + 1
+                for node in common_tree.findall(".//ConfigDeploymentPolicy/ModifiedConfig"):
+                    deppol.insert(i, node)
+                    i += 1
+        else:
+            # self.deployment_policy is None
+            deployment_policy_filename = self.config["global"].get("common_deployment_policy")
+            if not deployment_policy_filename:
+                if not self.config["ignore_no_deployment_policy"]:
+                    raise ValueError("Could not find expected any deployment policies")
+                else:
+                    pass
             else:
-                # self.deployment_policy is None
-                try:
-                    deployment_policy_filename = filter(lambda x: x.endswith(".xcfg"), os.listdir(common_deppol_dir))[0]
-                except IndexError:
-                    if not self.config["ignore_no_deployment_policy"]:
-                        raise ValueError("Could not find expected DeploymentPolicy directory at '{}'".format(common_deppol_dir))
-                    else:
-                        pass
-                if deployment_policy_filename:
-                    deployment_policy_filename = os.path.join(common_deppol_dir, deployment_policy_filename)
-                    self._merged_deployment_policies.append(os.path.relpath(deployment_policy_filename, self.config["repo_dir"]))
-                    env_tree = etree.parse(deployment_policy_filename)
-                    self.deployment_policy = env_tree.find(".//ConfigDeploymentPolicy").get("name")
+                self._merged_deployment_policies.append(deployment_policy_filename)
+                env_tree = etree.parse(deployment_policy_filename)
+                self.deployment_policy = env_tree.find(".//ConfigDeploymentPolicy").get("name")
         if env_tree is not None:
             with open(os.path.join(self.config["out_dir"], "merged_deployment_policy.xcfg"), "w") as fp:
                 fp.write(etree.tostring(env_tree.getroot()))
