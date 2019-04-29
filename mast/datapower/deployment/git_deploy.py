@@ -1071,6 +1071,15 @@ def parse_config(appliances, credentials, environment, service, check_hostname, 
         duplicates = [k for k,v in Counter(headers).items() if v>1]
         raise ValueError("Duplicate header(s) {} found in '{}'".format(duplicates, config_filename))
     config = get_config("service-config.conf")
+    service_config = config.items(service)
+    for key, value in service_config:
+        if "-" in key:
+            appl, env = key.split("-")
+            if datapower.environment.is_environment(appl):
+                config.remove_option(service, key)
+                for hostname in datapower.environment.get_environment(appl).hostnames:
+                    if not config.has_option(service, "{}-{}".format(hostname, env)):
+                        config.set(service, "{}-{}".format(hostname, env), value)
     ret = {
         "appliances": [],
         "credentials": [],
