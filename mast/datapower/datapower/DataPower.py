@@ -1607,16 +1607,21 @@ class DataPower(object):
         * `**kwargs`: The keyword-arguments to pass to the do-action command
         """
         if 'domain' in kwargs:
-            self.domain = kwargs.get('domain')
+            self.domain = kwargs.pop('domain')
             self.log_debug("Setting domain to {}".format(kwargs.get('domain')))
         self.request.clear()
         act = self.request.request(domain=self.domain).do_action[action]
         for key in act.valid_children():
             if key in kwargs:
-                act[key](str(kwargs[key]))
+                act[key](str(kwargs.pop(key)))
             elif key.replace('-', '_') in kwargs:
                 # Handles the python rule of not using dashes in variable names
-                act[key](str(kwargs[key.replace('-', '_')]))
+                act[key](str(kwargs.pop(key.replace('-', '_'))))
+        if kwargs:
+            key = kwargs.keys()[0]
+            raise ValueError("'{}' is not a valid parameter of '{}'".format(
+                key, act.tag
+            ))
         resp = self.send_request(boolean=True)
         return resp
 
