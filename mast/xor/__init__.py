@@ -37,8 +37,9 @@ import os
 import base64
 from itertools import cycle, izip
 from mast import __version__
+from mast.config import get_config_dict
 
-def xorencode(string, key="_"):
+def xorencode(string, key=None):
     """
     _function_: `mast.xor.xorencode(string, key="_")`
 
@@ -57,12 +58,15 @@ def xorencode(string, key="_"):
         >>> print s, dec
         test_string test_string
     """
+    if key is None:
+        config = get_config_dict("xor.conf")
+        key = config["global"].get("key")
     return base64.encodestring(
         ''.join(
             chr(ord(c) ^ ord(k)) for c, k in izip(string, cycle(key)))).strip()
 
 
-def xordecode(string, key="_"):
+def xordecode(string, key=None):
     """
     _function_: `mast.xor.xordecode(string, key="_")`
 
@@ -81,6 +85,9 @@ def xordecode(string, key="_"):
         >>> print s, dec
         test_string test_string
     """
+    if key is None:
+        config = get_config_dict("xor.conf")
+        key = config["global"].get("key")
     string = base64.decodestring(string)
     return ''.join(
         chr(ord(c) ^ ord(k)) for c, k in izip(string, cycle(key))).strip()
