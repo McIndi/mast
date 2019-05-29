@@ -79,7 +79,7 @@ class WebPlugin(Plugin):
         credentials = [xordecode(
             _,
             key=xorencode(
-                flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"]))
+                flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"], key="_"))
             for _ in flask.request.form.getlist('credentials[]')]
         if not appliances:
             return flask.abort(404)

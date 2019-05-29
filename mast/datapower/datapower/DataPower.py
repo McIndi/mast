@@ -2467,6 +2467,14 @@ class DataPower(object):
         get-filestore request. This is used to avoid repeated requests
         to the appliance
         '''
+        if ":" not in file_out:
+            if "/" in file_out:
+                raise ValueError("Invalid format for DataPower directory, location or file '{}'".format(file_out))
+            else:
+                file_out = file_out + ":"
+        location = file_out.split(":")[0] + ":"
+        if filestore is None:
+            filestore = self.get_filestore(domain, location)
         if not overwrite:
             if self.file_exists(file_out, domain, filestore):
                 self.log_error(

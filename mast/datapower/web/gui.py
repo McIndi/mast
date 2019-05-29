@@ -146,7 +146,6 @@ def initialize_plugins():
 
     return plugins
 
-
 @app.route('/config/<_file>')
 def get_json_config(_file):
     """
@@ -164,6 +163,8 @@ def get_json_config(_file):
     * `_file`: The name of the configuration file to parse and return.
     """
     _file = _file if _file.endswith(".conf") else "{}.conf".format(_file)
+    if "xor.conf" in _file:
+        return flask.jsonify({})
 
     config = get_configs_dict()[_file]
     return flask.jsonify(config)
@@ -189,7 +190,7 @@ def check_connectivity(hostname):
     credentials = flask.request.args.get("credentials")
     credentials = xordecode(
         credentials,
-        key=xorencode(flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"]))
+        key=xorencode(flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"], key="_"))
     check_hostname = flask.request.args.get("check_hostname", True)
     check_hostname = False if "false" in check_hostname else check_hostname
 

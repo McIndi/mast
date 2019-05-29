@@ -516,7 +516,7 @@ def call_method(plugin, form):
                 kwargs[arg] = [
                     xordecode(
                         _, key=xorencode(
-                            flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"]))
+                            flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"], key="_"))
                             for _ in form.getlist(arg + '[]')]
             else:
                 kwargs[arg] = form.getlist(arg + '[]')
@@ -590,7 +590,7 @@ def handle(plugin):
         appliances = flask.request.args.getlist('appliances[]')
         logger.debug("appliances: {}".format(str(appliances)))
         credentials = [xordecode(urllib.unquote(_), key=xorencode(
-                        flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"]))
+                        flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"], key="_"))
                         for _ in flask.request.args.getlist('credentials[]')]
 
         logger.debug("getting form")
@@ -608,4 +608,3 @@ def handle(plugin):
         except:
             logger.exception("An unhandled exception occurred during processing of request.")
             raise
-

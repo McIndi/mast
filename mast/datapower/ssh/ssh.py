@@ -72,7 +72,7 @@ class WebPlugin(Plugin):
         command = flask.request.form.get("command")
         hostnames = flask.request.form.getlist("appliances[]")
         credentials = [xordecode(_, key=xorencode(
-           flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"]))
+           flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"], key="_"))
            for _ in flask.request.form.getlist('credentials[]')]
 
         # Check for appliances the user may have added

@@ -209,7 +209,7 @@ def _format_args(args):
     coerced into a `str`, surrounded by single quotes and seperated by
     a comma.
     """
-    return ", ".join(("'" + str(arg) + "'" for arg in args))
+    return ", ".join(("'" + repr(arg) + "'" for arg in args))
 
 
 def _format_kwargs(kwargs):
@@ -224,7 +224,7 @@ def _format_kwargs(kwargs):
     * `kwargs`: The keyword-arguments passed to the decorated function. They
     will be represented like `'key'='value',`
     """
-    return str(kwargs).replace("{", "").replace("}", "").replace(": ", "=")
+    return repr(kwargs).replace("{", "").replace("}", "").replace(": ", "=")
 
 
 def _format_arguments(args, kwargs):
