@@ -133,6 +133,11 @@ class Environment(object):
         return responses
 
     def common_config(self, _class):
+        """Find configuration objects across the environment which
+        have the same name and object class. This method does not
+        compare the configuration just the fact that an object of said
+        type exists with the same name across the environment.
+        """
         kwargs = {'provider': 'ObjectStatus'}
         responses = self.perform_action("get_status", **kwargs)
 
