@@ -1540,7 +1540,10 @@ class DataPower(object):
         try:
             resp = self.ssh_connect(port=self.ssh_port)
             self.ssh_disconnect()
-            return 'DataPower' in resp
+            return 'login' in resp
+        except AuthenticationFailure:
+            # Able to connect, but authentication failed, return True
+            return True
         except:
             return False
 
