@@ -1502,7 +1502,7 @@ class DataPower(object):
                 "An error occurred while attempting to "
                 "connect to appliance. Error: {}".format(str(e)))
             return False
-        return 'DataPower' in test.read()
+        return test.getcode() == 200
 
     @correlate
     @logged("debug")
