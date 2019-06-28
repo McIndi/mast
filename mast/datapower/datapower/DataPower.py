@@ -1420,6 +1420,8 @@ class DataPower(object):
             # Because of lazy-loading we must explicitly prompt xml parsing
             tree = resp.xml
             return 'datapower' in resp.text
+        except AuthenticationFailure:
+            return 'datapower' in self.last_response
         except:
             return False
 
