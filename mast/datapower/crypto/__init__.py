@@ -120,6 +120,7 @@ DO NOT USE.__"""
         "filename",
         "serial-number",
         "subject",
+        "sans",
         "signature_algorithm",
         "not_before",
         "not_after",
@@ -207,6 +208,13 @@ DO NOT USE.__"""
                         ["=".join(x)
                          for x in _cert.get_issuer().get_components()]))
                 serial_number = _cert.get_serial_number()
+                sans = []
+                ext_count = _cert.get_extension_count()
+                for i in range(0, ext_count):
+                    ext = _cert.get_extension(i)
+                    if 'subjectAltName' in str(ext.get_short_name()):
+                        sans.append(ext.__str__())
+                sans = "\n".join(sans)
                 try:
                     signature_algorithm = _cert.get_signature_algorithm()
                 except AttributeError:
@@ -242,6 +250,7 @@ DO NOT USE.__"""
                 row.extend(
                     [serial_number,
                      subject,
+                     sans,
                      signature_algorithm,
                      notBefore,
                      notAfter,
