@@ -21,9 +21,7 @@ from mast.datapower import datapower
 from pkg_resources import resource_string
 from mast.xor import xordecode, xorencode
 
-
 _appliances = {}
-
 
 @logged("mast.datapower.ssh")
 def _check_for_appliance(hostname, appliances):

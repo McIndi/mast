@@ -864,7 +864,8 @@ class DataPower(object):
                 raise AuthenticationFailure(
                     "Invalid credentials provided, please ensure "
                     "that account is not locked")
-            resp += self.ssh_issue_command("{}\n".format(domain))
+            if resp.strip().lower().endswith("Domain (? for all):"):
+                resp += self.ssh_issue_command("{}\n".format(domain))
 
             self.log_info("SSH session now active")
         except paramiko.SSHException, e:
@@ -1044,8 +1045,8 @@ class DataPower(object):
                 resp.replace('\n', '').replace('\r', '')))
         resp = resp.strip()
         resp = resp.replace('\r', '')
-        if not resp.startswith(command):
-            resp = ' {}\n{}'.format(command.replace(password, "********"), resp)
+        # if not resp.startswith(command):
+        #     resp = ' {}\n{}'.format(command.replace(password, "********"), resp)
         logger.info(
             "Finished execution of ssh_issue_command('{}', '{}'). Result: {}".format(
                 str(self), command.replace(password, "********").strip(), resp
@@ -1099,7 +1100,7 @@ class DataPower(object):
         elif 'Goodbye' in resp:
             self.ssh_disconnect()
             return True
-        elif 'nter new password:' in resp:
+        elif 'nter new password' in resp:
             return True
         elif re.match('.*?\[y/n\]', resp.splitlines()[-1]):
             return True

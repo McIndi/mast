@@ -14,6 +14,7 @@
 #
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
 from mast.datapower.datapower import Environment
+from getpass import getpass
 from mast.cli import Cli
 import sys
 import os
@@ -34,6 +35,11 @@ except IOError:
     pass
 atexit.register(readline.write_history_file, histfile)
 
+PASSWORD_CHANGE_PROMPTS = [
+    "Please enter new password: ",
+    "Please re-enter new password to confirm: ",
+]
+PASSWORD_PROMPTS = ["Password: "] + PASSWORD_CHANGE_PROMPTS
 
 class Input(object):
     """This is a class representing the ssh command prompt. This is a
@@ -52,9 +58,14 @@ class Input(object):
     def next(self):
         """This is provided so that this object can function as
         an iterator."""
+        if self.prompt in PASSWORD_CHANGE_PROMPTS:
+            return getpass(self.prompt)
+
         try:
             return self.commands.pop(0)
         except IndexError:
+            if self.prompt in PASSWORD_PROMPTS:
+                return getpass(self.prompt)
             return raw_input(self.prompt)
 
     def __iter__(self):
