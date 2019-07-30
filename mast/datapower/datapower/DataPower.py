@@ -33,6 +33,7 @@ from mast.xor import xordecode
 from datetime import datetime
 from StringIO import StringIO
 from time import time, sleep
+import paramiko
 import zipfile
 import logging
 import random
@@ -78,35 +79,6 @@ class SSHTimeoutError(Exception):
     command than the specified timeout.
     """
     pass
-
-
-try:
-    import Crypto.Cipher.AES
-    orig_new = Crypto.Cipher.AES.new
-
-    def fixed_AES_new(key, *ls):
-        """
-        _function_: `mast.datapower.datapower.fixed_AES_new(key, *ls)`
-
-        Description:
-
-        __Internal Use__
-
-        This is a workaround to
-        [this bug](https://github.com/dlitz/pycrypto/issues/149)
-        """
-        if Crypto.Cipher.AES.MODE_CTR == ls[0]:
-            ls = list(ls)
-            ls[1] = ''
-        return orig_new(key, *ls)
-
-    Crypto.Cipher.AES.new = fixed_AES_new
-    # END HACK
-    import paramiko
-    paramiko_is_present = True
-    make_logger('paramiko')
-except ImportError:
-    paramiko_is_present = False
 
 
 def _escape(string):
@@ -667,12 +639,6 @@ class DataPower(object):
 
         logger = logging.getLogger("DataPower.{}".format(hostname))
         logger.addHandler(logging.NullHandler())
-        self.paramiko_is_present = paramiko_is_present
-        if not self.paramiko_is_present:
-            self.log_warn(
-                "Paramiko Library is not present "
-                "any ssh related functionality will "
-                "not work.")
 
         config = get_config("appliances.conf")
         if config.has_section(self.hostname):
@@ -827,9 +793,6 @@ class DataPower(object):
         try:
             self.log_info("Attempting SSH connection")
             self.domain = domain
-            if not self.paramiko_is_present:
-                self.log_warn("Paramiko library not installed. Exiting")
-                raise NotImplementedError
             self._ssh = paramiko.SSHClient()
             username, password = self.credentials.split(':', 1)
 
