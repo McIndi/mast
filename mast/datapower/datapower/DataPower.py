@@ -827,7 +827,7 @@ class DataPower(object):
                 raise AuthenticationFailure(
                     "Invalid credentials provided, please ensure "
                     "that account is not locked")
-            if resp.strip().lower().endswith("Domain (? for all):"):
+            if resp.strip().lower().endswith("domain (? for all):"):
                 resp += self.ssh_issue_command("{}\n".format(domain))
 
             self.log_info("SSH session now active")
