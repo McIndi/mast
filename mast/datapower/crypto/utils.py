@@ -15,4 +15,4 @@
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
 
 def insert_newlines(string, every=64):
-    return '\n'.join(string[i:i+every] for i in xrange(0, len(string), every))
+    return '\n'.join(string[i:i+every] for i in range(0, len(string), every))

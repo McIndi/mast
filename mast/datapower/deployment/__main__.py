@@ -13,7 +13,7 @@
 # along with MAST.  If not, see <https://www.gnu.org/licenses/>.
 #
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
-from deployment import cli
+from .deployment import cli
 
 # Fix issue with __main__.py messing up command line help
 import sys
@@ -21,12 +21,12 @@ sys.argv[0] = "mast-deployment"
 
 try:
     cli.Run()
-except AttributeError, e:
+except AttributeError as e:
     if "'NoneType' object has no attribute 'app'" in e:
         raise NotImplementedError(
             "HTML formatted output is not supported on the CLI")
     raise
-except ImportError, e:
+except ImportError as e:
     if "No module named backups" in e:
         raise NotImplementedError(
             "HTML formatted output is not supported on the CLI")

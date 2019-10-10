@@ -166,8 +166,8 @@ if "Windows" in platform.system():
                 threads = {}
                 servicemanager.LogInfoMsg("Entering main loop")
                 while not self.stop_requested:
-                    for key, value in PLUGINS.items():
-                        if key in threads.keys():
+                    for key, value in list(PLUGINS.items()):
+                        if key in list(threads.keys()):
                             if threads[key].isAlive():
                                 continue
                             else:
@@ -244,7 +244,7 @@ elif "Linux" in platform.system():
                     pass
             logger.info(
                 "Collected plugins {}".format(
-                    str(self.named_objects.keys())))
+                    str(list(self.named_objects.keys()))))
 
         @logged("mast.daemon")
         def run(self):
@@ -264,8 +264,8 @@ elif "Linux" in platform.system():
                 threads = {}
 
                 while True:
-                    for key, value in self.named_objects.items():
-                        if key in threads.keys():
+                    for key, value in list(self.named_objects.items()):
+                        if key in list(threads.keys()):
                             if threads[key].isAlive():
                                 continue
                             else:

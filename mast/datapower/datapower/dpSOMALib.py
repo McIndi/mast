@@ -14,7 +14,7 @@
 #
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
 
-from WSClientLib import Request, etree
+from .WSClientLib import Request, etree
 
 if hasattr(etree, 'register_namespace'):
     etree.register_namespace(

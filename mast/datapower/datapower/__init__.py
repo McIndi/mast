@@ -13,8 +13,8 @@
 # along with MAST.  If not, see <https://www.gnu.org/licenses/>.
 #
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
-from environment import * 
-from DataPower import *
+from .environment import * 
+from .DataPower import *
 import os
 from mast import __version__
 

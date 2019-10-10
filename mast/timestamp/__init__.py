@@ -169,6 +169,6 @@ class Timestamp(object):
 
 if __name__ == '__main__':
     ts = Timestamp()
-    print ts.timestamp
-    print ts.friendly
-    print ts.epoch
+    print(ts.timestamp)
+    print(ts.friendly)
+    print(ts.epoch)

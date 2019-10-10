@@ -47,7 +47,7 @@ class TestFirmwareUpgrade(unittest.TestCase):
 
     def tearDown(self):
         self.time_taken = time() - self.start_time
-        print "%.3f: %s" % (self.time_taken, self.id())
+        print("%.3f: %s" % (self.time_taken, self.id()))
 
     def test_firmware_upgrade_calls_functions_with_with_keyword_args(
             self,

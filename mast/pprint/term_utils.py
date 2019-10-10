@@ -123,5 +123,5 @@ def page(text):
                 sys.stdout.flush()
                 break
         else:
-            print line
+            print(line)
         current_line += 1

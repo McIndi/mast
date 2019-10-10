@@ -20,7 +20,7 @@ A set of tools for automating routine network administration
 tasks associated with IBM DataPower appliances.
 """
 import os
-from network import *
+from .network import *
 from mast import __version__
 
 if __name__ == "__main__":

@@ -20,7 +20,7 @@ A set of tools for automating routine network administration
 tasks associated with IBM DataPower appliances.
 """
 import flask
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import commandr
 from mast.plugins.web import Plugin
 from pkg_resources import resource_string
@@ -102,8 +102,8 @@ DO NOT USE.__"""
     if web:
         return util.render_connectivity_table(env), util.render_history(env)
 
-    print '\nhostname\t\txml\t\tweb\t\tcli'
-    print '-' * 80
+    print('\nhostname\t\txml\t\tweb\t\tcli')
+    print('-' * 80)
     for appliance in env.appliances:
         resp = []
         resp.append(appliance.hostname)
@@ -116,8 +116,8 @@ DO NOT USE.__"""
         resp.append(xml)
         resp.append(web)
         resp.append(cli)
-        print '\t\t'.join(resp)
-    print
+        print('\t\t'.join(resp))
+    print()
 
 
 @logged("mast.datapower.network")
@@ -177,8 +177,8 @@ DO NOT USE.__"""
         return util.render_tcp_connection_test_table(
             env, remote_hosts, remote_ports), util.render_history(env)
 
-    print 'appliance\t\tremote host\tremote port\tSuccess\n'
-    print '-' * 80
+    print('appliance\t\tremote host\tremote port\tSuccess\n')
+    print('-' * 80)
     for appliance in env.appliances:
         for host in remote_hosts:
             for port in remote_ports:
@@ -197,7 +197,7 @@ DO NOT USE.__"""
                     host,
                     port,
                     str(success))
-                print line
+                print(line)
 #
 # ~#~#~#~#~#~#~#
 
@@ -280,7 +280,7 @@ DO NOT USE.__"""
             domain="default",
             provider="RoutingStatus3")
         xpath = datapower.STATUS_XPATH + "RoutingStatus3"
-    except urllib2.HTTPError:
+    except urllib.error.HTTPError:
         logger.warn(
             "RoutingStatus3 unavailable, falling back to RoutingStatus2")
         resp = env.perform_action(
@@ -291,9 +291,9 @@ DO NOT USE.__"""
     logger.debug("Response received: {}".format(resp))
 
     header_row = []
-    for host, l in resp.items():
+    for host, l in list(resp.items()):
         if not web:
-            print host, "\n", "=" * len(host), "\n"
+            print(host, "\n", "=" * len(host), "\n")
         fields = [child.tag for child in l.xml.find(xpath)]
 
         if web:
@@ -306,7 +306,7 @@ DO NOT USE.__"""
         template = "{:<{width}} " * len(fields)
         header = template.format(*fields, width=width)
         if not web:
-            print header
+            print(header)
 
         for item in l.xml.findall(xpath):
             values = [child.text for child in item]
@@ -316,13 +316,13 @@ DO NOT USE.__"""
                 _row.insert(0, host)
                 rows.append(_row)
             if not web:
-                print line
+                print(line)
     if web:
         return flask.render_template(
             "results_table.html",
             header_row=header_row,
             rows=rows), util.render_history(env)
-        print
+        print()
 
 
 @logged("mast.datapower.network")
@@ -388,10 +388,10 @@ DO NOT USE.__"""
         return (
             util.render_ethernet_interface_results_table(resp),
             util.render_history(env))
-    for host, r in resp.items():
-        print host, "\n", "=" * len(host), "\n"
-        print r
-        print
+    for host, r in list(resp.items()):
+        print(host, "\n", "=" * len(host), "\n")
+        print(r)
+        print()
 
 
 @logged("mast.datapower.network")
@@ -448,21 +448,21 @@ DO NOT USE.__"""
         return util.render_host_alias_table(resp), util.render_history(env)
 
     sets = []
-    for host, l in resp.items():
+    for host, l in list(resp.items()):
         sets.append(set(l))
-        print host
-        print "=" * len(host)
+        print(host)
+        print("=" * len(host))
         for item in l:
-            print " ".join(item)
-        print
+            print(" ".join(item))
+        print()
 
     common = sets[0].intersection(*sets[1:])
     logger.info("Host Aliases common to {}: {}".format(
         str(env.appliances),
         str(common)))
-    print '\n', "common\n", "=" * len("common")
+    print('\n', "common\n", "=" * len("common"))
     for item in common:
-        print " ".join(item)
+        print(" ".join(item))
 
 
 @logged("mast.datapower.network")
@@ -655,12 +655,12 @@ DO NOT USE.__"""
         return util.render_secondary_address_table(
             resp), util.render_history(env)
 
-    for host, l in resp.items():
-        print host
-        print '=' * len(host), '\n'
+    for host, l in list(resp.items()):
+        print(host)
+        print('=' * len(host), '\n')
         for item in l:
-            print item
-        print
+            print(item)
+        print()
 
 
 @logged("mast.datapower.network")
@@ -851,13 +851,13 @@ DO NOT USE.__"""
     if web:
         return util.render_static_hosts_table(resp), util.render_history(env)
 
-    for host, l in resp.items():
-        print host
-        print '=' * len(host)
-        print
+    for host, l in list(resp.items()):
+        print(host)
+        print('=' * len(host))
+        print()
         for item in l:
-            print ' - '.join(item)
-        print
+            print(' - '.join(item))
+        print()
 
 
 @logged("mast.datapower.network")
@@ -1037,13 +1037,13 @@ DO NOT USE.__"""
     if web:
         return util.render_static_routes_table(resp), util.render_history(env)
 
-    for host, l in resp.items():
-        print host
-        print '=' * len(host)
-        print
+    for host, l in list(resp.items()):
+        print(host)
+        print('=' * len(host))
+        print()
         for item in l:
-            print ' - '.join(item)
-        print
+            print(' - '.join(item))
+        print()
 
 
 @logged("mast.datapower.network")
@@ -1095,8 +1095,8 @@ appliances will be saved
 * `-w, --web`: __For Internel Use Only, will be removed in future versions.
 DO NOT USE.__"""
     check_hostname = not no_check_hostname
-    if not isinstance(metric, basestring) and metric.isdigit():
-        print "metric must be provided and must be a number >= 0"
+    if not isinstance(metric, str) and metric.isdigit():
+        print("metric must be provided and must be a number >= 0")
         import sys
         sys.exit(-1)
     env = datapower.Environment(
@@ -1260,14 +1260,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 
 
 @logged("mast.datapower.network")
@@ -1319,14 +1319,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 
 
 @logged("mast.datapower.network")
@@ -1378,14 +1378,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 
 
 @logged("mast.datapower.network")
@@ -1441,14 +1441,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 
 
 def get_data_file(f):
@@ -1472,7 +1472,7 @@ class WebPlugin(Plugin):
 if __name__ == '__main__':
     try:
         cli.Run()
-    except AttributeError, e:
+    except AttributeError as e:
         if "'NoneType' object has no attribute 'app'" in e:
             raise NotImplementedError(
                 "HTML formatted output is not supported on the CLI")

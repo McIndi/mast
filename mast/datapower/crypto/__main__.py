@@ -21,7 +21,7 @@ sys.argv[0] = "mast-crypto"
 
 try:
     cli.Run()
-except AttributeError, e:
+except AttributeError as e:
     if "'NoneType' object has no attribute 'app'" in e:
         raise NotImplementedError(
             "HTML formatted output is not supported on the CLI")

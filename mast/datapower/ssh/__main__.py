@@ -55,7 +55,7 @@ class Input(object):
         """Adds a command to the queue (the python list) commands"""
         self.commands.append(command)
 
-    def next(self):
+    def __next__(self):
         """This is provided so that this object can function as
         an iterator."""
         if self.prompt in PASSWORD_CHANGE_PROMPTS:
@@ -66,7 +66,7 @@ class Input(object):
         except IndexError:
             if self.prompt in PASSWORD_PROMPTS:
                 return getpass(self.prompt)
-            return raw_input(self.prompt)
+            return input(self.prompt)
 
     def __iter__(self):
         """return self as an iterator"""
@@ -170,7 +170,7 @@ halt if a timeout is reached.
     _input = Input(prompt)
     if input_file:
         if not os.path.exists(input_file) and os.path.isfile(input_file):
-            print "input_file must be a file containing cli commands to issue"
+            print("input_file must be a file containing cli commands to issue")
             sys.exit(-1)
         with open(input_file, "r") as fin:
             for command in fin:
@@ -200,6 +200,6 @@ if __name__ == '__main__':
     try:
         cli = Cli(main=main, description=main.__doc__)
         cli.run()
-    except Exception, e:
+    except Exception as e:
         # generic try...except just for future use
         raise

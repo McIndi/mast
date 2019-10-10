@@ -60,7 +60,7 @@ class WebPlugin(Plugin):
         # even across tabs in the same browser)
         session_id = flask.request.form.get("ssh_session")
 
-        if session_id not in _appliances.keys():
+        if session_id not in list(_appliances.keys()):
             # This is the first request from session_id
             _appliances[session_id] = []
 

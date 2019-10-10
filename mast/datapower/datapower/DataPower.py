@@ -22,7 +22,7 @@ class which provides many convenient wrappers around the SOMA XML
 Management Interface as well as some methods to interact with the CLI
 Management Interface (ssh).
 """
-from dpSOMALib import SomaRequest as Request
+from .dpSOMALib import SomaRequest as Request
 from mast.logging import make_logger, logged
 import xml.etree.cElementTree as etree
 from functools import partial, wraps
@@ -31,7 +31,7 @@ from mast.config import get_config
 from mast.hashes import get_sha1
 from mast.xor import xordecode
 from datetime import datetime
-from StringIO import StringIO
+from io import StringIO
 from time import time, sleep
 import paramiko
 import zipfile
@@ -384,7 +384,7 @@ class BooleanResponse(DPResponse):
     as a few other methods which are known to return 'OK' surrounded
     by copious amounts of whitespace.
     """
-    def __nonzero__(self):
+    def __bool__(self):
         """
         _method_: `mast.datapower.datapower.BooleanResponse.__nonzero__(self)`
 
@@ -443,7 +443,7 @@ class AMPBooleanResponse(DPResponse):
     by copious amounts of whitespace.
 
     """
-    def __nonzero__(self):
+    def __bool__(self):
         """
         _method_: `mast.datapower.datapower.AMPBooleanResponse.__nonzero__(self)`
 
@@ -811,7 +811,7 @@ class DataPower(object):
                 transport.set_keepalive(5)
                 self._ssh_conn = self._ssh.invoke_shell()
                 self.log_debug("Successfully initialized SSH subsystem")
-            except Exception, e:
+            except Exception as e:
                 self.log_error(
                     "Exception occurred initializing"
                     "SSH subsystem: {}".format(str(e)))
@@ -831,7 +831,7 @@ class DataPower(object):
                 resp += self.ssh_issue_command("{}\n".format(domain))
 
             self.log_info("SSH session now active")
-        except paramiko.SSHException, e:
+        except paramiko.SSHException as e:
             self.log_error('SSH connection failed: %s' % (e))
             raise
         return resp
@@ -918,7 +918,7 @@ class DataPower(object):
                 self._ssh.close()
                 self.log_info("Successfully disconnected SSH session")
                 return True
-            except Exception, e:
+            except Exception as e:
                 self.log_error(
                     "An exception occurred trying"
                     "to close ssh session: {}".format(str(e)))
@@ -1128,7 +1128,7 @@ class DataPower(object):
             self.last_response = self.request.send(secure=self.check_hostname)
             if "Authentication failure" in self.last_response:
                 raise AuthenticationFailure(self.last_response)
-        except Exception, e:
+        except Exception as e:
             _hist["response"] = str(e).replace("\n", "").replace("\r", "")
             if hasattr(e, "read"):
                 _hist["response"] = e.read().replace(
@@ -1201,7 +1201,7 @@ class DataPower(object):
         """
         logger = self.get_logger()
         msg = []
-        for k, v in self.extra.items():
+        for k, v in list(self.extra.items()):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
@@ -1231,7 +1231,7 @@ class DataPower(object):
         """
         logger = self.get_logger()
         msg = []
-        for k, v in self.extra.items():
+        for k, v in list(self.extra.items()):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
@@ -1261,7 +1261,7 @@ class DataPower(object):
         """
         logger = self.get_logger()
         msg = []
-        for k, v in self.extra.items():
+        for k, v in list(self.extra.items()):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
@@ -1293,7 +1293,7 @@ class DataPower(object):
         """
         logger = self.get_logger()
         msg = []
-        for k, v in self.extra.items():
+        for k, v in list(self.extra.items()):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
@@ -1330,7 +1330,7 @@ class DataPower(object):
         """
         logger = self.get_logger()
         _msg = []
-        for k, v in self.extra.items():
+        for k, v in list(self.extra.items()):
             _msg.append('"{0}": "{1}", '.format(k, v))
         _msg.append('"message": "{}"'.format(msg))
         msg = ''.join(msg)
@@ -1454,7 +1454,7 @@ class DataPower(object):
 
         This method accepts no arguments
         """
-        import urllib2
+        import urllib.request, urllib.error, urllib.parse
         import ssl
         context = ssl.create_default_context()
         if not self.check_hostname:
@@ -1462,8 +1462,8 @@ class DataPower(object):
             context.verify_mode = ssl.CERT_NONE
         url = 'https://' + self._hostname + ':' + str(self.web_port)
         try:
-            test = urllib2.urlopen(url, context=context)
-        except urllib2.URLError, e:
+            test = urllib.request.urlopen(url, context=context)
+        except urllib.error.URLError as e:
             self.log_error(
                 "An error occurred while attempting to "
                 "connect to appliance. Error: {}".format(str(e)))
@@ -1587,7 +1587,7 @@ class DataPower(object):
                 # Handles the python rule of not using dashes in variable names
                 act[key](str(kwargs.pop(key.replace('-', '_'))))
         if kwargs:
-            key = kwargs.keys()[0]
+            key = list(kwargs.keys())[0]
             raise ValueError("'{}' is not a valid parameter of '{}'".format(
                 key, act.tag
             ))
@@ -3352,7 +3352,7 @@ class DataPower(object):
         '''
         if domains is None:
             domains = ["all-domains"]
-        if isinstance(domains, basestring):
+        if isinstance(domains, str):
             domains = [domains]
         self.request.clear()
         dobackup = self.request.request.do_backup(format=format)
@@ -3457,7 +3457,7 @@ class DataPower(object):
             names.append(checkpoint)
             timestamp = checkpoints[checkpoint]['date']
             timestamp.extend(checkpoints[checkpoint]['time'])
-            timestamp = map(int, timestamp)
+            timestamp = list(map(int, timestamp))
             timestamps.append(datetime(*timestamp))
 
         oldest_index = timestamps.index(min(timestamps))
@@ -3632,7 +3632,7 @@ class DataPower(object):
         TODO: Allow a blacklist param to skip domains when all-domains
         is specified.
         """
-        if isinstance(domain, basestring):
+        if isinstance(domain, str):
             domain = [domain]
         if "all-domains" in domain:
             domain = self.domains
@@ -3818,7 +3818,7 @@ class DataPower(object):
             >>> print bool(resp)
             True
         """
-        import urllib2
+        import urllib.request, urllib.error, urllib.parse
         tpl = """<soapenv:Envelope
 xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
 xmlns:dp="http://www.datapower.com/schemas/appliance/management/3.0">
@@ -3845,13 +3845,13 @@ xmlns:dp="http://www.datapower.com/schemas/appliance/management/3.0">
         url = "https://{}:{}/service/mgmt/amp/3.0".format(
             self._hostname, self.port)
         creds = self.request._credentials.strip()
-        req = urllib2.Request(
+        req = urllib.request.Request(
             url=url,
             data=tpl,
             headers={
                 'Content-Type': 'text/xml',
                 'Authorization': 'Basic {}'.format(creds)})
-        response_xml = urllib2.urlopen(req, timeout=timeout, context=context)
+        response_xml = urllib.request.urlopen(req, timeout=timeout, context=context)
         response_xml = response_xml.read()
         return AMPBooleanResponse(response_xml)
 

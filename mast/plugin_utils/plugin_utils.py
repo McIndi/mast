@@ -31,7 +31,7 @@ def render_history(env):
 def render_results_table(results, suffix=None):
     header_row = ("Appliance", "Result")
     rows = []
-    for host, response in results.items():
+    for host, response in list(results.items()):
         _host = host
         if suffix:
             _host = "{}-{}".format(host, suffix)
@@ -46,7 +46,7 @@ def render_results_table(results, suffix=None):
 def render_boolean_results_table(results, suffix=None):
     header_row = ("Appliance", "Result")
     rows = []
-    for host, response in results.items():
+    for host, response in list(results.items()):
         _host = host
         if suffix:
             _host = "{}-{}".format(host, suffix)
@@ -94,7 +94,7 @@ def render_config_results_table(resp, suffix=""):
     header_row = ["Appliance", "ObjectClass", "ObjectName", "Key", "Value"]
     rows = []
     xpath = CONFIG_XPATH
-    for host, response in resp.items():
+    for host, response in list(resp.items()):
         _host = host
         if suffix:
             _host = "{}-{}".format(host, suffix)
@@ -121,7 +121,7 @@ def render_status_results_table(resp, suffix=""):
     header_row = ["Appliance", "Provider", "Key", "Value"]
     rows = []
     xpath = STATUS_XPATH
-    for host, response in resp.items():
+    for host, response in list(resp.items()):
         _host = host
         if suffix:
             _host = "{}-{}".format(host, suffix)
@@ -185,7 +185,7 @@ def render_list_domains_table(env):
 def render_see_download_table(resp, suffix=""):
     header_row = ("Appliance", "Result")
     rows = []
-    for host, r in resp.items():
+    for host, r in list(resp.items()):
         _host = host
         if suffix:
             _host = "{}-{}".format(host, suffix)
@@ -235,7 +235,7 @@ def render_ethernet_interface_results_table(resp):
     header_row = ["Appliance", "EthernetInterface", "Key", "Value"]
     rows = []
     xpath = CONFIG_XPATH
-    for host, response in resp.items():
+    for host, response in list(resp.items()):
         results = response.xml.find(xpath)
         for index, child in enumerate(results):
             _row = ["", ""]
@@ -264,7 +264,7 @@ def render_host_alias_table(resp):
     header_row = ("Appliance", "Host Alias", "IPAddress", "AdminState")
     rows = []
     sets = []
-    for host, results in resp.items():
+    for host, results in list(resp.items()):
         sets.append(set(results))
         for item in results:
             _row = [host]
@@ -284,7 +284,7 @@ def render_host_alias_table(resp):
 def render_static_hosts_table(resp):
     header_row = ("Appliance", "Hostname", "IP Address")
     rows = []
-    for host, l in resp.items():
+    for host, l in list(resp.items()):
         for item in l:
             rows.append((host, item[0], item[1]))
     return flask.render_template(
@@ -296,7 +296,7 @@ def render_static_hosts_table(resp):
 def render_static_routes_table(resp):
     header_row = ("Appliance", "Destination", "Gateway", "Metric")
     rows = []
-    for host, l in resp.items():
+    for host, l in list(resp.items()):
         for item in l:
             rows.append((host, item[0], item[1], item[2]))
     return flask.render_template(
@@ -308,7 +308,7 @@ def render_static_routes_table(resp):
 def render_secondary_address_table(resp):
     header_row = ("Appliance", "Secondary Address")
     rows = []
-    for host, response in resp.items():
+    for host, response in list(resp.items()):
         for item in response:
             rows.append((host, item))
     return flask.render_template(
@@ -320,10 +320,10 @@ def render_secondary_address_table(resp):
 def web_list_checkpoints(resp, domain):
     header_row = ("Appliance", "Checkpoints")
     rows = []
-    for host, d in resp.items():
+    for host, d in list(resp.items()):
         _host = "{}-{}".format(host, domain)
         _results = []
-        for k, v in d.items():
+        for k, v in list(d.items()):
             _results.append(
                 " ".join((
                     k,

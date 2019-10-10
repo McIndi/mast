@@ -13,7 +13,7 @@
 # along with MAST.  If not, see <https://www.gnu.org/licenses/>.
 #
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
-from ssh import *
+from .ssh import *
 import os
 from mast import __version__
 

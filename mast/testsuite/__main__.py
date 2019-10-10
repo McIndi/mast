@@ -59,7 +59,7 @@ def main(out_file="stdout",
     * `-v, --version`: Print version number and exit
     """
     if version:
-        print "mast.testsuite - version {}".format(__version__)
+        print("mast.testsuite - version {}".format(__version__))
         sys.exit(0)
     suites = []
     if unit:

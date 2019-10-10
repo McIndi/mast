@@ -28,7 +28,7 @@ class TestMASTImports(unittest.TestCase):
 
     def tearDown(self):
         self.time_taken = time() - self.start_time
-        print "%.3f: %s" % (self.time_taken, self.id())
+        print("%.3f: %s" % (self.time_taken, self.id()))
 
     def test_import_mast_cli(self):
         import mast.cli as cli

@@ -102,7 +102,7 @@ DO NOT USE.__"""
     if out_file is None:
         logger.error("Must specify out file")
         if not web:
-            print "Must specify out_file"
+            print("Must specify out_file")
         sys.exit(2)
     if not os.path.exists(os.path.dirname(out_file)):
         os.makedirs(os.path.dirname(out_file))
@@ -133,22 +133,20 @@ DO NOT USE.__"""
     for appliance in env.appliances:
         logger.info("Checking appliance {}".format(appliance.hostname))
         if not web:
-            print appliance.hostname
+            print(appliance.hostname)
         _domains = domains
         if "all-domains" in domains:
             _domains = appliance.domains
         for domain in _domains:
             logger.info("In domain {}".format(domain))
             if not web:
-                print "\t", domain
+                print("\t", domain)
             config = appliance.get_config("CryptoCertificate", domain=domain)
             certs = [x for x in config.xml.findall(datapower.CONFIG_XPATH)]
 
             # Filter out disabled objects because the results won't change,
             # but we will perform less network traffic
-            certs = filter(
-                lambda x: x.find("mAdminState").text == "enabled",
-                certs)
+            certs = [x for x in certs if x.find("mAdminState").text == "enabled"]
 
             for cert in certs:
                 logger.info("Exporting cert {}".format(cert))
@@ -156,7 +154,7 @@ DO NOT USE.__"""
                 name = cert.get("name")
                 _filename = name
                 if not web:
-                    print "\t\t", name
+                    print("\t\t", name)
                 row = [appliance.hostname, domain, name, filename]
 
                 appliance.CryptoExport(
@@ -188,7 +186,7 @@ DO NOT USE.__"""
                     logger.exception("An unhandled exception has occurred")
                     rows.append(row)
                     if not web:
-                        print "SKIPPING CERT"
+                        print("SKIPPING CERT")
                     continue
                 cert = etree.fromstring(cert)
                 _contents = insert_newlines(cert.find("certificate").text)
@@ -267,12 +265,12 @@ DO NOT USE.__"""
         for row in rows:
             ws.append(row)
     except:
-        print("Error Adding certificate: '{}'".format(row))
+        print(("Error Adding certificate: '{}'".format(row)))
     wb.save(out_file)
     if not web:
-        print "\n\nCertificate Report (available at {}):".format(os.path.abspath(out_file))
+        print("\n\nCertificate Report (available at {}):".format(os.path.abspath(out_file)))
         print_table(rows)
-        print
+        print()
     else:
         return (html_table(rows,
                            table_class="width-100",
@@ -329,7 +327,7 @@ DO NOT USE.__"""
     if out_file is None:
         logger.error("Must specify out file")
         if not web:
-            print "Must specify out_file"
+            print("Must specify out_file")
         sys.exit(2)
     if not os.path.exists(os.path.dirname(out_file)):
         os.makedirs(os.path.dirname(out_file))
@@ -350,12 +348,12 @@ DO NOT USE.__"""
 
     for appliance in env.appliances:
         if not web:
-            print appliance.hostname
+            print(appliance.hostname)
         domain = "default"
 
         for location in locations:
             if not web:
-                print "\t{}".format(location)
+                print("\t{}".format(location))
             filestore = appliance.get_filestore(domain=domain,
                                                 location=location)
             _location = filestore.xml.find(datapower.FILESTORE_XPATH)
@@ -366,7 +364,7 @@ DO NOT USE.__"""
                     dir_name = _location.get("name")
                     filename = _file.get("name")
                     if not web:
-                        print "\t\t{}".format(filename)
+                        print("\t\t{}".format(filename))
                     size = _file.find("size").text
                     modified = _file.find("modified").text
                     rows.append([appliance.hostname,
@@ -378,11 +376,11 @@ DO NOT USE.__"""
             for directory in _location.findall(".//directory"):
                 dir_name = directory.get("name")
                 if not web:
-                    print "\t\t{}".format(dir_name)
+                    print("\t\t{}".format(dir_name))
                 for _file in directory.findall(".//file"):
                     filename = _file.get("name")
                     if not web:
-                        print "\t\t\t{}".format(filename)
+                        print("\t\t\t{}".format(filename))
                     size = _file.find("size").text
                     modified = _file.find("modified").text
 
@@ -470,7 +468,7 @@ DO NOT USE.__"""
     for appliance in env.appliances:
         logger.info("Checking appliance {}".format(appliance.hostname))
         if not web:
-            print appliance.hostname
+            print(appliance.hostname)
 
         _domains = domains
         if "all-domains" in domains:
@@ -479,7 +477,7 @@ DO NOT USE.__"""
         for domain in _domains:
             logger.info("In domain {}".format(domain))
             if not web:
-                print "\t", domain
+                print("\t", domain)
 
             # Get a list of all certificates in this domain
             config = appliance.get_config("CryptoCertificate", domain=domain)
@@ -487,9 +485,7 @@ DO NOT USE.__"""
 
             # Filter out disabled objects because the results won't change,
             # but we will perform less network traffic
-            certs = filter(
-                lambda x: x.find("mAdminState").text == "enabled",
-                certs)
+            certs = [x for x in certs if x.find("mAdminState").text == "enabled"]
             if not certs:
                 continue
 
@@ -516,7 +512,7 @@ DO NOT USE.__"""
 
                 name = cert.get("name")
                 if not web:
-                    print "\t\t", name
+                    print("\t\t", name)
                 export = appliance.CryptoExport(domain=domain,
                                                 ObjectType="cert",
                                                 ObjectName=name,
@@ -541,7 +537,7 @@ DO NOT USE.__"""
                 except:
                     logger.exception("An unhandled exception has occurred")
                     if not web:
-                        print "SKIPPING CERT"
+                        print("SKIPPING CERT")
                     continue
                 cert = etree.fromstring(cert)
                 with open(out_file, "w") as fout:
@@ -577,7 +573,7 @@ class WebPlugin(Plugin):
 if __name__ == "__main__":
     try:
         cli.Run()
-    except AttributeError, e:
+    except AttributeError as e:
         if "'NoneType' object has no attribute 'app'" in e:
             raise NotImplementedError(
                 "HTML formatted output is not supported on the CLI")

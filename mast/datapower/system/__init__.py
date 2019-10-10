@@ -19,7 +19,7 @@ mast system:
 A set of tools for automating routine system-administration
 tasks associated with IBM DataPower appliances.
 """
-from system import *
+from .system import *
 import os
 from mast import __version__
 

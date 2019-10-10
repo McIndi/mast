@@ -43,7 +43,7 @@ cli = commandr.Commandr()
 
 @logged("mast.datapower.backups")
 def _verify_zip(zip_file):
-    if isinstance(zip_file, basestring):
+    if isinstance(zip_file, str):
         try:
             zip_file = zipfile.ZipFile(zip_file, "r")
         except zipfile.BadZipfile:
@@ -172,7 +172,7 @@ DO NOT USE.__"""
     out_dir = os.path.join(out_dir, "restore_normal_backup", t.timestamp)
     os.makedirs(out_dir)
 
-    for host, r in resp.items():
+    for host, r in list(resp.items()):
         filename = os.path.join(out_dir, "{}-{}-{}-results.xml".format(
             t.timestamp,
             host,
@@ -242,7 +242,7 @@ DO NOT USE.__"""
     if not Domain:
         raise ValueError("Must provide one or more domains including 'all-domains'")
 
-    if isinstance(Domain, basestring):
+    if isinstance(Domain, str):
         Domain = [Domain]
     # Fixes duplicate domains issue
     Domain = list(set(Domain))
@@ -256,7 +256,7 @@ DO NOT USE.__"""
         _results = env.perform_async_action('get_normal_backup', **kwargs)
         logger.debug("backups retrieved, check file for contents")
 
-        for hostname, backup in _results.items():
+        for hostname, backup in list(_results.items()):
             directory = os.path.join(
                 out_dir,
                 hostname,
@@ -295,7 +295,7 @@ DO NOT USE.__"""
             _results = env.perform_async_action('get_normal_backup', **kwargs)
             logger.debug("backups retrieved, check file for contents")
 
-            for hostname, backup in _results.items():
+            for hostname, backup in list(_results.items()):
                 directory = os.path.join(
                     out_dir,
                     hostname,
@@ -330,12 +330,12 @@ DO NOT USE.__"""
     if web:
         return util.render_results_table(results), util.render_history(env)
 
-    for k, v in results.items():
-        print
-        print k
-        print '=' * len(k)
-        print v
-        print
+    for k, v in list(results.items()):
+        print()
+        print(k)
+        print('=' * len(k))
+        print(v)
+        print()
 
 
 @logged("mast.datapower.backups")
@@ -497,7 +497,7 @@ DO NOT USE.__"""
                 if web:
                     results[appliance.hostname] = "Succeeded"
                 else:
-                    print '\t', appliance.hostname, " - ", "Succeeded"
+                    print('\t', appliance.hostname, " - ", "Succeeded")
                 if remove:
                     logger.info(
                         "Attempting to remove Secure Backup from appliance "
@@ -515,7 +515,7 @@ DO NOT USE.__"""
                 if web:
                     results[appliance.hostname] = "Failed"
                 else:
-                    print '\t', appliance.hostname, " - ", "Failed"
+                    print('\t', appliance.hostname, " - ", "Failed")
                 appliance.log_error(
                     'Verification of backup in %s failed' % (_directory))
         except:
@@ -615,10 +615,10 @@ DO NOT USE.__"""
         return (util.render_boolean_results_table(resp),
                 util.render_history(env))
 
-    for host, msg in resp.items():
-        print host, '\n', "=" * len(host)
-        print msg
-        print
+    for host, msg in list(resp.items()):
+        print(host, '\n', "=" * len(host))
+        print(msg)
+        print()
 
 
 @logged("mast.datapower.backups")
@@ -676,11 +676,11 @@ DO NOT USE.__"""
         return (util.web_list_checkpoints(resp, Domain),
                 util.render_history(env))
 
-    for host, d in resp.items():
-        print host, '\n', '=' * len(host)
-        for key, value in d.items():
-            print key, "-".join(value["date"]), ":".join(value["time"])
-        print
+    for host, d in list(resp.items()):
+        print(host, '\n', '=' * len(host))
+        for key, value in list(d.items()):
+            print(key, "-".join(value["date"]), ":".join(value["time"]))
+        print()
 
 
 @logged("mast.datapower.backups")
@@ -869,17 +869,17 @@ DO NOT USE.__"""
 
     for appliance in env.appliances:
         if not web:
-            print appliance.hostname
+            print(appliance.hostname)
         _domains = Domain
-        print Domain
-        print _domains
+        print(Domain)
+        print(_domains)
         if "all-domains" in _domains:
             _domains = appliance.domains
-        print _domains
+        print(_domains)
         for domain in _domains:
-            print domain
+            print(domain)
             if not web:
-                print "\t", domain
+                print("\t", domain)
             name = '{0}-{1}-{2}'.format(comment, domain, t.timestamp)
             logger.debug(
                 "Attempting to set checkpoint {} on {} in {} domain".format(
@@ -900,9 +900,9 @@ DO NOT USE.__"""
             logger.debug("Response received: {}".format(resp))
             if not web:
                 if resp:
-                    print "\t\tSuccessful"
+                    print("\t\tSuccessful")
                 else:
-                    print "\t\tFailed"
+                    print("\t\tFailed")
             if web:
                 if resp:
                     rows.append((
@@ -944,7 +944,7 @@ class WebPlugin(Plugin):
 if __name__ == '__main__':
     try:
         cli.Run()
-    except AttributeError, e:
+    except AttributeError as e:
         if "'NoneType' object has no attribute 'app'" in e:
             raise NotImplementedError(
                 "HTML formatted output is not supported on the CLI")

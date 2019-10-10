@@ -51,7 +51,7 @@ There is one constant provided by this module:
 """
 
 import os
-import ConfigParser
+import configparser
 from mast import __version__
 
 MAST_HOME = os.environ["MAST_HOME"]
@@ -77,7 +77,7 @@ def get_config(filename):
         config = get_config("config.conf")
         option = config.get("option")
     '''
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
     config.read(os.path.join(MAST_HOME, 'etc', 'default', filename))
     config.read(os.path.join(MAST_HOME, 'etc', 'local', filename))
     return config

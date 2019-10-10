@@ -13,7 +13,7 @@
 # along with MAST.  If not, see <https://www.gnu.org/licenses/>.
 #
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
-from __future__ import print_function
+
 from mast.datapower import datapower
 from mast.plugin_utils.plugin_utils import render_history, render_results_table
 from collections import Counter
@@ -23,8 +23,8 @@ from mast.xor import xorencode, xordecode
 from subprocess import Popen
 from mast.timestamp import Timestamp
 from mast.cli import Cli
-from urlparse import urlparse, urlunparse
-from urllib import quote_plus
+from urllib.parse import urlparse, urlunparse
+from urllib.parse import quote_plus
 from time import sleep, time
 from functools import partial
 from collections import OrderedDict, defaultdict
@@ -43,8 +43,8 @@ import sys
 from multiprocessing import Process
 from multiprocessing.queues import Queue
 from threading import Thread
-from Tkinter import *
-from ScrolledText import ScrolledText
+from tkinter import *
+from tkinter.scrolledtext import ScrolledText
 import errno
 import stat
 
@@ -152,7 +152,7 @@ def system_call(
     return stdout, stderr
 
 def quit_for_local_uploads(config_dir):
-    for filename in filter(lambda x: "EMPTY" not in x, os.listdir(config_dir)):
+    for filename in [x for x in os.listdir(config_dir) if "EMPTY" not in x]:
         _filename = os.path.join(config_dir, filename)
         tree = etree.parse(_filename)
         files = tree.findall(r'.//files/file')
@@ -264,7 +264,7 @@ class Plan(object):
         with open(os.path.join(config["out_dir"], "plan.txt"), "w") as fp:
             for index, action in enumerate(self):
                 fp.write("Step {}, {}{}".format(index, action.name, os.linesep))
-                for k, v in action.kwargs.items():
+                for k, v in list(action.kwargs.items()):
                     fp.write("\t{}={}{}".format(k, v, os.linesep))
 
     def __iter__(self):
@@ -286,13 +286,13 @@ class Plan(object):
             for kwargs in self._services:
                 output["Services"] += "{}: {}\n".format(kwargs["type"], kwargs["name"])
             output["Directories to Create"] = ""
-            for hostname, dirs in self.dirs_to_create.items():
+            for hostname, dirs in list(self.dirs_to_create.items()):
                 if dirs:
                     output["Directories to Create"] = "{}{}".format(hostname, os.linesep)
                     for directory in dirs:
                         output["Directories to Create"] = "\t{}{}".format(directory, os.linesep)
             output["Uploads"] = ""
-            for filename, kwargs in self._uploads.items():
+            for filename, kwargs in list(self._uploads.items()):
                 output["Uploads"] += "{} -> {}{}".format(os.path.relpath(kwargs["file_in"], self.config["repo_dir"]), kwargs["file_out"], os.linesep)
             if self.deployment_policy is None:
                 output["Imports"] = ""
@@ -316,13 +316,13 @@ class Plan(object):
             print("\t{}: {}".format(kwargs["type"], kwargs["name"]))
         print("-"*80)
         print("Directories to Create")
-        for hostname, dirs in self.dirs_to_create.items():
+        for hostname, dirs in list(self.dirs_to_create.items()):
             if dirs:
                 print("\t{}".format(hostname))
                 for directory in dirs:
                     print("\t\t{}".format(directory))
         print("Uploads")
-        for filename, kwargs in self._uploads.items():
+        for filename, kwargs in list(self._uploads.items()):
             print("\t{} -> {}".format(os.path.relpath(kwargs["file_in"], self.config["repo_dir"]), kwargs["file_out"]))
         print("Imports")
         if self.deployment_policy is not None:
@@ -340,7 +340,7 @@ class Plan(object):
         output = OrderedDict()
         for index, action in enumerate(self):
             msg = "\nStep {}/{}, {}".format(index, len(self._actions)-1, action.name)
-            for k, v in action.kwargs.items():
+            for k, v in list(action.kwargs.items()):
                 if "password" not in k.lower():
                     msg += "\n\t{}={}".format(k, v)
             print(msg)
@@ -365,8 +365,8 @@ class Plan(object):
                 elif "ObjectStatus" in action.name:
                     output[key] = "Down but Enabled Objects"
                     readings = response_tree.findall(".//ObjectStatus")
-                    readings = filter(lambda node: node.findtext("OpState") == "down", readings)
-                    readings = filter(lambda node: node.findtext("AdminState") == "enabled", readings)
+                    readings = [node for node in readings if node.findtext("OpState") == "down"]
+                    readings = [node for node in readings if node.findtext("AdminState") == "enabled"]
                     for reading in readings:
                         output[key] += "\n\t{} {} ({})".format(reading.findtext("Class"), reading.findtext("Name"), reading.findtext("ErrorCode"))
 
@@ -406,8 +406,8 @@ class Plan(object):
                 wait_for_quiesce(action.appliance, action.kwargs["domain"], self._services, self.config["quiesce_timeout"]+15)
             elif "ObjectStatus" in action.name:
                 readings = response_tree.findall(".//ObjectStatus")
-                readings = filter(lambda node: node.findtext("OpState") == "down", readings)
-                readings = filter(lambda node: node.findtext("AdminState") == "enabled", readings)
+                readings = [node for node in readings if node.findtext("OpState") == "down"]
+                readings = [node for node in readings if node.findtext("AdminState") == "enabled"]
                 print("\n\tDown but Enabled Objects")
                 for reading in readings:
                     print("\t\t{} {} ({})".format(reading.findtext("Class"), reading.findtext("Name"), reading.findtext("ErrorCode")))
@@ -476,10 +476,7 @@ class Plan(object):
                 # see if a save is needed
                 domain_status = etree.fromstring(appliance.last_response)
                 save_needed = list(
-                    filter(
-                        lambda n: n.find("Domain").text == app_domain,
-                        domain_status.findall(".//DomainStatus")
-                    )
+                    [n for n in domain_status.findall(".//DomainStatus") if n.find("Domain").text == app_domain]
                 )[0].find("SaveNeeded").text
                 if save_needed == "on":
                     raise ValueError(
@@ -536,7 +533,7 @@ class Plan(object):
                     )
                 )
             filestore = appliance.get_filestore(app_domain)
-            for filename, kwargs in self._uploads.items():
+            for filename, kwargs in list(self._uploads.items()):
                 file_out = kwargs["file_out"]
                 if file_out.startswith("local"):
                     target_dir = "/".join(file_out.split("/")[:-1])
@@ -553,7 +550,7 @@ class Plan(object):
                                     Dir=target_dir,
                                 )
                             )
-            for filename, kwargs in self._uploads.items():
+            for filename, kwargs in list(self._uploads.items()):
                 file_out = kwargs["file_out"]
                 if file_out.startswith("pubcert"):
                     domain = "default"
@@ -683,7 +680,7 @@ class Plan(object):
                         "zip_file": os.path.join(common_config_dir, filename),
                         "source_type": "XML",
                     }
-                    for filename in filter(lambda x: "EMPTY" not in x, sorted(os.listdir(common_config_dir)))
+                    for filename in [x for x in sorted(os.listdir(common_config_dir)) if "EMPTY" not in x]
                 ]
             )
 
@@ -696,7 +693,7 @@ class Plan(object):
                         "zip_file": os.path.join(env_config_dir, filename),
                         "source_type": "XML"
                     }
-                    for filename in filter(lambda x: "EMPTY" not in x, sorted(os.listdir(env_config_dir)))
+                    for filename in [x for x in sorted(os.listdir(env_config_dir)) if "EMPTY" not in x]
                 ]
             )
         return ret
@@ -797,42 +794,42 @@ class Plan(object):
 
         # gather uploads
         if exists(common_pubcert_dir):
-            for filename in filter(lambda x: "EMPTY" not in x, os.listdir(common_pubcert_dir)):
+            for filename in [x for x in os.listdir(common_pubcert_dir) if "EMPTY" not in x]:
                 file_out = "pubcert:///{}".format(filename)
                 ret[file_out] = {
                         "file_in": os.path.join(common_pubcert_dir, filename),
                         "file_out": file_out,
                 }
         if exists(common_cert_dir):
-            for filename in filter(lambda x: "EMPTY" not in x, os.listdir(common_cert_dir)):
+            for filename in [x for x in os.listdir(common_cert_dir) if "EMPTY" not in x]:
                 file_out = "cert:///{}".format(filename)
                 ret[file_out] = {
                         "file_in": os.path.join(common_cert_dir, filename),
                         "file_out": file_out,
                 }
         if exists(common_sharedcert_dir):
-            for filename in filter(lambda x: "EMPTY" not in x, os.listdir(common_sharedcert_dir)):
+            for filename in [x for x in os.listdir(common_sharedcert_dir) if "EMPTY" not in x]:
                 file_out = "sharedcert:///{}".format(filename)
                 ret[file_out] = {
                         "file_in": os.path.join(common_sharedcert_dir, filename),
                         "file_out": file_out,
                 }
         if exists(env_pubcert_dir):
-            for filename in filter(lambda x: "EMPTY" not in x, os.listdir(env_pubcert_dir)):
+            for filename in [x for x in os.listdir(env_pubcert_dir) if "EMPTY" not in x]:
                 file_out = "pubcert:///{}".format(filename)
                 ret[file_out] = {
                         "file_in": os.path.join(env_pubcert_dir, filename),
                         "file_out": file_out,
                 }
         if exists(env_cert_dir):
-            for filename in filter(lambda x: "EMPTY" not in x, os.listdir(env_cert_dir)):
+            for filename in [x for x in os.listdir(env_cert_dir) if "EMPTY" not in x]:
                 file_out = "cert:///{}".format(filename)
                 ret[file_out] = {
                         "file_in": os.path.join(env_cert_dir, filename),
                         "file_out": file_out,
                 }
         if exists(env_sharedcert_dir):
-            for filename in filter(lambda x: "EMPTY" not in x, os.listdir(env_sharedcert_dir)):
+            for filename in [x for x in os.listdir(env_sharedcert_dir) if "EMPTY" not in x]:
                 file_out = "sharedcert:///{}".format(filename)
                 ret[file_out] = {
                         "file_in": os.path.join(env_sharedcert_dir, filename),
@@ -841,7 +838,7 @@ class Plan(object):
         if exists(common_local_dir):
             for root, dirs, files in os.walk(common_local_dir):
                 if files:
-                    for filename in filter(lambda x: "EMPTY" not in x, files):
+                    for filename in [x for x in files if "EMPTY" not in x]:
                         file_out = "local://{}".format(os.path.join(root, filename))
                         file_out = file_out.replace(common_local_dir, "")
                         file_out = file_out.replace(os.path.sep, "/")
@@ -852,7 +849,7 @@ class Plan(object):
         if exists(env_local_dir):
             for root, dirs, files in os.walk(env_local_dir):
                 if files:
-                    for filename in filter(lambda x: "EMPTY" not in x, files):
+                    for filename in [x for x in files if "EMPTY" not in x]:
                         file_out = "local://{}".format(os.path.join(root, filename))
                         file_out = file_out.replace(env_local_dir, "")
                         file_out = file_out.replace(os.path.sep, "/")
@@ -916,10 +913,10 @@ class Plan(object):
         env_tree = None
         # Get deployment policy
         if exists(env_deppol_dir):
-            if len(filter(lambda x: x.endswith(".xcfg"), os.listdir(env_deppol_dir))) > 1:
+            if len([x for x in os.listdir(env_deppol_dir) if x.endswith(".xcfg")]) > 1:
                 raise ValueError("Only one deployment policy permitted In an environmental directory.")
             try:
-                deployment_policy_filename = filter(lambda x: x.endswith(".xcfg"), os.listdir(env_deppol_dir))[0]
+                deployment_policy_filename = [x for x in os.listdir(env_deppol_dir) if x.endswith(".xcfg")][0]
             except IndexError:
                 if not self.config["ignore_no_deployment_policy"]:
                     raise ValueError("Could not find expected DeploymentPolicy directory at '{}'".format(env_deppol_dir))
@@ -1042,7 +1039,7 @@ class Action(object):
     def __str__(self):
         return "\n".join(
             [
-                "{}={}".format(k, repr(v)) for k, v in self.kwargs.items() if "password" not in k.lower()
+                "{}={}".format(k, repr(v)) for k, v in list(self.kwargs.items()) if "password" not in k.lower()
             ]
         )
 
@@ -1051,7 +1048,7 @@ class Action(object):
             self.name,
             ", ".join(
                 [
-                    "{}={}".format(k, repr(v)) for k, v in self.kwargs.items() if "password" not in k.lower()
+                    "{}={}".format(k, repr(v)) for k, v in list(self.kwargs.items()) if "password" not in k.lower()
                 ]
             )
         )
@@ -1062,13 +1059,10 @@ def parse_config(appliances, credentials, environment, service, check_hostname, 
         raise ValueError("Did not find configuration at '{}'".format(config_filename))
     with open(config_filename, "r") as fp:
         headers = list(
-            filter(
-                lambda line: line.startswith("["),
-                fp
-            )
+            [line for line in fp if line.startswith("[")]
         )
     if len(headers) != len(set(headers)):
-        duplicates = [k for k,v in Counter(headers).items() if v>1]
+        duplicates = [k for k,v in list(Counter(headers).items()) if v>1]
         raise ValueError("Duplicate header(s) {} found in '{}'".format(duplicates, config_filename))
     config = get_config("service-config.conf")
     service_config = config.items(service)

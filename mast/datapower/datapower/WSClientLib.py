@@ -13,10 +13,10 @@
 # along with MAST.  If not, see <https://www.gnu.org/licenses/>.
 #
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
-import et.ElementTree as etree
+from . import et.ElementTree as etree
 import xml.etree.cElementTree as cEtree
 import base64
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 TIMEOUT = 120
 
@@ -263,7 +263,7 @@ class Request(object):
             This will return the valid attributes of a given element
         """
         path = element.get_path().split('[')[0]
-        for attr in self._test_case.find(path).keys():
+        for attr in list(self._test_case.find(path).keys()):
             yield attr
 
     def valid_children(self, element):
@@ -364,10 +364,10 @@ class Request(object):
             context.check_hostname = False
             context.verify_mode = ssl.CERT_NONE
         xml = etree.tostring(self.request_xml.getroot(), encoding="UTF-8")
-        req = urllib2.Request(url=self._url, data=xml)
+        req = urllib.request.Request(url=self._url, data=xml)
         creds = self._credentials.strip()
         req.add_header('Authorization', 'Basic %s' % (creds))
-        response_xml = urllib2.urlopen(req, timeout=self._timeout, context=context)
+        response_xml = urllib.request.urlopen(req, timeout=self._timeout, context=context)
         response_xml = response_xml.read()
         return response_xml
 

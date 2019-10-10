@@ -15,7 +15,7 @@
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
 from mast.xor import xordecode
 from mast.config import get_config
-from DataPower import DataPower, STATUS_XPATH
+from .DataPower import DataPower, STATUS_XPATH
 
 
 def initialize_environments():
@@ -93,9 +93,9 @@ class Environment(object):
         self.hostnames and loads them into self.appliances."""
         if not hasattr(self, 'credentials'):
             raise ValueError("Credentials were not supplied")
-        if isinstance(self.credentials, basestring):  # lint:ok
+        if isinstance(self.credentials, str):  # lint:ok
             self.credentials = [self.credentials]
-        if isinstance(self.hostnames, basestring):
+        if isinstance(self.hostnames, str):
             self.hostnames = [self.hostnames]
         if len(self.credentials) == 1:
             self.credentials = self.credentials * len(self.hostnames)

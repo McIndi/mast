@@ -15,9 +15,9 @@
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
 from mast import __version__
 
-print("""
+print(("""
 McIndi's Automated Solutions Tool
 Version {}
 
 Copyright 2015-2019 McIndi Solutions, LLC
-""".format(__version__))
+""".format(__version__)))

@@ -186,7 +186,7 @@ class Cli(object):
             # otherwise no short option
             else:
                 flag = ('--{}'.format(_arg), )
-            if isinstance(default, basestring):
+            if isinstance(default, str):
                 _parser.add_argument(*flag, type=str, default=default)
             elif isinstance(default, list):
                 _parser.add_argument(*flag, action='append')
@@ -239,7 +239,7 @@ class Cli(object):
         """
         def inner(fn):
             if self.main is not None:
-                print "The Cli decorator cannot be used when main is specified"
+                print("The Cli decorator cannot be used when main is specified")
                 sys.exit(-1)
             self.create_subparser(fn)
             return fn

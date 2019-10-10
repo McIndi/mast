@@ -33,4 +33,4 @@ from mast import __version__
 # This environment variable needs to be set for other imports to work
 os.environ["MAST_VERSION"] = __version__
 
-from mast_daemon import *
+from .mast_daemon import *

@@ -89,17 +89,17 @@ DO NOT USE.__"""
         sets.append(set(groups))
 
     for index, appliance in enumerate(env.appliances):
-        print '\n', appliance.hostname
-        print '=' * len(appliance.hostname)
+        print('\n', appliance.hostname)
+        print('=' * len(appliance.hostname))
         for group in sets[index]:
-            print '\t', group
+            print('\t', group)
 
     common = sets[0].intersection(*sets[1:])
     logger.debug("Common Groups found {}".format(str(common)))
-    print '\nCommon'
-    print '======'
+    print('\nCommon')
+    print('======')
     for group in common:
-        print '\t', group
+        print('\t', group)
 
 
 @logged("mast.datapower.accounts")
@@ -157,12 +157,12 @@ DO NOT USE.__"""
     msg = "Adding group {} to {}".format(name, str(env.appliances))
     logger.info(msg)
     if not web:
-        print msg
+        print(msg)
     resp = env.perform_async_action('add_group', **kwargs)
     logger.debug("responses received {}".format(str(resp)))
     if not web:
-        for host, resp in resp.items():
-            print "{}\n{}".format(host, "="*len(host))
+        for host, resp in list(resp.items()):
+            print("{}\n{}".format(host, "="*len(host)))
             pprint_xml(resp.xml)
     else:
         output = util.render_boolean_results_table(resp, suffix="add_group")
@@ -172,12 +172,12 @@ DO NOT USE.__"""
         msg = "Saving configuration in the default domain of {}".format(str(env.appliances))
         logger.info(msg)
         if not web:
-            print msg
+            print(msg)
         resp = env.perform_async_action('SaveConfig', **kwargs)
         logger.debug("Responses received {}".format(str(resp)))
         if not web:
-            for host, resp in resp.items():
-                print "{}\n{}".format(host, "="*len(host))
+            for host, resp in list(resp.items()):
+                print("{}\n{}".format(host, "="*len(host)))
                 pprint_xml(resp.xml)
         else:
             output += util.render_boolean_results_table(
@@ -238,13 +238,13 @@ DO NOT USE.__"""
     msg = "Removing user group {} from {}".format(UserGroup, str(env.appliances))
     logger.info(msg)
     if not web:
-        print msg
+        print(msg)
     resp = env.perform_async_action('del_group', **kwargs)
     logger.debug("Responses received: {}".format(str(resp)))
 
     if not web:
-        for host, resp in resp.items():
-            print "{}\n{}".format(host, "="*len(host))
+        for host, resp in list(resp.items()):
+            print("{}\n{}".format(host, "="*len(host)))
             pprint_xml(resp.xml)
     else:
         output = util.render_boolean_results_table(resp, suffix="del_group")
@@ -257,8 +257,8 @@ DO NOT USE.__"""
         logger.debug("Responses received: {}".format(str(resp)))
 
         if not web:
-            for host, resp in resp.items():
-                print "{}\n{}".format(host, "="*len(host))
+            for host, resp in list(resp.items()):
+                print("{}\n{}".format(host, "="*len(host)))
                 pprint_xml(resp.xml)
         else:
             output += util.render_boolean_results_table(resp, suffix="save_config")
@@ -321,18 +321,18 @@ DO NOT USE.__"""
             "Found users for {}: {}".format(
                 appliance.hostname, str(users)))
         sets.append(set(users))
-        print '\n', appliance.hostname
-        print '=' * len(appliance.hostname)
+        print('\n', appliance.hostname)
+        print('=' * len(appliance.hostname))
         for user in users:
-            print '\t', user
+            print('\t', user)
     common = sets[0].intersection(*sets)
     logger.debug(
         "Users common to {}: {}".format(
             str(env.appliances), str(common)))
-    print '\nCommon'
-    print '======'
+    print('\nCommon')
+    print('======')
     for user in common:
-        print '\t', user
+        print('\t', user)
 
 
 @logged("mast.datapower.accounts")
@@ -395,7 +395,7 @@ It will fail to add the group"""
     msg = "Attempting to add user {} to {}".format(username, str(env.appliances))
     logger.info(msg)
     if not web:
-        print msg
+        print(msg)
     kwargs = {
         'username': username,
         'password': password,
@@ -407,8 +407,8 @@ It will fail to add the group"""
     logger.debug("Responses received {}".format(str(resp)))
 
     if not web:
-        for host, resp in resp.items():
-            print "{}\n{}".format(host, "="*len(host))
+        for host, resp in list(resp.items()):
+            print("{}\n{}".format(host, "="*len(host)))
             pprint_xml(resp.xml)
     else:
         output = util.render_boolean_results_table(resp, suffix="add_user")
@@ -417,12 +417,12 @@ It will fail to add the group"""
         msg = "Attempting to save config of default domain on {}".format(str(env.appliances))
         logger.info(msg)
         if not web:
-            print msg
+            print(msg)
         resp = env.perform_async_action('SaveConfig', **{'domain': 'default'})
         logger.debug("Responses received {}".format(str(resp)))
         if not web:
-            for host, resp in resp.items():
-                print "{}\n{}".format(host, "="*len(host))
+            for host, resp in list(resp.items()):
+                print("{}\n{}".format(host, "="*len(host)))
                 pprint_xml(resp.xml)
         else:
             output += util.render_boolean_results_table(
@@ -481,14 +481,14 @@ DO NOT USE.__"""
     msg = "Attempting to delete user {} from {}".format(User, str(env.appliances))
     logger.info(msg)
     if not web:
-        print msg
+        print(msg)
 
     resp = env.perform_async_action('remove_user', **{'username': User})
     logger.debug("Responses received {}".format(str(resp)))
 
     if not web:
-        for host, resp in resp.items():
-            print "{}\n{}".format(host, "="*len(host))
+        for host, resp in list(resp.items()):
+            print("{}\n{}".format(host, "="*len(host)))
             pprint_xml(resp.xml)
     else:
         output = util.render_boolean_results_table(resp, suffix="remove_user")
@@ -497,13 +497,13 @@ DO NOT USE.__"""
         msg = "Attempting to save config of default domain on {}".format(str(env.appliances))
         logger.info(msg)
         if not web:
-            print msg
+            print(msg)
         resp = env.perform_async_action('SaveConfig', **{'domain': 'default'})
         logger.debug("Responses received {}".format(str(resp)))
 
         if not web:
-            for host, resp in resp.items():
-                print "{}\n{}".format(host, "="*len(host))
+            for host, resp in list(resp.items()):
+                print("{}\n{}".format(host, "="*len(host)))
                 pprint_xml(resp.xml)
         else:
             output += util.render_boolean_results_table(
@@ -566,15 +566,15 @@ DO NOT USE.__"""
     msg = "Attempting to change password for {} on {}".format(User, str(env.appliances))
     logger.info(msg)
     if not web:
-        print msg
+        print(msg)
 
     kwargs = {'username': User, 'password': password}
     resp = env.perform_async_action('change_password', **kwargs)
     logger.debug("Responses received {}".format(str(resp)))
 
     if not web:
-        for host, resp in resp.items():
-            print "{}\n{}".format(host, "="*len(host))
+        for host, resp in list(resp.items()):
+            print("{}\n{}".format(host, "="*len(host)))
             pprint_xml(resp.xml)
     else:
         output = util.render_boolean_results_table(
@@ -584,12 +584,12 @@ DO NOT USE.__"""
         msg = "Attempting to save config of default domain on {}".format(str(env.appliances))
         logger.info(msg)
         if not web:
-            print msg
+            print(msg)
         resp = env.perform_async_action('SaveConfig', **{'domain': 'default'})
         logger.debug("Responses received {}".format(str(resp)))
         if not web:
-            for host, resp in resp.items():
-                print "{}\n{}".format(host, "="*len(host))
+            for host, resp in list(resp.items()):
+                print("{}\n{}".format(host, "="*len(host)))
                 pprint_xml(resp.xml)
         else:
             output += util.render_boolean_results_table(
@@ -648,7 +648,7 @@ DO NOT USE.__"""
     msg = "Attempting to force {} to change password on {}".format(User, str(env.appliances))
     logger.info(msg)
     if not web:
-        print msg
+        print(msg)
 
     resp = env.perform_async_action(
         'UserForcePasswordChange',
@@ -656,8 +656,8 @@ DO NOT USE.__"""
     logger.debug("Responses received {}".format(str(resp)))
 
     if not web:
-        for host, resp in resp.items():
-            print "{}\n{}".format(host, "="*len(host))
+        for host, resp in list(resp.items()):
+            print("{}\n{}".format(host, "="*len(host)))
             pprint_xml(resp.xml)
     else:
         output = util.render_boolean_results_table(
@@ -668,12 +668,12 @@ DO NOT USE.__"""
         msg = "Attempting to save config of default domain on {}".format(str(env.appliances))
         logger.info(msg)
         if not web:
-            print msg
+            print(msg)
         resp = env.perform_async_action('SaveConfig', **{'domain': 'default'})
         logger.debug("Responses received {}".format(str(resp)))
         if not web:
-            for host, resp in resp.items():
-                print "{}\n{}".format(host, "="*len(host))
+            for host, resp in list(resp.items()):
+                print("{}\n{}".format(host, "="*len(host)))
                 pprint_xml(resp.xml)
         else:
             output += util.render_boolean_results_table(
@@ -738,18 +738,18 @@ DO NOT USE.__"""
             "RBM Fallback users for {}: {}".format(
                 appliance.hostname, str(users)))
         sets.append(set(users))
-        print '\n', appliance.hostname
-        print '=' * len(appliance.hostname)
+        print('\n', appliance.hostname)
+        print('=' * len(appliance.hostname))
         for user in users:
-            print '\t', user
+            print('\t', user)
     common = sets[0].intersection(*sets)
     logger.debug(
         "RBM Fallback usesrs common to {}: {}".format(
             str(env.appliances), str(common)))
-    print '\nCommon'
-    print '======'
+    print('\nCommon')
+    print('======')
     for user in common:
-        print '\t', user
+        print('\t', user)
 
 
 @logged("mast.datapower.accounts")
@@ -802,14 +802,14 @@ DO NOT USE.__"""
     msg = "Attempting to add {} as an RBM Fallback user to {}".format(User, str(env.appliances))
     logger.info(msg)
     if not web:
-        print msg
+        print(msg)
 
     resp = env.perform_async_action('add_rbm_fallback', **{'user': User})
     logger.debug("Responses received {}".format(str(env.appliances)))
 
     if not web:
-        for host, resp in resp.items():
-            print "{}\n{}".format(host, "="*len(host))
+        for host, resp in list(resp.items()):
+            print("{}\n{}".format(host, "="*len(host)))
             pprint_xml(resp.xml)
     else:
         output = util.render_boolean_results_table(
@@ -819,12 +819,12 @@ DO NOT USE.__"""
         msg = "Attempting to save config of default domain on {}".format(str(env.appliances))
         logger.info(msg)
         if not web:
-            print msg
+            print(msg)
         resp = env.perform_async_action('SaveConfig', **{'domain': 'default'})
         logger.debug("Responses received {}".format(str(resp)))
         if not web:
-            for host, resp in resp.items():
-                print "{}\n{}".format(host, "="*len(host))
+            for host, resp in list(resp.items()):
+                print("{}\n{}".format(host, "="*len(host)))
                 pprint_xml(resp.xml)
         else:
             output += util.render_boolean_results_table(
@@ -883,14 +883,14 @@ DO NOT USE.__"""
     msg = "Attempting to remove {} from RBM Fallback users on {}".format(User, str(env.appliances))
     logger.info(msg)
     if not web:
-        print msg
+        print(msg)
 
     resp = env.perform_async_action('del_rbm_fallback', **{'username': User})
     logger.debug("Responses received {}".format(str(resp)))
 
     if not web:
-        for host, resp in resp.items():
-            print "{}\n{}".format(host, "="*len(host))
+        for host, resp in list(resp.items()):
+            print("{}\n{}".format(host, "="*len(host)))
             pprint_xml(resp.xml)
     else:
         output = util.render_boolean_results_table(
@@ -900,12 +900,12 @@ DO NOT USE.__"""
         msg = "Attempting to save config of default domain on {}".format(str(env.appliances))
         logger.info(msg)
         if not web:
-            print msg
+            print(msg)
         resp = env.perform_async_action('SaveConfig', **{'domain': 'default'})
         logger.debug("Responses received {}".format(str(resp)))
         if not web:
-            for host, resp in resp.items():
-                print "{}\n{}".format(host, "="*len(host))
+            for host, resp in list(resp.items()):
+                print("{}\n{}".format(host, "="*len(host)))
                 pprint_xml(resp.xml)
         else:
             output += util.render_boolean_results_table(
@@ -981,15 +981,15 @@ DO NOT USE.__"""
     msg = "Attempting to flush AAA cache on {}".format(str(env.appliances))
     logger.info(msg)
     if not web:
-        print msg
+        print(msg)
 
     kwargs = {"PolicyName": aaa_policy, 'domain': Domain}
     responses = env.perform_action('FlushAAACache', **kwargs)
     logger.debug("Responses received {}".format(str(responses)))
 
     if not web:
-        for host, resp in responses.items():
-            print "{}\n{}".format(host, "="*len(host))
+        for host, resp in list(responses.items()):
+            print("{}\n{}".format(host, "="*len(host)))
             pprint_xml(resp.xml)
     else:
         return util.render_boolean_results_table(
@@ -1052,8 +1052,8 @@ DO NOT USE.__"""
     logger.debug("Responses received {}".format(str(responses)))
 
     if not web:
-        for host, resp in responses.items():
-            print "{}\n{}".format(host, "="*len(host))
+        for host, resp in list(responses.items()):
+            print("{}\n{}".format(host, "="*len(host)))
             pprint_xml(resp.xml)
     else:
         return (util.render_boolean_results_table(
@@ -1109,14 +1109,14 @@ DO NOT USE.__"""
     msg = "Attempting to flush RBM cache on {}".format(str(env.appliances))
     logger.info(msg)
     if not web:
-        print msg
+        print(msg)
 
     responses = env.perform_action('FlushRBMCache', **{'domain': Domain})
     logger.debug("Responses received {}".format(str(responses)))
 
     if not web:
-        for host, resp in responses.items():
-            print "{}\n{}".format(host, "="*len(host))
+        for host, resp in list(responses.items()):
+            print("{}\n{}".format(host, "="*len(host)))
             pprint_xml(resp.xml)
     else:
         return util.render_boolean_results_table(
@@ -1147,7 +1147,7 @@ class WebPlugin(Plugin):
 if __name__ == '__main__':
     try:
         cli.Run()
-    except AttributeError, e:
+    except AttributeError as e:
         if "'NoneType' object has no attribute 'app'" in e:
             raise NotImplementedError(
                 "HTML formatted output is not supported on the CLI")

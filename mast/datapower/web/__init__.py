@@ -29,7 +29,7 @@ screen.
 """
 import threading
 from mast.logging import make_logger
-from gui import *
+from .gui import *
 import os
 from mast import __version__
 

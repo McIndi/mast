@@ -19,7 +19,7 @@ mast deployment
 A set of utilities which can simplify, automate and audit
 your DataPower service deployments and migrations.
 """
-from deployment import *
+from .deployment import *
 import os
 from mast import __version__
 

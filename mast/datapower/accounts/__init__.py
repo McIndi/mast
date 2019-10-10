@@ -20,7 +20,7 @@ A set of tools for automating routine user/group
 administration tasks associated with IBM DataPower
 appliances.
 """
-from accounts import *
+from .accounts import *
 import os
 from mast import __version__
 

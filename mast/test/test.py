@@ -361,14 +361,14 @@ def main(argv=None):
                 failed += 1
             else:
                 pass
-            print result
+            print(result)
     end = time()
     summary = "\n\n-----\nRan {} tests in {}; {} passed, {} failed"
     summary = summary.format(bright(str(num_tests)),
                              cyan(str(end-start)),
                              green(str(passed)),
                              red(str(failed)))
-    print summary
+    print(summary)
 
 if __name__ == "__main__":
     main()

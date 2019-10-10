@@ -89,14 +89,14 @@ class RedactingFilter(logging.Filter):
     def filter(self, record):
         record.msg = self.redact(record.msg)
         if isinstance(record.args, dict):
-            for k in record.args.keys():
+            for k in list(record.args.keys()):
                 record.args[k] = self.redact(record.args[k])
         else:
             record.args = tuple(self.redact(arg) for arg in record.args)
         return True
 
     def redact(self, msg):
-        msg = isinstance(msg, basestring) and msg or str(msg)
+        msg = isinstance(msg, str) and msg or str(msg)
         for pattern in self._patterns:
                msg = re.sub(pattern, "**REDACTED**", msg)
         return msg

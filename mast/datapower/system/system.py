@@ -199,7 +199,7 @@ def _zipdir(path, z):
 
 
 def _verify_zip(zip_file):
-    if isinstance(zip_file, basestring):
+    if isinstance(zip_file, str):
         try:
             zip_file = zipfile.ZipFile(zip_file, 'r')
         except zipfile.BadZipfile:
@@ -227,7 +227,7 @@ Parameters:
 DO NOT USE.__"""
     if web:
         return xorencode(string), ""
-    print xorencode(string)
+    print(xorencode(string))
 
 
 # ~#~#~#~#~#~#~#
@@ -312,14 +312,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 
 
 @cli.command('flush-arp-cache', category='caches')
@@ -374,14 +374,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 
 
 @cli.command('flush-dns-cache', category='caches')
@@ -436,14 +436,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 
 
 @cli.command('flush-document-cache', category='caches')
@@ -509,14 +509,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 
 
 @cli.command('flush-ldap-pool-cache', category='caches')
@@ -578,14 +578,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 
 
 @cli.command('flush-nd-cache', category='caches')
@@ -640,14 +640,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 
 
 @cli.command('flush-nss-cache', category='caches')
@@ -710,14 +710,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 
 
 @cli.command('flush-pdp-cache', category='caches')
@@ -777,14 +777,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 
 
 @cli.command('flush-rbm-cache', category='caches')
@@ -842,14 +842,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 
 
 @cli.command('flush-stylesheet-cache', category='caches')
@@ -913,14 +913,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 #
 # ~#~#~#~#~#~#~#
 
@@ -982,7 +982,7 @@ DO NOT USE.__"""
         credentials,
         timeout,
         check_hostname=check_hostname)
-    if isinstance(Domain, basestring):
+    if isinstance(Domain, str):
         Domain = [Domain]
 
     # render_save_config_results_table will handle saving the config
@@ -1074,9 +1074,9 @@ DO NOT USE.__"""
         return util.render_boolean_results_table(
             resp, suffix="quiesce_service"), util.render_history(env)
 
-    for host, xml in resp.items():
-        print host, '\n', "=" * len(host)
-        print '\n\n', xml
+    for host, xml in list(resp.items()):
+        print(host, '\n', "=" * len(host))
+        print('\n\n', xml)
 
 
 @cli.command("unquiesce-service", category="configuration")
@@ -1142,9 +1142,9 @@ DO NOT USE.__"""
         return util.render_boolean_results_table(
             resp, suffix="unquiesce_service"), util.render_history(env)
 
-    for host, xml in resp.items():
-        print host, '\n', "=" * len(host)
-        print '\n\n', xml
+    for host, xml in list(resp.items()):
+        print(host, '\n', "=" * len(host))
+        print('\n\n', xml)
 
 #
 # ~#~#~#~#~#~#~#
@@ -1224,19 +1224,19 @@ DO NOT USE.__"""
         logger.debug("Domains for {} found: {}".format(
             str(appliance), str(domains)))
         sets.append(set(domains))
-        print '\n', appliance.hostname
-        print '=' * len(appliance.hostname)
+        print('\n', appliance.hostname)
+        print('=' * len(appliance.hostname))
         for domain in appliance.domains:
-            print '\t', domain
+            print('\t', domain)
 
     common = list(sets[0].intersection(*sets[1:]))
     common.sort()
     logger.info("domains common to {}: {}".format(
         str(env.appliances), str(common)))
-    print '\n', 'Common'
-    print '======'
+    print('\n', 'Common')
+    print('======')
     for domain in common:
-        print '\t', domain
+        print('\t', domain)
 
 
 @cli.command('add-domain', category='domains')
@@ -1550,7 +1550,7 @@ be saved
 * `-w, --web`: __For Internel Use Only, will be removed in future versions.
 DO NOT USE.__"""
     logger = make_logger("mast.system")
-    if isinstance(Domain, basestring):
+    if isinstance(Domain, str):
         Domain = Domain
     check_hostname = not no_check_hostname
     env = datapower.Environment(
@@ -1642,7 +1642,7 @@ will be saved
 * `-w, --web`: __For Internel Use Only, will be removed in future versions.
 DO NOT USE.__"""
     logger = make_logger("mast.system")
-    if isinstance(Domain, basestring):
+    if isinstance(Domain, str):
         Domain = [Domain]
     check_hostname = not no_check_hostname
     env = datapower.Environment(
@@ -1823,9 +1823,9 @@ DO NOT USE.__"""
         return util.render_boolean_results_table(
             responses, suffix="quiesce_dp"), util.render_history(env)
 
-    for host, resp in responses.items():
-        print '\n', host, '\n', '*' * len(host), '\n'
-        print resp.pretty
+    for host, resp in list(responses.items()):
+        print('\n', host, '\n', '*' * len(host), '\n')
+        print(resp.pretty)
 
 
 @cli.command('unquiesce-appliance', category='appliances')
@@ -1877,9 +1877,9 @@ DO NOT USE.__"""
         return util.render_boolean_results_table(
             responses, suffix="unquiesce_dp"), util.render_history(env)
 
-    for host, resp in responses.items():
-        print '\n', host, '\n', '*' * len(host), '\n'
-        print resp.pretty
+    for host, resp in list(responses.items()):
+        print('\n', host, '\n', '*' * len(host), '\n')
+        print(resp.pretty)
 
 
 @cli.command('reboot-appliance', category='appliances')
@@ -1959,9 +1959,9 @@ DO NOT USE.__"""
         return util.render_boolean_results_table(
             responses, suffix="reboot_appliance"), util.render_history(env)
 
-    for host, resp in responses.items():
-        print '\n', host, '\n', '*' * len(host), '\n'
-        print resp.pretty
+    for host, resp in list(responses.items()):
+        print('\n', host, '\n', '*' * len(host), '\n')
+        print(resp.pretty)
 
 
 @cli.command('shutdown-appliance', category='appliances')
@@ -2017,9 +2017,9 @@ DO NOT USE.__"""
         return util.render_boolean_results_table(
             responses, suffix="shutdown-appliance"), util.render_history(env)
 
-    for host, resp in responses.items():
-        print '\n', host, '\n', '*' * len(host), '\n'
-        print resp.pretty
+    for host, resp in list(responses.items()):
+        print('\n', host, '\n', '*' * len(host), '\n')
+        print(resp.pretty)
 
 
 @cli.command('reload-appliance', category='appliances')
@@ -2095,12 +2095,12 @@ DO NOT USE.__"""
         return util.render_boolean_results_table(
             resp, suffix="reload_appliance"), util.render_history(env)
 
-    for host, _resp in resp.items():
-        print '\n', host, '\n', '*' * len(host), '\n'
+    for host, _resp in list(resp.items()):
+        print('\n', host, '\n', '*' * len(host), '\n')
         if _resp is False:
-            print "Appliance did not come back up"
+            print("Appliance did not come back up")
         else:
-            print _resp.pretty
+            print(_resp.pretty)
 
 
 @cli.command('firmware-upgrade', category='appliances')
@@ -2185,14 +2185,14 @@ DO NOT USE.__"""
     for appliance in env.appliances:
 
         if not web:
-            print appliance.hostname
+            print(appliance.hostname)
 
         if cleanup:
             logger.info("Cleaning up the filesystem of {}".format(
                 appliance.hostname))
 
             if not web:
-                print "\tCleaning Filesystem"
+                print("\tCleaning Filesystem")
             _out = clean_up(
                 appliances=appliance.hostname,
                 credentials=appliance.credentials,
@@ -2213,13 +2213,13 @@ DO NOT USE.__"""
                 output += _out[0]
                 history += _out[1]
             else:
-                print "\t\tDone."
+                print("\t\tDone.")
 
         if boot_delete:
             logger.info("Attempting to perform boot delete on {}".format(
                 appliance.hostname))
             if not web:
-                print "\tAttempting to performing boot delete"
+                print("\tAttempting to performing boot delete")
             appliance.ssh_connect()
             r = appliance.ssh_issue_command("co")
             r += appliance.ssh_issue_command("flash")
@@ -2228,14 +2228,14 @@ DO NOT USE.__"""
             r += appliance.ssh_issue_command("exit")
             r += appliance.ssh_issue_command("exit")
             if not web:
-                print r
+                print(r)
             logger.debug("Responses received: {}".format(str(r)))
 
         if backup:
             logger.info("Attempting to perform all-domains backup on {}".format(
                 appliance.hostname))
             if not web:
-                print "\tGetting an all-domains backup"
+                print("\tGetting an all-domains backup")
             _out = get_normal_backup(
                 appliances=appliance.hostname,
                 credentials=appliance.credentials,
@@ -2250,13 +2250,13 @@ DO NOT USE.__"""
                 output += _out[0]
                 history += _out[1]
             else:
-                print "\t\tDone."
+                print("\t\tDone.")
 
         if cleanup:
             logger.info("Cleaning up the filesystem of {}".format(
                 appliance.hostname))
             if not web:
-                print "\tCleaning filesystem"
+                print("\tCleaning filesystem")
             _out = clean_up(
                 appliances=appliance.hostname,
                 credentials=appliance.credentials,
@@ -2277,14 +2277,14 @@ DO NOT USE.__"""
                 output += _out[0]
                 history += _out[1]
             else:
-                print "\t\tDone"
+                print("\t\tDone")
 
         if save:
             logger.info(
                 "Attempting to save the configuration of all-domains on {}".format(
                     appliance.hostname))
             if not web:
-                print "\tSaving configuration"
+                print("\tSaving configuration")
             _out = save_config(
                 appliances=appliance.hostname,
                 credentials=appliance.credentials,
@@ -2297,13 +2297,13 @@ DO NOT USE.__"""
                 output += _out[0]
                 history += _out[1]
             else:
-                print "\t\tDone."
+                print("\t\tDone.")
 
         if quiesce_appliances:
             logger.info("Attempting to quiesce appliance {}".format(
                 appliance.hostname))
             if not web:
-                print "\tQuiescing Appliance"
+                print("\tQuiescing Appliance")
             _out = quiesce_appliance(
                 appliances=appliance.hostname,
                 credentials=appliance.credentials,
@@ -2316,7 +2316,7 @@ DO NOT USE.__"""
                 output += _out[0]
                 history += _out[1]
             else:
-                print "\t\tDone."
+                print("\t\tDone.")
 
             sleep(quiesce_timeout)
 
@@ -2326,7 +2326,7 @@ DO NOT USE.__"""
                     logger.info("Attempting to disable domain {} on {}".format(
                         domain, appliance.hostname))
                     if not web:
-                        print "\tdisabling domain {}".format(domain)
+                        print("\tdisabling domain {}".format(domain))
                     _out = disable_domain(
                         appliances=appliance.hostname,
                         credentials=appliance.credentials,
@@ -2340,14 +2340,14 @@ DO NOT USE.__"""
                         output += _out[0]
                         history += _out[1]
                     else:
-                        print "\t\tDone."
+                        print("\t\tDone.")
 
         if save:
             logger.info(
                 "Attempting to save configuration of all-domains on {}".format(
                     appliance.hostname))
             if not web:
-                print "\tSaving configuration"
+                print("\tSaving configuration")
             _out = save_config(
                 appliances=appliance.hostname,
                 credentials=appliance.credentials,
@@ -2360,12 +2360,12 @@ DO NOT USE.__"""
                 output += _out[0]
                 history += _out[1]
             else:
-                print "\t\tDone"
+                print("\t\tDone")
 
         if reboot:
             logger.info("Attempting to reboot {}".format(appliance.hostname))
             if not web:
-                print "\tRebooting appliance"
+                print("\tRebooting appliance")
             _out = reboot_appliance(
                 appliances=appliance.hostname,
                 credentials=appliance.credentials,
@@ -2379,14 +2379,14 @@ DO NOT USE.__"""
                 output += _out[0]
                 history += _out[1]
             else:
-                print "\t\tDone."
+                print("\t\tDone.")
 
         if set_firmware:
             logger.info("Attempting to set firmware on {}".format(
                 appliance.hostname))
 
             if not web:
-                print "\tAttempting to update firmware"
+                print("\tAttempting to update firmware")
             _out = appliance.set_firmware(
                 file_in,
                 accept_license,
@@ -2397,7 +2397,7 @@ DO NOT USE.__"""
                     {appliance.hostname: _out})
                 output += resp
             else:
-                print "\t\tDone."
+                print("\t\tDone.")
 
         sleep(60)
 
@@ -2422,7 +2422,7 @@ DO NOT USE.__"""
                     logger.info("Attempting to enable domain {} on {}".format(
                         domain, appliance.hostname))
                     if not web:
-                        print "\tenabling domain {}".format(domain)
+                        print("\tenabling domain {}".format(domain))
                     _out = enable_domain(
                         appliances=appliance.hostname,
                         credentials=appliance.credentials,
@@ -2436,13 +2436,13 @@ DO NOT USE.__"""
                         output += _out[0]
                         history += _out[1]
                     else:
-                        print "\t\tDone."
+                        print("\t\tDone.")
         if save:
             logger.info(
                 "Attempting to save configuration of all-domains on {}".format(
                     appliance.hostname))
             if not web:
-                print "\tSaving configuration"
+                print("\tSaving configuration")
             _out = save_config(
                 appliances=appliance.hostname,
                 credentials=appliance.credentials,
@@ -2455,7 +2455,7 @@ DO NOT USE.__"""
                 output += _out[0]
                 history += _out[1]
             else:
-                print "\t\tDone"
+                print("\t\tDone")
 
     if web:
         return output, history
@@ -2527,7 +2527,7 @@ DO NOT USE.__"""
     out_dir = os.path.join(out_dir, t.timestamp)
     os.makedirs(out_dir)
 
-    for host, r in resp.items():
+    for host, r in list(resp.items()):
         filename = os.path.join(
             out_dir, "{}-encrypted-filesystem.xml".format(host))
         logger.info("Writing directory listing to {}".format(filename))
@@ -2597,7 +2597,7 @@ DO NOT USE.__"""
     out_dir = os.path.join(out_dir, t.timestamp)
     os.makedirs(out_dir)
 
-    for host, r in resp.items():
+    for host, r in list(resp.items()):
         filename = os.path.join(
             out_dir, "{}-temporary-filesystem.xml".format(host))
         logger.info("Writing listing of temporary filesystem to {}".format(
@@ -2673,7 +2673,7 @@ DO NOT USE.__"""
     out_dir = os.path.join(out_dir, t.timestamp)
     os.makedirs(out_dir)
 
-    for host, r in resp.items():
+    for host, r in list(resp.items()):
         filename = os.path.join(
             out_dir, "{}-get-filestore.xml".format(host))
         logger.info("Writing directory listing of {} to {}".format(
@@ -2753,13 +2753,13 @@ DO NOT USE.__"""
         return (
             util.render_boolean_results_table(resp),
             util.render_history(env))
-    for host, r in resp.items():
-        print host
-        print "=" * len(host)
+    for host, r in list(resp.items()):
+        print(host)
+        print("=" * len(host))
         if r:
-            print "Success"
+            print("Success")
         else:
-            print "Failed"
+            print("Failed")
 
 
 @cli.command('set-file', category='file management')
@@ -2957,14 +2957,14 @@ save the backup of the file to.
         return (
             util.render_boolean_results_table(resp),
             util.render_history(env))
-    for host, response in resp.items():
-        print host
-        print "=" * len(host)
+    for host, response in list(resp.items()):
+        print(host)
+        print("=" * len(host))
         if response:
-            print "Success"
+            print("Success")
         else:
-            print "Error"
-        print
+            print("Error")
+        print()
 
 @cli.command('generate-error-report', category='error-reports')
 def generate_error_report(appliances=[],
@@ -3010,7 +3010,7 @@ DO NOT USE.__"""
     for appliance in env.appliances:
         msg = "Generating Error report on {}".format(appliance.hostname)
         if not web:
-            print msg
+            print(msg)
         appliance.log_info(msg)
         resp = appliance.ErrorReport()
         responses[appliance.hostname] = resp
@@ -3018,13 +3018,13 @@ DO NOT USE.__"""
             msg = "Successfully generated error report on {}".format(
                 appliance.hostname)
             if not web:
-                print "\t", msg
+                print("\t", msg)
             appliance.log_info(msg)
         else:
             msg = "An error occurred generating error report on {}: \n{}".format(
                 appliance.hostname, resp)
             if not web:
-                print "\t", msg
+                print("\t", msg)
             appliance.log_error(msg)
     if web:
         return (util.render_boolean_results_table(responses),
@@ -3093,14 +3093,14 @@ DO NOT USE.__"""
         files = []
         for _dir in dirs:
              files.extend([os.path.join(out_dir, _dir, x) for x in os.listdir(os.path.join(out_dir, _dir))])
-        files = filter(lambda x: x.endswith(".gz"), files)
+        files = [x for x in files if x.endswith(".gz")]
         for filename in files:
             new_filename = filename.replace(".gz", "")
-            print "Decompress: {} -> {}".format(filename, new_filename)
+            print("Decompress: {} -> {}".format(filename, new_filename))
             with gzip.open(filename, "rb") as fin, open(new_filename, "wb") as fout:
                 fout.writelines(fin.readlines())
             os.remove(os.path.abspath(filename))
-            print "\tDone"
+            print("\tDone")
 
     # Quick hack to let render_see_download_table() to get the appliance names
     _ = {}
@@ -3238,14 +3238,14 @@ DO NOT USE.__"""
 
     for host, response in list(responses.items()):
         if response:
-            print
-            print host
-            print '=' * len(host)
+            print()
+            print(host)
+            print('=' * len(host))
             if response:
-                print 'OK'
+                print('OK')
             else:
-                print "FAILURE"
-                print response
+                print("FAILURE")
+                print(response)
 #
 # ~#~#~#~#~#~#~#
 
@@ -3527,7 +3527,7 @@ DO NOT USE.__"""
             output += util.render_status_results_table(
                 results, suffix="get_status")
 
-        for hostname, response in results.items():
+        for hostname, response in list(results.items()):
             if machine:
                 status = repr(response)
             else:
@@ -3623,7 +3623,7 @@ DO NOT USE.__"""
         return util.render_config_results_table(
             results, suffix="get_config"), util.render_history(env)
 
-    for hostname, response in results.items():
+    for hostname, response in list(results.items()):
         if machine:
             resp = repr(response)
         else:
@@ -3741,7 +3741,7 @@ DO NOT USE.__"""
             if web:
                 rows.append(("", _dir, "Cleaned"))
             else:
-                print '\t', appliance.hostname, "-", _dir, "-", " Cleaned"
+                print('\t', appliance.hostname, "-", _dir, "-", " Cleaned")
         if error_reports:
             _clean_error_reports(
                 appliance, Domain,
@@ -3750,7 +3750,7 @@ DO NOT USE.__"""
             if web:
                 rows.append(("", "ErrorReports", "Cleaned"))
             else:
-                print '\t', appliance.hostname, "-", "ErrorReports - Cleaned"
+                print('\t', appliance.hostname, "-", "ErrorReports - Cleaned")
     if web:
         return flask.render_template(
             "results_table.html",
@@ -3883,7 +3883,7 @@ class WebPlugin(Plugin):
 if __name__ == '__main__':
     try:
         cli.Run()
-    except AttributeError, e:
+    except AttributeError as e:
         if "'NoneType' object has no attribute 'app'" in e:
             raise NotImplementedError(
                 "HTML formatted output is not supported on the CLI")

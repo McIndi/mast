@@ -13,14 +13,14 @@
 # along with MAST.  If not, see <https://www.gnu.org/licenses/>.
 #
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
-from cStringIO import StringIO
+from io import StringIO
 from mast.timestamp import Timestamp
 from mast.datapower import datapower
 import pkg_resources
 from mast.datapower.datapower import is_environment, get_appliances
 from mast.xor import xordecode, xorencode
 from mast.config import get_configs_dict
-from urllib2 import unquote
+from urllib.parse import unquote
 from mast.logging import make_logger
 import cherrypy
 from cheroot.ssl.builtin import BuiltinSSLAdapter
@@ -109,7 +109,7 @@ def initialize_plugins():
             logger.exception(
                 "An unhandled exception occurred during execution.")
             pass
-    logger.info("Collected plugins {}".format(str(plugins_dict.keys())))
+    logger.info("Collected plugins {}".format(str(list(plugins_dict.keys()))))
 
     plugins = {
         'css': '',
@@ -432,7 +432,7 @@ def main():
         if hasattr(engine, "console_control_handler"):
             engine.console_control_handler.subscribe()
 
-        print "MAST Web listening on https://{}:{}".format(host, port)
+        print("MAST Web listening on https://{}:{}".format(host, port))
 
         cherrypy.engine.start()
         cherrypy.engine.block()

@@ -35,7 +35,7 @@ security.
 """
 import os
 import base64
-from itertools import cycle, izip
+from itertools import cycle
 from mast import __version__
 from mast.config import get_config_dict
 
@@ -63,7 +63,7 @@ def xorencode(string, key=None):
         key = config["global"].get("key")
     return base64.encodestring(
         ''.join(
-            chr(ord(c) ^ ord(k)) for c, k in izip(string, cycle(key)))).strip()
+            chr(ord(c) ^ ord(k)) for c, k in zip(string, cycle(key)))).strip()
 
 
 def xordecode(string, key=None):
@@ -90,4 +90,4 @@ def xordecode(string, key=None):
         key = config["global"].get("key")
     string = base64.decodestring(string)
     return ''.join(
-        chr(ord(c) ^ ord(k)) for c, k in izip(string, cycle(key))).strip()
+        chr(ord(c) ^ ord(k)) for c, k in zip(string, cycle(key))).strip()

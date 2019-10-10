@@ -35,6 +35,6 @@ creation of `mastd_plugin`s, but for now, you can just subclass
 `threading.Thread`.
 """
 import os
-import web
+from . import web
 from mast import __version__
 

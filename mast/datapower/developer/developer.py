@@ -97,15 +97,15 @@ DO NOT USE.__"""
     msg = "Attempting to flush document cache for {} in {} domain on {} XMLManager".format(str(env.appliances), Domain, xml_manager)
     logger.info(msg)
     if not web:
-        print msg
+        print(msg)
 
     kwargs = {"XMLManager": xml_manager, 'domain': Domain}
     responses = env.perform_action('FlushDocumentCache', **kwargs)
     logger.debug("Responses received: {}".format(str(responses)))
 
     if not web:
-        for host, resp in responses.items():
-            print "{}\n{}".format(host, "="*len(host))
+        for host, resp in list(responses.items()):
+            print("{}\n{}".format(host, "="*len(host)))
             pprint_xml(resp.xml)
     else:
         return util.render_boolean_results_table(
@@ -162,15 +162,15 @@ DO NOT USE.__"""
     msg = "Attempting to flush stylesheet cache for {} in {} domain on {} XMLManager".format(str(env.appliances), Domain, xml_manager)
     logger.info(msg)
     if not web:
-        print msg
+        print(msg)
 
     kwargs = {"XMLManager": xml_manager, 'domain': Domain}
     responses = env.perform_action('FlushStylesheetCache', **kwargs)
     logger.debug("Responses received: {}".format(str(responses)))
 
     if not web:
-        for host, resp in responses.items():
-            print "{}\n{}".format(host, "="*len(host))
+        for host, resp in list(responses.items()):
+            print("{}\n{}".format(host, "="*len(host)))
             pprint_xml(resp.xml)
     else:
         return util.render_boolean_results_table(
@@ -261,21 +261,21 @@ DO NOT USE.__"""
     msg = "Attempting to import {} to {}".format(file_in, str(env.appliances))
     logger.info(msg)
     if not web:
-        print msg
+        print(msg)
 
     results = {}
     out_dir = os.path.join(out_dir, "import_results", t.timestamp)
     os.makedirs(out_dir)
     for appliance in env.appliances:
         if not web:
-            print appliance.hostname
+            print(appliance.hostname)
         results[appliance.hostname] = {}
         domains = Domain
         if "all-domains" in domains:
             domains = appliance.domains
         for domain in domains:
             if not web:
-                print "\t", domain
+                print("\t", domain)
             kwargs = {
                 'domain': domain,
                 'zip_file': file_in,
@@ -408,7 +408,7 @@ DO NOT USE.__"""
         'export',
         **kwargs)
 
-    for hostname, _export in results.items():
+    for hostname, _export in list(results.items()):
         d = os.path.join(out_dir, hostname, t.timestamp)
         os.makedirs(d)
         filename = os.path.join(d, '%s-%s-%s.%s' % (
@@ -419,7 +419,7 @@ DO NOT USE.__"""
         msg = "Writing export of {} from {} to {}".format(object_name, hostname, filename)
         logger.debug(msg)
         if not web:
-            print msg
+            print(msg)
         with open(filename, 'wb') as fout:
             fout.write(_export)
 
@@ -466,7 +466,7 @@ off when sending commands to the appliances.
 use multiple entries of the form `[-D domain1 [-D domain2...]]`
 * `-w, --web`: __For Internel Use Only, will be removed in future versions.
 DO NOT USE.__"""
-    import urllib2
+    import urllib.request, urllib.error, urllib.parse
     check_hostname = not no_check_hostname
     env = datapower.Environment(
         appliances,
@@ -485,7 +485,7 @@ DO NOT USE.__"""
                     name="all-objects",
                     domain=domain,
                     persisted=False)
-            except urllib2.HTTPError:
+            except urllib.error.HTTPError:
                 config = appliance.get_config(domain=domain, persisted=False)
             for obj in config.xml.findall(datapower.CONFIG_XPATH):
                 if obj.find("DebugMode") is not None:
@@ -497,16 +497,16 @@ DO NOT USE.__"""
                         else:
                             results[k] = [v]
     if web:
-        for k, v in results.items():
+        for k, v in list(results.items()):
             results[k] = "\n".join(v)
         return (
             util.render_results_table(results),
             util.render_history(env))
     else:
-        for k, v in results.items():
-            print k, "\n", "-" * len(k)
+        for k, v in list(results.items()):
+            print(k, "\n", "-" * len(k))
             for item in v:
-                print "\t{}".format(item)
+                print("\t{}".format(item))
 
 
 def get_data_file(f):
@@ -530,7 +530,7 @@ class WebPlugin(Plugin):
 if __name__ == '__main__':
     try:
         cli.Run()
-    except AttributeError, e:
+    except AttributeError as e:
         if "'NoneType' object has no attribute 'app'" in e:
             raise NotImplementedError(
                 "HTML formatted output is not supported on the CLI")

@@ -22,8 +22,8 @@ to indent the xml.
 """
 import os
 import json
-from cStringIO import StringIO
-from term_utils import *
+from io import StringIO
+from .term_utils import *
 from pprint import pprint
 import xml.etree.cElementTree as etree
 from mast import __version__
@@ -129,12 +129,12 @@ def print_table(seq, clear_screen=False):
         _template += " {%s: <%s} " % (index, column_width)
     if clear_screen:
         clear()
-    print(ctime(time()) + "\n")
+    print((ctime(time()) + "\n"))
     header_row = _template.format(*_header_row)
-    print header_row
-    print("-" * len(header_row))
+    print(header_row)
+    print(("-" * len(header_row)))
     for row in _table:
-        print(_template.format(*row))
+        print((_template.format(*row)))
 
 
 def html_table(seq,
@@ -235,7 +235,7 @@ def pprint_plus(text, color=True, page_output=False):
     if page_output:
         page(text)
     else:
-        print text
+        print(text)
 
 def pprint_xml(elem, color=True, page_output=False):
     """
@@ -269,7 +269,7 @@ def pprint_xml(elem, color=True, page_output=False):
     if page_output:
         page(text)
     else:
-        print text
+        print(text)
 
 
 def pprint_xml_str(text, color=True, page_output=False):
@@ -303,7 +303,7 @@ def pprint_xml_str(text, color=True, page_output=False):
     if page_output:
         page(text)
     else:
-        print text
+        print(text)
 
 
 def pretty_print(elem, level=0):

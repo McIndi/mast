@@ -261,14 +261,14 @@ DO NOT USE.__"""
         return (
             util.render_boolean_results_table(resp),
             util.render_history(env))
-    for host, response in resp.items():
-        print host
-        print "=" * len(host)
+    for host, response in list(resp.items()):
+        print(host)
+        print("=" * len(host))
         if response:
-            print "Success"
+            print("Success")
         else:
-            print "Error"
-        print
+            print("Error")
+        print()
 
 
 @logged('mast.datapower.deployment')
@@ -678,8 +678,8 @@ Here is what is possible (will be done in this order):
             results = {"predeploy command": "{}\n\nout: {}\n\nerr: {}".format(predeploy_command, out, err)}
             output += render_results_table(results)
         else:
-            print "Finished running pre-deploy command. output: {}".format(
-                ";".join([out, err]))
+            print("Finished running pre-deploy command. output: {}".format(
+                ";".join([out, err])))
 
     if web:
         return output, history
@@ -1021,7 +1021,7 @@ DO NOT USE.__"""
                 output += _out[0]
                 history += _out[1]
             else:
-                print "Finished unquiescing appliance"
+                print("Finished unquiescing appliance")
 
         if unquiesce_domain:
             appliance.log_info("Attempting to unquiesce domain")
@@ -1040,7 +1040,7 @@ DO NOT USE.__"""
                 output += _out[0]
                 history += _out[1]
             else:
-                print "Finished unquiescing domain"
+                print("Finished unquiescing domain")
 
         if save_config:
             appliance.log_info(
@@ -1061,7 +1061,7 @@ DO NOT USE.__"""
                 output += _out[0]
                 history += _out[1]
             else:
-                print "Finished saving the configuration"
+                print("Finished saving the configuration")
 
     if postdeploy_command:
         logger.info(
@@ -1079,8 +1079,8 @@ DO NOT USE.__"""
             results = {"postdeploy command": "{}\n\nout: {}\n\nerr: {}".format(postdeploy_command, out, err)}
             output += render_results_table(results)
         else:
-            print "Finished running post-deploy command. output: {}".format(
-                ";".join([out, err]))
+            print("Finished running post-deploy command. output: {}".format(
+                ";".join([out, err])))
 
     if web:
         return output, history
@@ -1150,7 +1150,7 @@ DO NOT USE.__"""
         output = OrderedDict()
     for appliance in env.appliances:
         if not web:
-            print(appliance.hostname)
+            print((appliance.hostname))
             print("\tAttempting to add Password Map Alias")
         response = appliance.AddPasswordMap(
             domain=Domain,
@@ -1165,7 +1165,7 @@ DO NOT USE.__"""
                 ).itertext()
             )
         else:
-            print(
+            print((
                 "\t\t{}".format(
                     "\n\t\t".join(
                         response.xml.find(
@@ -1173,7 +1173,7 @@ DO NOT USE.__"""
                         ).itertext()
                     ).strip()
                 )
-            )
+            ))
         if save_config and response:
             if not web:
                 print("\tSaving Configuration")
@@ -1186,7 +1186,7 @@ DO NOT USE.__"""
                     ).itertext()
                 )
             else:
-                print(
+                print((
                     "\t\t{}".format(
                         "\n\t\t".join(
                             response.xml.find(
@@ -1194,7 +1194,7 @@ DO NOT USE.__"""
                             ).itertext()
                         ).strip()
                     )
-                )
+                ))
     if web:
         return (
             render_results_table(output), 
@@ -1258,7 +1258,7 @@ DO NOT USE.__"""
         output = OrderedDict()
     for appliance in env.appliances:
         if not web:
-            print(appliance.hostname)
+            print((appliance.hostname))
             print("\tAttempting to remove Password Map Alias")
         response = appliance.DeletePasswordMap(
             domain=Domain,
@@ -1272,7 +1272,7 @@ DO NOT USE.__"""
                 ).itertext()
             )
         else:
-            print(
+            print((
                 "\t\t{}".format(
                     "\n\t\t".join(
                         response.xml.find(
@@ -1280,7 +1280,7 @@ DO NOT USE.__"""
                         ).itertext()
                     ).strip()
                 )
-            )
+            ))
         if save_config and response:
             if not web:
                 print("\tSaving Configuration")
@@ -1293,7 +1293,7 @@ DO NOT USE.__"""
                     ).itertext()
                 )
             else:
-                print(
+                print((
                     "\t\t{}".format(
                         "\n\t\t".join(
                             response.xml.find(
@@ -1301,7 +1301,7 @@ DO NOT USE.__"""
                             ).itertext()
                         ).strip()
                     )
-                )
+                ))
     if web:
         return (
             render_results_table(output), 
@@ -1325,11 +1325,11 @@ class WebPlugin(Plugin):
 if __name__ == '__main__':
     try:
         cli.Run()
-    except AttributeError, e:
+    except AttributeError as e:
         if "'NoneType' object has no attribute 'app'" in e:
             raise NotImplementedError(
                 "HTML formatted output is not supported on the CLI")
-    except ImportError, e:
+    except ImportError as e:
         if "No module named backups" in e:
             raise NotImplementedError(
                 "HTML formatted output is not supported on the CLI")

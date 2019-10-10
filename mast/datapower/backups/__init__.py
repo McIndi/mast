@@ -19,7 +19,7 @@ mast backups:
 A set of tools for automating routine backup/checkpoint
 related tasks associated with IBM DataPower appliances.
 """
-from backups import *
+from .backups import *
 import os
 from mast import __version__
 

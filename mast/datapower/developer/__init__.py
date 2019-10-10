@@ -20,8 +20,8 @@ A set of tools for automating routine development
 tasks associated with IBM DataPower appliances.
 """
 import os
-from developer import *
-from developer import _import
+from .developer import *
+from .developer import _import
 from mast import __version__
 
 if __name__ == "__main__":

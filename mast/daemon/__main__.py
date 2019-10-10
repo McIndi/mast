@@ -35,14 +35,14 @@ if "Windows" in platform.system():
         os.environ["MAST_HOME"] = mast_home
         os.chdir(mast_home)
 
-        from mast_daemon import MASTd
+        from .mast_daemon import MASTd
 
         win32serviceutil.HandleCommandLine(MASTd)
 
 elif "Linux" in platform.system():
 
     def main():
-        from mast_daemon import MASTd
+        from .mast_daemon import MASTd
 
         mast_home = os.environ["MAST_HOME"]
         pid_file = os.path.join(
@@ -53,7 +53,7 @@ elif "Linux" in platform.system():
         mastd = MASTd(pid_file)
 
         if len(sys.argv) != 2:
-            print "USAGE: python -m mastd.daemon { start | stop | restart | status }"
+            print("USAGE: python -m mastd.daemon { start | stop | restart | status }")
             sys.exit(1)
 
         if "start" in sys.argv[1]:
@@ -63,14 +63,14 @@ elif "Linux" in platform.system():
         elif "restart" in sys.argv[1]:
             mastd.restart()
         elif "status" in sys.argv[1]:
-            print mastd.status()
+            print(mastd.status())
         else:
-            print "USAGE: python -m mast.daemon { start | stop | restart | status }"
+            print("USAGE: python -m mast.daemon { start | stop | restart | status }")
             sys.exit(1)
 
         sys.exit(0)
 
 if __name__ == "__main__":
-    print "Calling main"
+    print("Calling main")
     main()
-    print "main returned"
+    print("main returned")

@@ -43,7 +43,7 @@ import flask
 import inspect
 import zipfile
 import markdown
-import htmlentitydefs
+import html.entities
 from textwrap import dedent
 from mast.config import get_config
 from mast.datapower.datapower import Environment
@@ -235,15 +235,15 @@ def unescape(text):
             # character reference
             try:
                 if text[:3] == "&#x":
-                    return unichr(int(text[3:-1], 16))
+                    return chr(int(text[3:-1], 16))
                 else:
-                    return unichr(int(text[2:-1]))
+                    return chr(int(text[2:-1]))
             except ValueError:
                 pass
         else:
             # named entity
             try:
-                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
+                text = chr(html.entities.name2codepoint[text[1:-1]])
             except KeyError:
                 pass
         return text  # leave as is
@@ -410,7 +410,7 @@ def get_form(plugin, fn_name, appliances, credentials, no_check_hostname=True):
                 selects.append(render_multiselect_object_class(key))
                 continue
             textboxes.append(render_multitext(key))
-        elif isinstance(value, basestring):
+        elif isinstance(value, str):
             if key == 'out_dir':
                 continue
             elif key == 'out_file':
@@ -466,7 +466,7 @@ def _call_method(func, kwargs):
     if "web" in kwargs:
         try:
             out, hist = func(**kwargs)
-        except Exception, e:
+        except Exception as e:
             # The actions implemented should handle their own exceptions,
             # but if one makes it's way up here, we need to let the user know
             # part of that is suppressing the exception (because otherwise
@@ -520,7 +520,7 @@ def call_method(plugin, form):
                             for _ in form.getlist(arg + '[]')]
             else:
                 kwargs[arg] = form.getlist(arg + '[]')
-        elif isinstance(default, basestring):
+        elif isinstance(default, str):
             if arg == 'out_dir':
                 kwargs[arg] = os.path.join('tmp', 'web', name, t.timestamp)
             elif arg == 'out_file' and default is not None:
@@ -582,14 +582,14 @@ def call_method(plugin, form):
 def handle(plugin):
     """main funcion which will be routed to the plugin's endpoint"""
     logger = make_logger("mast.plugin_functions")
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
     if flask.request.method == 'GET':
         logger.info("GET Request received")
         name = flask.request.args.get('callable')
         logger.debug("name: {}".format(name))
         appliances = flask.request.args.getlist('appliances[]')
         logger.debug("appliances: {}".format(str(appliances)))
-        credentials = [xordecode(urllib.unquote(_), key=xorencode(
+        credentials = [xordecode(urllib.parse.unquote(_), key=xorencode(
                         flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"], key="_"))
                         for _ in flask.request.args.getlist('credentials[]')]
 

@@ -14,7 +14,7 @@
 #
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
 from mast.logging import make_logger
-from gui import main
+from .gui import main
 
 logger = make_logger("mast.datapower.web")
 logger.info("Attempting to start web gui.")
