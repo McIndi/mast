@@ -20,9 +20,9 @@ import sys
 sys.argv[0] = "mast-system"
 
 try:
-    cli.Run()
+    cli.run()
 except AttributeError as e:
-    if "'NoneType' object has no attribute 'app'" in e:
+    if "'NoneType' object has no attribute 'app'" in str(e):
         raise NotImplementedError(
             "HTML formatted output is not supported on the CLI")
     raise

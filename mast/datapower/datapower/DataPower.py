@@ -24,7 +24,7 @@ Management Interface (ssh).
 """
 from .dpSOMALib import SomaRequest as Request
 from mast.logging import make_logger, logged
-import xml.etree.cElementTree as etree
+from lxml import etree
 from functools import partial, wraps
 from mast.timestamp import Timestamp
 from mast.config import get_config
@@ -157,6 +157,7 @@ STATUS_XPATH += '{http://www.datapower.com/schemas/management}status/'
 FILESTORE_XPATH = BASE_XPATH
 FILESTORE_XPATH += '{http://www.datapower.com/schemas/management}filestore/'
 
+MGMT_NAMESPACE = "http://www.datapower.com/schemas/management"
 
 def pretty_print(elem, level=0):
     """
@@ -271,7 +272,7 @@ class DPResponse(object):
                     'http://schemas.xmlsoap.org/soap/envelope/')
             else:
                 pass
-            self._xml = etree.fromstring(self.text)
+            self._xml = etree.fromstring(self.text.encode())
         return self._xml
 
     @property
@@ -330,7 +331,7 @@ class DPResponse(object):
 
         This method accepts no arguments
         """
-        return self.pretty
+        return self.pretty.decode()
 
     def __repr__(self):
         """
@@ -1126,13 +1127,12 @@ class DataPower(object):
         self.log_debug("Sending the request to the appliance.")
         try:
             self.last_response = self.request.send(secure=self.check_hostname)
-            if "Authentication failure" in self.last_response:
+            if "Authentication failure" in self.last_response.decode():
                 raise AuthenticationFailure(self.last_response)
         except Exception as e:
             _hist["response"] = str(e).replace("\n", "").replace("\r", "")
             if hasattr(e, "read"):
-                _hist["response"] = e.read().replace(
-                        "\n", "").replace("\r", "")
+                _hist["response"] = e.read().decode().replace("\n", "").replace("\r", "")
             self._history.append(_hist)
             self.log_error(
                 "An error occurred trying to send request to "
@@ -1158,7 +1158,7 @@ class DataPower(object):
                 raise
         self.log_debug(
             "Recieved response from appliance: "
-            "{}".format(_escape(self.last_response)))
+            "{}".format(_escape(self.last_response.decode()).encode()))
         # TODO: Replace this with an xpath
         _hist["response"] = re.sub(
             r"<dp:file(.*?)>.*?</dp:file>",
@@ -1175,7 +1175,7 @@ class DataPower(object):
             obj = ConfigResponse
         else:
             obj = DPResponse
-        return obj(self.last_response)
+        return obj(self.last_response.decode())
 
     def log_debug(self, message):
         """
@@ -1537,8 +1537,8 @@ class DataPower(object):
         xp += '{http://www.datapower.com/schemas/management}do-action'
         do_action = self.request._test_case.find(xp)
         for node in list(do_action):
-            if not hasattr(self, node.tag):
-                setattr(self, node.tag, partial(self.do_action, node.tag))
+            if not hasattr(self, str(node.tag)):
+                setattr(self, str(node.tag), partial(self.do_action, node.tag))
 
     @correlate
     @logged("audit")
@@ -3670,14 +3670,15 @@ class DataPower(object):
         """
         self.domain = domain
         self.request.clear()
-        gs = self.request.request(domain=domain).get_status
-        gs.set('class', provider)
+        req = self.request.request
+        req.set("domain", domain)
+        etree.SubElement(req, f"{{{MGMT_NAMESPACE}}}get-status").set('class', provider)
         resp = self.send_request(status=True)
         return resp
 
     @correlate
     @logged("debug")
-    def del_config(self, _class, name, domain="default"):
+    def del_config(self, name, domain="default"):
         """
         Deletes an object from the appliance's configuration.
 

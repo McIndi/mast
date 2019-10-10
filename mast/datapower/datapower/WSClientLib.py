@@ -13,9 +13,8 @@
 # along with MAST.  If not, see <https://www.gnu.org/licenses/>.
 #
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
-from . import et.ElementTree as etree
-import xml.etree.cElementTree as cEtree
 import base64
+from lxml import etree
 import urllib.request, urllib.error, urllib.parse
 
 TIMEOUT = 120
@@ -122,9 +121,9 @@ def __getitem__(self, value):
         raise AttributeError
 
 
-def __getattr__(self, key):
+def _getattr__(self, key):
     """
-    __getattr__: Magic Method:
+    _getattr__: Magic Method:
         This method is invoked if you try to access an attribute which does not
         exist in the instance. We use this as an opportunity to create children.
         if you use 'dot notation' indicating a valid child name then this method
@@ -161,7 +160,7 @@ def __call__(self, *args, **kwargs):
     return self
 
 # Begin Monkey Patching
-etree.Element.__getattr__ = __getattr__
+etree.Element.__getattr__ = _getattr__
 etree.Element.__call__ = __call__
 etree.Element.__getitem__ = __getitem__
 etree.Element.add_child = add_child
@@ -204,13 +203,13 @@ class Request(object):
         self._timeout = TIMEOUT
 
         # handle test_case
-        if isinstance(test_case, etree.ElementTree):
+        if isinstance(test_case, type(etree.ElementTree)):
             # test_case is already parsed
             self._test_case = test_case
         elif isinstance(test_case, str):
             # If test_case is type str then it should be a filename
             with open(test_case, "r") as fin:
-                self._test_case = cEtree.parse(fin)
+                self._test_case = etree.parse(fin)
         else:
             # currently we only support two types for test_case:
             # str, ElementTree
@@ -218,7 +217,7 @@ class Request(object):
 
         # Populate _namespace_nodes
         for node in self._test_case.getroot().getiterator():
-            if '}' in node.tag:
+            if '}' in str(node.tag):
                 ns_url, tag = node.tag.split('}')
                 ns_url = ns_url.replace('{', '')
                 if ns_url in self._namespace_nodes:
@@ -230,7 +229,7 @@ class Request(object):
                     self._namespace_nodes[ns_url] = [tag]
 
         # handle credentials
-        self._credentials = base64.encodestring(credentials).replace('\n', '')
+        self._credentials = base64.encodestring(credentials.encode()).replace('\n'.encode(), ''.encode())
 
         # handle url
         self._url = '%s://%s:%s%s' % (scheme, host, port, uri)
@@ -241,7 +240,7 @@ class Request(object):
         root_tagname = self._test_case.getroot().tag
         root = etree.Element(root_tagname)
         self.root = root
-        root.parent = None
+        # root.parent = None
         self._pointers[root_tagname.split('}')[-1]] = root
 
         # recursively build request with any elements having less than 3
@@ -346,8 +345,8 @@ class Request(object):
         if len(tc_node) <= 2:
             for child in tc_node:
                 new_node = etree.SubElement(req_node, child.tag)
-                new_node.parent = req_node
-                new_node.owner = self
+                # new_node.parent = req_node
+                # new_node.owner = self
                 self._pointers[child.tag.split('}')[-1]] = new_node
                 self.__build_template(new_node, child)
 
@@ -365,7 +364,7 @@ class Request(object):
             context.verify_mode = ssl.CERT_NONE
         xml = etree.tostring(self.request_xml.getroot(), encoding="UTF-8")
         req = urllib.request.Request(url=self._url, data=xml)
-        creds = self._credentials.strip()
+        creds = self._credentials.strip().decode()
         req.add_header('Authorization', 'Basic %s' % (creds))
         response_xml = urllib.request.urlopen(req, timeout=self._timeout, context=context)
         response_xml = response_xml.read()
@@ -381,7 +380,7 @@ class Request(object):
             in oreder to pretty print the xml.
         """
         pretty_print(self.request_xml.getroot())
-        return etree.tostring(self.request_xml.getroot())
+        return etree.tostring(self.request_xml.getroot()).decode()
 
     def __repr__(self):
         """
@@ -391,7 +390,7 @@ class Request(object):
             that the xml will have been altered in order to pretty print the
             xml and this will be pretty printed as well.
         """
-        return etree.tostring(self.request_xml.getroot())
+        return etree.tostring(self.request_xml.getroot()).decode()
 
     def __getitem__(self, key):
         """

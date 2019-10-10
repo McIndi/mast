@@ -132,7 +132,7 @@ class Cli(object):
         else:
             self.create_subparser(self.main)
 
-    def create_subparser(self, fn):
+    def create_subparser(self, fn, name=None, category=None):
         """
         _method_: `mast.cli.Cli.create_subparser(self, fn)`
 
@@ -145,7 +145,8 @@ class Cli(object):
 
         * `fn`: The function to create a sub-command for.
         """
-        name = fn.__name__
+        if not name:
+            name = fn.__name__
         self.functions[name] = fn
 
         desc = fn.__doc__
@@ -156,7 +157,7 @@ class Cli(object):
 
         if self.main is None:
             _parser = self.subparsers.add_parser(
-                name,
+                name.replace("_", "-"),
                 description=desc,
                 formatter_class=argparse.RawDescriptionHelpFormatter)
             _parser.set_defaults(func=self.functions[name])
@@ -186,7 +187,7 @@ class Cli(object):
             # otherwise no short option
             else:
                 flag = ('--{}'.format(_arg), )
-            if isinstance(default, str):
+            if isinstance(default, (str, type(None))):
                 _parser.add_argument(*flag, type=str, default=default)
             elif isinstance(default, list):
                 _parser.add_argument(*flag, action='append')
@@ -202,7 +203,7 @@ class Cli(object):
             elif isinstance(default, float):
                 _parser.add_argument(*flag, type=float, default=default)
 
-    def command(self):
+    def command(self, name=None, category=None):
         """
         _method_: `mast.cli.Cli.command(self)`
 

@@ -26,6 +26,7 @@ import base64
 import shutil
 import zipfile
 import commandr
+from mast.cli import Cli
 from time import time, sleep
 from mast.xor import xorencode
 from mast.plugins.web import Plugin
@@ -38,7 +39,7 @@ import mast.plugin_utils.plugin_utils as util
 import mast.plugin_utils.plugin_functions as pf
 from mast.datapower.backups import get_normal_backup
 
-cli = commandr.Commandr()
+cli = Cli()
 
 MAST_HOME = os.environ["MAST_HOME"]
 
@@ -3882,10 +3883,14 @@ class WebPlugin(Plugin):
 
 if __name__ == '__main__':
     try:
-        cli.Run()
+        cli.run()
     except AttributeError as e:
         if "'NoneType' object has no attribute 'app'" in e:
             raise NotImplementedError(
                 "HTML formatted output is not supported on the CLI")
         else:
             raise
+    except SystemExit:
+        pass
+    except:
+        make_logger("error").exception("an unhandled exception occured")
