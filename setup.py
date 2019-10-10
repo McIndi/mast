@@ -99,7 +99,7 @@ setup(
         "mast.datapower.system": ["docroot/*"],
     },
     incude_package_data=True,
-    long_description=read('README.md'),
+    long_description=read('README.md').decode(),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Topic :: Utilities",
