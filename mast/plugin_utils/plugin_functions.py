@@ -43,7 +43,7 @@ import flask
 import inspect
 import zipfile
 import markdown
-import html.entities
+import html.entities as html_entities
 from textwrap import dedent
 from mast.config import get_config
 from mast.datapower.datapower import Environment
@@ -215,7 +215,7 @@ def _zipdir(path, z):
 def get_module(plugin):
     """Return the imported objects which correspond to plugin.
     These are all from bin (which is a module itself)."""
-    module = __import__("mast.datapower", globals(), locals(), [plugin], -1)
+    module = __import__("mast.datapower", globals(), locals(), [plugin], 0)
     return getattr(module, plugin)
 
 
@@ -243,7 +243,7 @@ def unescape(text):
         else:
             # named entity
             try:
-                text = chr(html.entities.name2codepoint[text[1:-1]])
+                text = chr(html_entities.name2codepoint[text[1:-1]])
             except KeyError:
                 pass
         return text  # leave as is
@@ -256,19 +256,20 @@ def html(plugin):
     htm = []
     module = get_module(plugin.replace("mast.datapower.", ""))
     last_category = ''
-    for item in sorted(
-            module.cli._command_list, key=lambda item: item.category):
-        if not item.name == 'help':
-            callable_name = item.callable.__name__.replace('_', ' ')
-            current_category = item.category
-            if current_category != last_category:
+    command_list = module.cli._command_list
+    # print(module.cli._command_list)
+    for category in sorted(command_list):
+        # print(type(category))
+        for index, item in enumerate(command_list[category]):
+            callable_name = item.__name__.replace('_', ' ')
+            if category != last_category:
                 htm.append(
                     flask.render_template(
-                        'categorylabel.html', category=current_category))
+                        'categorylabel.html', category=category))
             htm.append(
                 flask.render_template(
                     'dynbutton.html', plugin=plugin, callable=callable_name))
-            last_category = current_category
+            last_category = category
     return unescape(flask.render_template(
         'dynplugin.html', plugin=plugin, buttons=''.join(htm)))
 
@@ -277,11 +278,18 @@ def _get_arguments(plugin, fn_name):
     """Return a list of two-tuples containing the argument names and
     default values for function name and the actual function."""
     module = get_module(plugin)
-    for item in module.cli._command_list:
-        if item.callable.__name__ == fn_name:
-            args, _, __, defaults = inspect.getargspec(item.callable)
+    found = False
+    for category, items in module.cli._command_list.items():
+        if found:
             break
-    return (list(zip(args, defaults)), item.callable)
+        for item in items:
+            print(fn_name, category, item.__name__)
+            print(item.__name__ == fn_name)
+            if item.__name__ == fn_name:
+                args, _, __, defaults = inspect.getargspec(item)
+                found = True
+                break
+    return (list(zip(args, defaults)), item)
 
 
 def render_textbox(key, value):
@@ -487,7 +495,7 @@ def _call_method(func, kwargs):
         _id = "{}-{}.log".format(str(t.timestamp), str(rand))
         filename = os.path.join(filename, _id)
         with open(filename, 'wb') as fout:
-            fout.write(hist)
+            fout.write(hist.encode())
         return flask.Markup(out), _id
 
 
@@ -515,7 +523,7 @@ def call_method(plugin, form):
             elif arg == 'credentials':
                 kwargs[arg] = [
                     xordecode(
-                        _, key=xorencode(
+                        _.encode(), key=xorencode(
                             flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"], key="_"))
                             for _ in form.getlist(arg + '[]')]
             else:
@@ -589,10 +597,9 @@ def handle(plugin):
         logger.debug("name: {}".format(name))
         appliances = flask.request.args.getlist('appliances[]')
         logger.debug("appliances: {}".format(str(appliances)))
-        credentials = [xordecode(urllib.parse.unquote(_), key=xorencode(
+        credentials = [xordecode(urllib.parse.unquote(_).encode(), key=xorencode(
                         flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"], key="_"))
                         for _ in flask.request.args.getlist('credentials[]')]
-
         logger.debug("getting form")
         try:
             form = get_form(plugin.replace("mast.", ""), name, appliances, credentials)

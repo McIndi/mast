@@ -994,13 +994,17 @@ DO NOT USE.__"""
         )
 
     for appliance in env.appliances:
+        print(appliance.hostname)
         _domains = Domain
         if "all-domains" in _domains:
             _domains = appliance.domains
         for domain in _domains:
+            print(f"\t{domain}")
             logger.info("Attempting to save configuration of {} {}".format(
                 appliance, domain))
             resp = appliance.SaveConfig(domain=domain)
+            text_resp = "\n\t\t".join(resp.xml.itertext())
+            print(f"\t\t{text_resp}")
             logger.debug("Response received: {}".format(resp))
 
 
@@ -1013,7 +1017,7 @@ def quiesce_service(appliances=[],
                     type="",
                     name="",
                     Domain="",
-                    quiesce_timeout="60",
+                    quiesce_timeout=60,
                     web=False):
     """This will quiesce a service in the specified domain on the specified
 appliances.
@@ -1132,7 +1136,7 @@ DO NOT USE.__"""
     kwargs = {
         "type": type,
         "name": name,
-        "timeout": quiesce_timeout,
+        # "timeout": quiesce_timeout,
         "domain": Domain}
     logger.info("Attempting to unquiesce service {} in {} on {}".format(
         name, Domain, str(env.appliances)))
@@ -2746,6 +2750,7 @@ DO NOT USE.__"""
             src,
             dst))
         fin = appliance.getfile(domain=Domain, filename=src)
+        # print(fin)
         fout = base64.encodestring(fin)
         resp[appliance.hostname] = appliance._set_file(
             fout, dst, Domain, overwrite)
@@ -3661,7 +3666,7 @@ def clean_up(appliances=[],
              logstore=False,
              error_reports=False,
              recursive=False,
-             backup_files=True,
+             backup_files=False,
              out_dir='tmp',
              web=False):
     """This will clean up the specified appliances filesystem optionally
@@ -3835,7 +3840,7 @@ def _clean_error_reports(appliance, domain, backup, timestamp, out_dir):
         filestore = appliance.get_filestore('default', path)
         _dir = filestore.xml.find('.//location[@name="%s"]' % (path))
 
-    if not _dir:
+    if not len(_dir):
         appliance.log_warn("There were no error reports found.")
         return
 
@@ -3863,7 +3868,7 @@ def _clean_error_reports(appliance, domain, backup, timestamp, out_dir):
 
 
 def get_data_file(f):
-    return resource_string(__name__, 'docroot/{}'.format(f))
+    return resource_string(__name__, 'docroot/{}'.format(f)).decode()
 
 
 class WebPlugin(Plugin):

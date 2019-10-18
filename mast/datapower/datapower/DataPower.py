@@ -22,6 +22,7 @@ class which provides many convenient wrappers around the SOMA XML
 Management Interface as well as some methods to interact with the CLI
 Management Interface (ssh).
 """
+from mast.util import _s
 from .dpSOMALib import SomaRequest as Request
 from mast.logging import make_logger, logged
 from lxml import etree
@@ -31,7 +32,7 @@ from mast.config import get_config
 from mast.hashes import get_sha1
 from mast.xor import xordecode
 from datetime import datetime
-from io import StringIO
+from io import BytesIO
 from time import time, sleep
 import paramiko
 import zipfile
@@ -234,6 +235,8 @@ class DPResponse(object):
         * `response`: The XML response from a DataPower appliance
         as a Python `str`
         """
+        if not isinstance(response, str):
+            response = response.decode()
         self.text = response.replace(
             '\r', '').replace('\n', '').replace('  ', ' ')
 
@@ -263,15 +266,15 @@ class DPResponse(object):
         This method accepts no arguments
         """
         if not hasattr(self, '_xml'):
-            if hasattr(etree, 'register_namespace'):
-                etree.register_namespace(
-                    'dp',
-                    'http://www.datapower.com/schemas/management')
-                etree.register_namespace(
-                    'env',
-                    'http://schemas.xmlsoap.org/soap/envelope/')
-            else:
-                pass
+            # if hasattr(etree, 'register_namespace'):
+            #     etree.register_namespace(
+            #         'dp',
+            #         'http://www.datapower.com/schemas/management')
+            #     etree.register_namespace(
+            #         'env',
+            #         'http://schemas.xmlsoap.org/soap/envelope/')
+            # else:
+            #     pass
             self._xml = etree.fromstring(self.text.encode())
         return self._xml
 
@@ -621,8 +624,8 @@ class DataPower(object):
         else:
             self._hostname = hostname
 
-        if ':' not in credentials:
-            credentials = xordecode(credentials)
+        if _s(':') not in _s(credentials):
+            credentials = xordecode(credentials).decode()
             if ':' not in credentials:
                 raise ValueError("Invalid credentials provided")
 
@@ -795,7 +798,7 @@ class DataPower(object):
             self.log_info("Attempting SSH connection")
             self.domain = domain
             self._ssh = paramiko.SSHClient()
-            username, password = self.credentials.split(':', 1)
+            username, password = self.credentials.split(':'.encode(), 1)
 
             ssh_config = get_config("ssh.conf")
             if ssh_config.getboolean("ssh", "auto_add_keys"):
@@ -821,9 +824,9 @@ class DataPower(object):
                 sleep(0.25)
             resp = ""
             while self._ssh_conn.recv_ready():
-                resp += self._ssh_conn.recv(1024)
-            resp += self.ssh_issue_command("{}\n".format(username))
-            resp += self.ssh_issue_command("{}\n".format(password))
+                resp += self._ssh_conn.recv(1024).decode()
+            resp += self.ssh_issue_command("{}\n".format(username.decode()))
+            resp += self.ssh_issue_command("{}\n".format(password.decode()))
             if resp.strip().lower().endswith("login:"):
                 raise AuthenticationFailure(
                     "Invalid credentials provided, please ensure "
@@ -957,12 +960,12 @@ class DataPower(object):
         * `timeout`: The amount of time (in seconds) to wait for a
         response. Defaults to 120.
         """
-        username, password = self.credentials.split(":", 1)
+        username, password = self.credentials.split(":".encode(), 1)
         # need to manually log in order to obfuscate credentials
         logger = make_logger("audit")
         logger.info(
             "Attempting to execute ssh_issue_command('{}', '{}')".format(
-                str(self), command.replace(password, "********").strip()
+                str(self), command.replace(password.decode(), "********").strip()
             ))
         if not self.ssh_is_connected():
             self.log_error(
@@ -979,7 +982,7 @@ class DataPower(object):
 
         self.log_info(
             "Attempting to send SSH command: "
-            "{}".format(command.strip().replace(password, "********")))
+            "{}".format(command.strip().replace(password.decode(), "********")))
         self._ssh_conn.sendall(command)
 
         # Wait for a response, but check for timeouts
@@ -997,7 +1000,7 @@ class DataPower(object):
         # Make sure we get everything
         self.log_debug("Retrieving response...")
         while not self.ssh_finished_command(resp):
-            resp += self._ssh_conn.recv(1024)
+            resp += self._ssh_conn.recv(1024).decode()
             if (time() - start) >= timeout:
                 # Timeout occurred
                 self.log_error(
@@ -1013,7 +1016,7 @@ class DataPower(object):
         #     resp = ' {}\n{}'.format(command.replace(password, "********"), resp)
         logger.info(
             "Finished execution of ssh_issue_command('{}', '{}'). Result: {}".format(
-                str(self), command.replace(password, "********").strip(), resp
+                str(self), command.replace(password.decode(), "********").strip(), resp
             ))
         return resp
 
@@ -1125,6 +1128,7 @@ class DataPower(object):
         _hist = {"request": repr(self.request)}
         self.log_debug("Request built: {}".format(_escape(repr(self.request))))
         self.log_debug("Sending the request to the appliance.")
+        # print(self.request)
         try:
             self.last_response = self.request.send(secure=self.check_hostname)
             if "Authentication failure" in self.last_response.decode():
@@ -1205,8 +1209,8 @@ class DataPower(object):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':', 1)
-        msg = msg.replace(password, "********")
+        username, password = self.credentials.split(':'.encode(), 1)
+        msg = msg.replace(password.decode(), "********")
         logger.debug(msg)
 
     def log_info(self, message):
@@ -1235,8 +1239,8 @@ class DataPower(object):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':', 1)
-        msg = msg.replace(password, "********")
+        username, password = self.credentials.split(':'.encode(), 1)
+        msg = msg.replace(password.decode(), "********")
         logger.debug(msg)
 
     def log_warn(self, message):
@@ -1265,8 +1269,8 @@ class DataPower(object):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':', 1)
-        msg = msg.replace(password, "********")
+        username, password = self.credentials.split(':'.encode(), 1)
+        msg = msg.replace(password.decode(), "********")
         logger.info(msg)
 
     def log_error(self, message, get_logs=False):
@@ -1297,8 +1301,8 @@ class DataPower(object):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':', 1)
-        msg = msg.replace(password, "********")
+        username, password = self.credentials.split(':'.encode(), 1)
+        msg = msg.replace(password.decode(), "********")
         logger.error(msg)
 
         self.log_debug("Request/Response History: {}".format(self.history))
@@ -1334,8 +1338,8 @@ class DataPower(object):
             _msg.append('"{0}": "{1}", '.format(k, v))
         _msg.append('"message": "{}"'.format(msg))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':', 1)
-        msg = msg.replace(password, "********")
+        username, password = self.credentials.split(':'.encode(), 1)
+        msg = msg.replace(password.decode(), "********")
         logger.critical(msg)
         self.log_debug("Request/Response History: {}".format(self.history))
         if get_logs:
@@ -1377,17 +1381,17 @@ class DataPower(object):
 
         This method accepts no arguments
         """
-        self.request.clear()
-
+        # self.request.clear()
         try:
             resp = self.get_status("Version")
             # Because of lazy-loading we must explicitly prompt xml parsing
             tree = resp.xml
-            return 'datapower' in resp.text
+            return 'datapower' in resp.text.lower()
         except AuthenticationFailure:
-            return 'datapower' in self.last_response
+            return 'datapower' in self.last_response.lower()
         except:
-            return False
+            # print(self.request)
+            raise
 
     @correlate
     @logged("debug")
@@ -1579,13 +1583,18 @@ class DataPower(object):
             self.domain = kwargs.pop('domain')
             self.log_debug("Setting domain to {}".format(kwargs.get('domain')))
         self.request.clear()
-        act = self.request.request(domain=self.domain).do_action[action]
-        for key in act.valid_children():
+        req = self.request.request
+        req.set("domain", self.domain)
+        do_action = etree.SubElement(req, f"{{{MGMT_NAMESPACE}}}do-action")
+        act = etree.SubElement(do_action, action)
+        for key in self.request.valid_children(act):
             if key in kwargs:
-                act[key](str(kwargs.pop(key)))
+                el = etree.SubElement(act, key)
+                el.text = str(kwargs.pop(key))
             elif key.replace('-', '_') in kwargs:
                 # Handles the python rule of not using dashes in variable names
-                act[key](str(kwargs.pop(key.replace('-', '_'))))
+                el = etree.SubElement(act, key.replace('-', '_'))
+                el.text = str(kwargs.pop(key.replace('-', '_')))
         if kwargs:
             key = list(kwargs.keys())[0]
             raise ValueError("'{}' is not a valid parameter of '{}'".format(
@@ -1681,7 +1690,7 @@ class DataPower(object):
 
         This method accepts no arguments
         """
-        user = self.credentials.split(':', 1)[0]
+        user = self.credentials.split(':'.encode(), 1)[0]
         return {'hostname': self.hostname,
                 'domain': self.domain,
                 'user': user,
@@ -1717,13 +1726,12 @@ class DataPower(object):
         if not hasattr(self, "_domains"):
             self.request.clear()
             resp = self.get_status('DomainStatus')
-
             self._domains = [x.text for x in resp.xml.findall('.//*/Domain')]
         return self._domains
 
     @property
     @logged("debug")
-    def users(self):
+    def users(self, persisted=False):
         """
         _property_: `mast.datapower.datapower.DataPower.users`
 
@@ -1747,7 +1755,7 @@ class DataPower(object):
         This method accepts no arguments
         """
         self.request.clear()
-        resp = self.get_config('User', persisted=False)
+        resp = self.get_config('User', persisted=persisted)
 
         users = resp.xml.findall('.//User')
         users = [x.get('name') for x in users]
@@ -1941,23 +1949,31 @@ class DataPower(object):
             self.log_error(
                 "Neither access level or user group provided. Aborting.")
             return False
-        user = self.request.request(
-            domain='default').set_config.User(name=username)
-        user.Password(password)
+        req = self.request.request
+        req.set('domain', 'default')
+        set_config = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}set-config')
+        user = etree.SubElement(set_config, 'User')
+        user.set('name', username)
+        _password = etree.SubElement(user, 'Password')
+        _password.text = password
 
         if privileged:
             self.log_debug("User {} will be created as privileged".format(
                 username))
-            user.AccessLevel('privileged')
+            access_level = etree.SubElement(user, 'AccessLevel')
+            access_level.text = 'privileged'
         else:
             self.log_debug("User {} will be added to group {}.".format(
                 username, user_group))
-            user.AccessLevel('group-defined')
-            groupname = user.GroupName
+            access_level = etree.SubElement(user, 'AccessLevel')
+            access_level.text = 'group-defined'
+            groupname = etree.SubElement(user, 'GroupName')
             groupname.set('class', 'UserGroup')
-            groupname(user_group)
+            groupname.text = user_group
         if supress_force_password_change:
-            user.SuppressPasswordChange("on")
+            spc = etree.SubElement(user, 'SuppressPasswordChange')
+            spc.text = "on"
+        print(self.request)
         resp = self.send_request(boolean=True)
         return resp
 
@@ -1984,8 +2000,12 @@ class DataPower(object):
         * `password`: The new password for the user
         """
         self.request.clear()
-        self.request.request.modify_config.User(
-            name=username).Password(password)
+        req = self.request.request
+        modify_config = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}modify-config')
+        user = etree.SubElement(modify_config, 'User')
+        user.set('name', username)
+        _password = etree.SubElement(user, 'Password')
+        _password.text = password
         resp = self.send_request(boolean=True)
         if username == self.credentials.split(':', 1)[0]:
             # Handles the case of changing the password of the user which
@@ -2018,7 +2038,11 @@ class DataPower(object):
         * `username`: The name of the user to remove
         """
         self.request.clear()
-        self.request.request(domain='default').del_config.User(name=username)
+        req = self.request.request
+        req.set('domain', 'default')
+        del_config = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}del-config')
+        user = etree.SubElement(del_config, 'User')
+        user.set('name', username)
         resp = self.send_request(boolean=True)
         return resp
 
@@ -2125,11 +2149,13 @@ class DataPower(object):
 
         # Start building the request to add the fallback user.
         self.request.clear()
-        new_config = self.request.request.set_config.RBMSettings(
-            name='RBM-Settings')
+        req = self.request.request
+        set_config = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}set-config')
+        new_config = etree.SubElement(set_config, 'RBMSettings')
+        new_config.set('name', 'RBM-Settings')
 
         # loop through all valid children for new_config
-        for child in new_config.valid_children():
+        for child in self.request.valid_children(new_config):
             # If this valid child is present in existing_config:
             # append it to new_config
             if existing_config.find(child) is not None:
@@ -2196,14 +2222,16 @@ class DataPower(object):
 
         # Start building the request to add the fallback user.
         self.request.clear()
-        new_config = self.request.request.set_config.RBMSettings(
-            name='RBM-Settings')
+        req = self.request.request
+        set_config = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}set-config')
+        new_config = etree.SubElement(set_config, 'RBMSettings')
+        new_config.set('name', 'RBM-Settings')
 
         # I hate using flag, but otherwise it would add the fallback user once
         # for each existing fallback user
         flag = False
         # loop through all valid children for new_config
-        for child in new_config.valid_children():
+        for child in self.request.valid_children(new_config):
             # If this valid child is present in existing_config:
             # append it to new_config
             if existing_config.find(child) is not None:
@@ -2212,9 +2240,11 @@ class DataPower(object):
             # We are looking for FallbackUser Here we found one...
             if child in 'FallbackUser' and flag is False:
                 # add FallbackUser to the new_config
-                new_config.FallbackUser(user)
+                fallback_user = etree.SubElement(new_config, 'FallbackUser')
+                fallback_user.text = user
                 # Set the flag to True so we don't do this more than once
                 flag = True
+        print(self.request)
         resp = self.send_request(boolean=True)
         return resp
 
@@ -2259,12 +2289,18 @@ class DataPower(object):
         """
         local = "true" if local else "false"
         self.request.clear()
-        ug = self.request.request(
-            domain='default').set_config.UserGroup(name=name, local=local)
-        ug.mAdminState(admin_state)
+        req = self.request.request
+        req.set('domain', 'default')
+        set_config = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}set-config')
+        ug = etree.SubElement(set_config, 'UserGroup')
+        ug.set('name', name)
+        ug.set('local', local)
+        _admin_state = etree.SubElement(ug, 'mAdminState')
+        _admin_state.text = admin_state
         if access_policies:
             for access_policy in access_policies:
-                ug.AccessPolicies(access_policy)
+                policy = etree.SubElement(ug, 'AccessPolicies')
+                policy.text = access_policy
         resp = self.send_request(boolean=True)
         return resp
 
@@ -2297,7 +2333,11 @@ class DataPower(object):
         * `group`: The name of the `UserGroup` to remove
         """
         self.request.clear()
-        self.request.request(domain='default').del_config.UserGroup(name=group)
+        req = self.request.request
+        req.set('domain', 'default')
+        del_config = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}del-config')
+        ug = etree.SubElement(del_config, 'UserGroup')
+        ug.set('name', group)
         resp = self.send_request(boolean=True)
         return resp
 
@@ -2332,13 +2372,20 @@ class DataPower(object):
         """
         self.domain = domain
         self.request.clear()
-        self.request.request(domain=domain).get_file(name=filename)
+        req = self.request.request
+        req.set('domain', domain)
+        get_file = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}get-file')
+        get_file.set('name', filename)
         resp = self.send_request()
+        # print(resp)
         try:
             xpath = "".join((
                 BASE_XPATH,
                 "{http://www.datapower.com/schemas/management}file"))
-            _file = resp.xml.find(xpath).text or ""
+            _file = resp.xml.find(xpath)
+            _file = getattr(_file, 'text')
+            if _file is None:
+                _file = ""
         except:
             self.log_error(
                 "An error occurred while trying to retrieve "
@@ -2346,7 +2393,7 @@ class DataPower(object):
                     filename,
                     domain))
             raise
-        return base64.decodestring(_file)
+        return _s(base64.decodestring(_file.encode()))
 
     @correlate
     @logged("audit")
@@ -2388,7 +2435,11 @@ class DataPower(object):
                 return False
         self.domain = domain
         self.request.clear()
-        self.request.request(domain=domain).set_file(contents, name=filename)
+        req = self.request.request
+        req.set('domain', domain)
+        set_file = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}set-file')
+        set_file.set('name', filename)
+        set_file.text = contents
         resp = self.send_request(boolean=True)
         return resp
 
@@ -2459,7 +2510,11 @@ class DataPower(object):
         self.domain = domain
         file_in = self._get_local_file(file_in)
         self.request.clear()
-        self.request.request(domain=domain).set_file(file_in, name=file_out)
+        req = self.request.request
+        req.set('domain', domain)
+        set_file = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}set-file')
+        set_file.set('name', file_out)
+        set_file.text = file_in
         resp = self.send_request(boolean=True)
         return resp
 
@@ -2536,7 +2591,7 @@ class DataPower(object):
         and return
         """
         with open(file_in, 'rb') as f:
-            fin = base64.encodestring(f.read())
+            fin = base64.encodestring(f.read()).decode()
             fin = fin.replace("\n", "").replace("\r", "")
         return fin
 
@@ -2568,7 +2623,10 @@ class DataPower(object):
         '''
         self.domain = domain
         self.request.clear()
-        self.request.request(domain=domain).get_filestore(location=location)
+        req = self.request.request
+        req.set('domain', domain)
+        get_filestore = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}get-filestore')
+        get_filestore.set('location', location)
         filestore = self.send_request()
         return filestore
 
@@ -3355,16 +3413,22 @@ class DataPower(object):
         if isinstance(domains, str):
             domains = [domains]
         self.request.clear()
-        dobackup = self.request.request.do_backup(format=format)
+        req = self.request.request
+        dobackup = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}do-backup')
+        dobackup.set('format', format)
+
         if comment:
-            dobackup.user_comment(comment)
+            _comment = etree.SubElement(dobackup, f'{{{MGMT_NAMESPACE}}}user-comment')
+            _comment.text = comment
         for domain in domains:
-            dobackup.domain(name=domain)
+            _domain = etree.SubElement(dobackup, f'{{{MGMT_NAMESPACE}}}domain')
+            _domain.set('name', domain)
+        # print(self.request)
         resp = self.send_request()
         try:
             xpath = "".join((
                 BASE_XPATH,
-                "{http://www.datapower.com/schemas/management}file"))
+                f"{{{MGMT_NAMESPACE}}}file"))
             _file = resp.xml.find(xpath).text
         except AttributeError:
             raise FailedToRetrieveBackup(
@@ -3376,10 +3440,13 @@ class DataPower(object):
                 "There was an error retrieving a backup from {} {}".format(
                     self.hostname, domain))
             raise
-        _file = base64.decodestring(_file)
+        print(type(_file))
+        _file = base64.decodebytes(_file.encode())
+        print(type(_file))
         if format == "ZIP":
-            stringio = StringIO(_file)
-            zip_file = zipfile.ZipFile(stringio)
+            bytesio = BytesIO(_file)
+            # print(bytesio.read())
+            zip_file = zipfile.ZipFile(bytesio)
             if zip_file.testzip() is not None:
                 raise FailedToRetrieveBackup(
                     "We received a corrupted backup when attempting to "
@@ -3713,12 +3780,15 @@ class DataPower(object):
         """
         self.domain = domain
         self.request.clear()
-        gc = self.request.request(domain=domain).get_config
+        req = self.request.request
+        req.set('domain', domain)
+        gc = etree.SubElement(req, f"{{{MGMT_NAMESPACE}}}get-config")
         if _class:
             gc.set('class', _class)
         if name:
-            gc(name=name)
-        gc(recursive=str(recursive).lower(), persisted=str(persisted).lower())
+            gc.set('name', name)
+        gc.set('recursive', str(recursive).lower())
+        gc.set('persisted', str(persisted).lower())
         resp = self.send_request(config=True)
         return resp
 
@@ -3767,8 +3837,12 @@ class DataPower(object):
         """
         self.domain = domain
         self.request.clear()
-        self.request.request.modify_config.Domain(
-            name=domain).mAdminState('disabled')
+        req = self.request.request
+        modify_config = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}modify-config')
+        _domain = etree.SubElement(modify_config, 'Domain')
+        _domain.set('name', domain)
+        admin_state = etree.SubElement(_domain, 'mAdminState')
+        admin_state.text = 'disabled'
         resp = self.send_request(boolean=True)
         return resp
 
@@ -3780,8 +3854,12 @@ class DataPower(object):
         """
         self.domain = domain
         self.request.clear()
-        self.request.request.modify_config.Domain(
-            name=domain).mAdminState('enabled')
+        req = self.request.request
+        modify_config = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}modify-config')
+        _domain = etree.SubElement(modify_config, 'Domain')
+        _domain.set('name', domain)
+        admin_state = etree.SubElement(_domain, 'mAdminState')
+        admin_state.text = 'enabled'
         resp = self.send_request(boolean=True)
         return resp
 
@@ -3792,7 +3870,11 @@ class DataPower(object):
         Adds a domain to the appliance.
         """
         self.request.clear()
-        self.request.request(domain='default').set_config.Domain(name=name)
+        req = self.request.request
+        req.set('domain', 'default')
+        set_config = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}set-config')
+        domain = etree.SubElement(set_config, 'Domain')
+        domain.set('name', name)
         resp = self.send_request(boolean=True)
         return resp
 
@@ -3803,7 +3885,11 @@ class DataPower(object):
         Removes domain with name of name from the appliance
         """
         self.request.clear()
-        self.request.request(domain="default").del_config.Domain(name=name)
+        req = self.request.request
+        req.set('domain', 'default')
+        del_config = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}del-config')
+        domain = etree.SubElement(del_config, 'Domain')
+        domain.set('name', name)
         resp = self.send_request(boolean=True)
         return resp
 

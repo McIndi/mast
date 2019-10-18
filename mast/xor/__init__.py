@@ -61,9 +61,7 @@ def xorencode(string, key=None):
     if key is None:
         config = get_config_dict("xor.conf")
         key = config["global"].get("key")
-    return base64.encodestring(
-        ''.join(
-            chr(ord(c) ^ ord(k)) for c, k in zip(string, cycle(key)))).strip()
+    return base64.encodestring(''.join(chr(ord(c) ^ ord(k)) for c, k in zip(string, cycle(key))).encode()).strip().decode()
 
 
 def xordecode(string, key=None):
@@ -89,5 +87,4 @@ def xordecode(string, key=None):
         config = get_config_dict("xor.conf")
         key = config["global"].get("key")
     string = base64.decodestring(string)
-    return ''.join(
-        chr(ord(c) ^ ord(k)) for c, k in zip(string, cycle(key))).strip()
+    return bytes(x ^ y for x, y in zip(string, cycle(key.encode()))).strip()

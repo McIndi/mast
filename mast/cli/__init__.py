@@ -31,6 +31,7 @@ import sys
 import inspect
 import argparse
 from mast import __version__
+from collections import defaultdict
 
 class Cli(object):
     """
@@ -124,6 +125,7 @@ class Cli(object):
         self.main = main
         self.optionals = optionals
         self.functions = {}
+        self._command_list = defaultdict(list)
         self.parser = argparse.ArgumentParser(
             description=description,
             formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -148,6 +150,7 @@ class Cli(object):
         if not name:
             name = fn.__name__
         self.functions[name] = fn
+        self._command_list[category].append(fn)
 
         desc = fn.__doc__
         args, _, __, defaults = inspect.getargspec(fn)
@@ -242,7 +245,7 @@ class Cli(object):
             if self.main is not None:
                 print("The Cli decorator cannot be used when main is specified")
                 sys.exit(-1)
-            self.create_subparser(fn)
+            self.create_subparser(fn, name, category)
             return fn
         return inner
 

@@ -35,7 +35,7 @@ def _check_for_appliance(hostname, appliances):
 
 
 def get_data_file(f):
-    return resource_string(__name__, 'docroot/{}'.format(f))
+    return resource_string(__name__, 'docroot/{}'.format(f)).decode()
 
 
 class WebPlugin(Plugin):
@@ -69,7 +69,7 @@ class WebPlugin(Plugin):
         appliances = _appliances[session_id]
         command = flask.request.form.get("command")
         hostnames = flask.request.form.getlist("appliances[]")
-        credentials = [xordecode(_, key=xorencode(
+        credentials = [xordecode(_.encode(), key=xorencode(
            flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"], key="_"))
            for _ in flask.request.form.getlist('credentials[]')]
 

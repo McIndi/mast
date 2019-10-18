@@ -22,9 +22,9 @@ your DataPower service deployments and migrations.
 import os
 import sys
 import flask
-import commandr
-from time import sleep
 import subprocess
+from time import sleep
+from mast.cli import Cli
 from collections import OrderedDict
 from mast.datapower import datapower
 from mast.datapower.deployment.git_deploy import git_deploy
@@ -37,7 +37,7 @@ from functools import partial, update_wrapper
 import mast.plugin_utils.plugin_utils as util
 import mast.plugin_utils.plugin_functions as pf
 
-cli = commandr.Commandr()
+cli = Cli()
 
 
 def system_call(
@@ -1086,7 +1086,7 @@ DO NOT USE.__"""
         return output, history
 
 def get_data_file(f):
-    return resource_string(__name__, 'docroot/{}'.format(f))
+    return resource_string(__name__, 'docroot/{}'.format(f)).decode()
 
 
 cli.command('git-deploy', category='deployment')(git_deploy)
@@ -1197,9 +1197,9 @@ DO NOT USE.__"""
                 ))
     if web:
         return (
-            render_results_table(output), 
+            render_results_table(output),
             render_history(env),
-        )        
+        )
 
 @logged('mast.datapower.deployment')
 @cli.command('del-password-map-alias', category='password map aliases')
@@ -1304,9 +1304,9 @@ DO NOT USE.__"""
                 ))
     if web:
         return (
-            render_results_table(output), 
+            render_results_table(output),
             render_history(env),
-        )        
+        )
 
 class WebPlugin(Plugin):
     def __init__(self):
@@ -1324,7 +1324,7 @@ class WebPlugin(Plugin):
 
 if __name__ == '__main__':
     try:
-        cli.Run()
+        cli.run()
     except AttributeError as e:
         if "'NoneType' object has no attribute 'app'" in e:
             raise NotImplementedError(

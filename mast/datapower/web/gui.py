@@ -143,7 +143,7 @@ def initialize_plugins():
                 "An unhandled exception occured while attempting "
                 "to assign a handler for web plugin {}".format(name))
             raise
-
+    # print(flask.Markup(plugins["js"]))
     return plugins
 
 @app.route('/config/<_file>')
@@ -189,17 +189,20 @@ def check_connectivity(hostname):
     resp = {}
     credentials = flask.request.args.get("credentials")
     credentials = xordecode(
-        credentials,
-        key=xorencode(flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"], key="_"))
+        credentials.encode(),
+        key=xorencode(
+            flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"],
+            key="_"
+        )
+    )
     check_hostname = flask.request.args.get("check_hostname", True)
     check_hostname = False if "false" in check_hostname else check_hostname
-
     appl = datapower.DataPower(
         hostname,
         credentials,
         check_hostname=check_hostname)
     resp["soma"] = appl.is_reachable()
-    if "Authentication failure" in appl.last_response:
+    if "Authentication failure" in appl.last_response.decode():
         resp["soma"] = False
     try:
         _resp = appl.ssh_connect(port=appl.ssh_port)
@@ -411,7 +414,7 @@ def main():
     # Set the configuration of the web server
     cherrypy.config.update({
         'engine.autoreload.on': False,
-        'log.screen': False,
+        'log.screen': True,
         'server.socket_port': port,
         'server.socket_host': host,
         'server.max_request_body_size': max_file_upload_size

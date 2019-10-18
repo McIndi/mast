@@ -13,6 +13,7 @@
 # along with MAST.  If not, see <https://www.gnu.org/licenses/>.
 #
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
+from mast.util import _s
 from mast.xor import xordecode
 from mast.config import get_config
 from .DataPower import DataPower, STATUS_XPATH
@@ -102,9 +103,9 @@ class Environment(object):
 
         self.appliances = []
         for index, hostname in enumerate(self.hostnames):
-            if ':' not in self.credentials[index]:
+            if _s(':') not in _s(self.credentials[index]):
                 self.credentials[index] = xordecode(self.credentials[index])
-                if ':' not in self.credentials[index]:
+                if _s(':') not in _s(self.credentials[index]):
                     raise ValueError("Invalid credentials provided")
             if is_environment(hostname):
                 _appliances = get_appliances(hostname)

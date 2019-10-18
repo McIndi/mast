@@ -20,7 +20,7 @@ import sys
 sys.argv[0] = "mast-backups"
 
 try:
-    cli.Run()
+    cli.run()
 except AttributeError as e:
     if "'NoneType' object has no attribute 'app'" in e:
         raise NotImplementedError(

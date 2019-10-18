@@ -20,7 +20,7 @@ A set of tools for automating routine user/group
 administration tasks associated with IBM DataPower
 appliances.
 """
-import commandr
+from mast.cli import Cli
 from mast.plugins.web import Plugin
 from mast.datapower import datapower
 from pkg_resources import resource_string
@@ -30,7 +30,7 @@ from functools import partial, update_wrapper
 import mast.plugin_utils.plugin_functions as pf
 from mast.pprint import pprint_xml
 
-cli = commandr.Commandr()
+cli = Cli()
 
 
 @logged("mast.datapower.accounts")
@@ -1127,7 +1127,7 @@ DO NOT USE.__"""
 
 
 def get_data_file(f):
-    return resource_string(__name__, 'docroot/{}'.format(f))
+    return resource_string(__name__, 'docroot/{}'.format(f)).decode()
 
 
 class WebPlugin(Plugin):
@@ -1146,7 +1146,7 @@ class WebPlugin(Plugin):
 
 if __name__ == '__main__':
     try:
-        cli.Run()
+        cli.run()
     except AttributeError as e:
         if "'NoneType' object has no attribute 'app'" in e:
             raise NotImplementedError(

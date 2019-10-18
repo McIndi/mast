@@ -39,7 +39,7 @@ mast_home = os.environ["MAST_HOME"]
 
 
 def get_data_file(f):
-    return resource_string(__name__, 'docroot/{}'.format(f))
+    return resource_string(__name__, 'docroot/{}'.format(f)).decode()
 
 
 class WebPlugin(Plugin):
@@ -77,10 +77,10 @@ class WebPlugin(Plugin):
             'check_hostname').lower()
         appliances = flask.request.form.getlist('appliances[]')
         credentials = [xordecode(
-            _,
+            _.encode(),
             key=xorencode(
                 flask.request.cookies["9x4h/mmek/j.ahba.ckhafn"], key="_"))
-            for _ in flask.request.form.getlist('credentials[]')]
+                for _ in flask.request.form.getlist('credentials[]')]
         if not appliances:
             return flask.abort(404)
 

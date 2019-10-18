@@ -15,9 +15,16 @@
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
 import base64
 from lxml import etree
+from mast.util import _s, _b
 import urllib.request, urllib.error, urllib.parse
+# from .dpSOMALib import nsmap as NSMAP
 
 TIMEOUT = 120
+NSMAP = {
+    'soapenv': 'http://schemas.xmlsoap.org/soap/envelope/',
+    'man': 'http://www.datapower.com/schemas/management',
+    # 'dp': 'http://www.datapower.com/schemas/management',
+}
 
 
 # Custom exceptions
@@ -42,16 +49,16 @@ def get_path(self):
     """
     parent = ''
     path = self.tag
-    sibs = self.parent.findall(self.tag)
+    sibs = self.getparent().findall(self.tag)
     if len(sibs) > 1:
         path = path + '[%s]' % (sibs.index(self) + 1)
     cur_node = self
     while True:
-        parent = cur_node.parent
+        parent = cur_node.getparent()
         ptag = parent.tag
         path = ptag + '/' + path
         cur_node = parent
-        if cur_node.parent.parent is None:
+        if cur_node.getparent().getparent() is None:
             break
     return path
 
@@ -160,6 +167,7 @@ def __call__(self, *args, **kwargs):
     return self
 
 # Begin Monkey Patching
+# print(type(etree.Element))
 etree.Element.__getattr__ = _getattr__
 etree.Element.__call__ = __call__
 etree.Element.__getitem__ = __getitem__
@@ -229,7 +237,7 @@ class Request(object):
                     self._namespace_nodes[ns_url] = [tag]
 
         # handle credentials
-        self._credentials = base64.encodestring(credentials.encode()).replace('\n'.encode(), ''.encode())
+        self._credentials = _s(base64.encodestring(_b(credentials))).replace('\n', '')
 
         # handle url
         self._url = '%s://%s:%s%s' % (scheme, host, port, uri)
@@ -270,9 +278,11 @@ class Request(object):
         valid_chidlren: Public Function:
             This will return the valid children of a given node.
         """
-        path = element.get_path().split('[')[0]
-        for child in self._test_case.find(path):
-            yield child.tag
+        tree = element.getroottree()
+        # print(etree.tostring(tree))
+        path = tree.getpath(element) + "/*"
+        for child_tag in (el.tag for el in self._test_case.xpath(path, namespaces=NSMAP)):
+            yield child_tag
 
     def SubElement(self, parent, tag):
         """
@@ -364,7 +374,7 @@ class Request(object):
             context.verify_mode = ssl.CERT_NONE
         xml = etree.tostring(self.request_xml.getroot(), encoding="UTF-8")
         req = urllib.request.Request(url=self._url, data=xml)
-        creds = self._credentials.strip().decode()
+        creds = _s(self._credentials.strip())
         req.add_header('Authorization', 'Basic %s' % (creds))
         response_xml = urllib.request.urlopen(req, timeout=self._timeout, context=context)
         response_xml = response_xml.read()
