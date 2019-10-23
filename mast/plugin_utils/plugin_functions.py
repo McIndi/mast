@@ -283,8 +283,8 @@ def _get_arguments(plugin, fn_name):
         if found:
             break
         for item in items:
-            print(fn_name, category, item.__name__)
-            print(item.__name__ == fn_name)
+            # print(fn_name, category, item.__name__)
+            # print(item.__name__ == fn_name)
             if item.__name__ == fn_name:
                 args, _, __, defaults = inspect.getargspec(item)
                 found = True
