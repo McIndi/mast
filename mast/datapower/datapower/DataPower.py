@@ -1209,8 +1209,8 @@ class DataPower(object):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':'.encode(), 1)
-        msg = msg.replace(password.decode(), "********")
+        username, password = _s(self.credentials).split(_s(':'), 1)
+        msg = msg.replace(password, "********")
         logger.debug(msg)
 
     def log_info(self, message):
@@ -1239,7 +1239,7 @@ class DataPower(object):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':'.encode(), 1)
+        username, password = _s(self.credentials).split(_s(':'), 1)
         msg = msg.replace(password.decode(), "********")
         logger.debug(msg)
 
@@ -1269,8 +1269,8 @@ class DataPower(object):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':'.encode(), 1)
-        msg = msg.replace(password.decode(), "********")
+        username, password = _s(self.credentials).split(_s(':'), 1)
+        msg = msg.replace(_s(password), "********")
         logger.info(msg)
 
     def log_error(self, message, get_logs=False):
@@ -1301,8 +1301,8 @@ class DataPower(object):
             msg.append('"{0}": "{1}", '.format(k, v))
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':'.encode(), 1)
-        msg = msg.replace(password.decode(), "********")
+        username, password = _s(self.credentials).split(_s(':'), 1)
+        msg = msg.replace(_s(password), "********")
         logger.error(msg)
 
         self.log_debug("Request/Response History: {}".format(self.history))
@@ -1690,7 +1690,7 @@ class DataPower(object):
 
         This method accepts no arguments
         """
-        user = self.credentials.split(':'.encode(), 1)[0]
+        user = _s(self.credentials).split(_s(':'), 1)[0]
         return {'hostname': self.hostname,
                 'domain': self.domain,
                 'user': user,
@@ -3789,6 +3789,7 @@ class DataPower(object):
             gc.set('name', name)
         gc.set('recursive', str(recursive).lower())
         gc.set('persisted', str(persisted).lower())
+        # print(self.request)
         resp = self.send_request(config=True)
         return resp
 

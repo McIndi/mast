@@ -48,7 +48,6 @@ setup(
         'mast.datapower.backups',
         'mast.datapower.crypto',
         'mast.datapower.datapower',
-        'mast.datapower.datapower.et',
         'mast.datapower.deployment',
         'mast.datapower.developer',
         'mast.datapower.network',
