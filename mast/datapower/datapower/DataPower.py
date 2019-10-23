@@ -1210,7 +1210,7 @@ class DataPower(object):
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
         username, password = _s(self.credentials).split(_s(':'), 1)
-        msg = msg.replace(password, "********")
+        msg = msg.replace(_s(password), "********")
         logger.debug(msg)
 
     def log_info(self, message):
@@ -1240,7 +1240,7 @@ class DataPower(object):
         msg.append('"message": "{}"'.format(message))
         msg = ''.join(msg)
         username, password = _s(self.credentials).split(_s(':'), 1)
-        msg = msg.replace(password.decode(), "********")
+        msg = msg.replace(_s(password), "********")
         logger.debug(msg)
 
     def log_warn(self, message):
@@ -1338,8 +1338,8 @@ class DataPower(object):
             _msg.append('"{0}": "{1}", '.format(k, v))
         _msg.append('"message": "{}"'.format(msg))
         msg = ''.join(msg)
-        username, password = self.credentials.split(':'.encode(), 1)
-        msg = msg.replace(password.decode(), "********")
+        username, password = _s(self.credentials).split(_s(':'), 1)
+        msg = msg.replace(_s(password), "********")
         logger.critical(msg)
         self.log_debug("Request/Response History: {}".format(self.history))
         if get_logs:
