@@ -42,15 +42,16 @@ Usage:
 """
 
 
+import os
+import re
 import logging
+import getpass
 from functools import wraps
+from mast.util import _s, _b
+from mast import __version__
 from mast.timestamp import Timestamp
 from logging.handlers import RotatingFileHandler
 from mast.config import get_configs_dict
-import getpass
-import os
-import re
-from mast import __version__
 
 mast_home = os.environ["MAST_HOME"]
 
@@ -182,6 +183,7 @@ def make_logger(
     )
     if not os.path.exists(directory):
         os.makedirs(directory)
+    # print(max_bytes)
     _handler = RotatingFileHandler(
         filename,
         maxBytes=max_bytes,
