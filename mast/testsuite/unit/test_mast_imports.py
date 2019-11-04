@@ -43,7 +43,7 @@ class TestMASTImports(unittest.TestCase):
         self.assertTrue(hasattr(cron, "__version__"))
 
     def test_import_mast_daemon(self):
-        import mast.daemon as daemon
+        import mast._daemon as daemon
         self.assertTrue(hasattr(daemon, "__version__"))
 
     def test_import_mast_datapower_accounts(self):

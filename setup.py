@@ -42,7 +42,7 @@ setup(
         'mast.cli',
         'mast.config',
         'mast.cron',
-        'mast.daemon',
+        'mast._daemon',
         'mast.datapower',
         'mast.datapower.accounts',
         'mast.datapower.backups',
