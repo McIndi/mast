@@ -39,7 +39,7 @@ try:
     import win32event
     import socket
 except ImportError:
-    from daemon import Daemon
+    from .daemon import Daemon
     from time import sleep
 
 if "Windows" in platform.system():
