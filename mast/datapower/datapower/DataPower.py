@@ -3018,7 +3018,9 @@ class DataPower(object):
         rewrite_local_ip = str(rewrite_local_ip).lower()
 
         self.request.clear()
-        do_import = self.request.request(domain=domain).do_import
+        req = self.request.request
+        req.set("domain", domain)
+        do_import = etree.SubElement(req, f"{{{MGMT_NAMESPACE}}}do-import")
         if deployment_policy is not None:
             do_import.set('deployment-policy', deployment_policy)
         if deployment_policy_variables is not None:
@@ -3028,7 +3030,8 @@ class DataPower(object):
         do_import.set('overwrite-files', overwrite_files)
         do_import.set('dry-run', dry_run)
         do_import.set('source-type', source_type)
-        do_import.input_file(contents)
+        in_file = etree.SubElement(do_import, f"{{{MGMT_NAMESPACE}}}input-file")
+        in_file.text = contents
         return self.send_request()
 
     @correlate

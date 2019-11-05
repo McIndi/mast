@@ -20,6 +20,7 @@ from collections import Counter
 from mast.logging import make_logger
 from mast.config import get_config
 from mast.xor import xorencode, xordecode
+from mast.util import _s, _b
 from subprocess import Popen
 from mast.timestamp import Timestamp
 from mast.cli import Cli
@@ -40,6 +41,7 @@ import os
 import sys
 import contextlib
 import sys
+import multiprocessing
 from multiprocessing import Process
 from multiprocessing.queues import Queue
 from threading import Thread
@@ -106,8 +108,8 @@ def text_catcher(parent, text_widget, queue):
 
 # This is a Queue that behaves like stdout
 class StdoutQueue(Queue):
-    def __init__(self,*args,**kwargs):
-        Queue.__init__(self,*args,**kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, ctx=multiprocessing.get_context(), **kwargs)
 
     def write(self,msg):
         self.put(msg)
@@ -260,8 +262,10 @@ class Plan(object):
 
         if config["web"]:
             self.output = OrderedDict()
+        # print(str(self._actions))
         with open(os.path.join(config["out_dir"], "plan.txt"), "w") as fp:
             for index, action in enumerate(self):
+                print(repr(action))
                 fp.write("Step {}, {}{}".format(index, action.name, os.linesep))
                 for k, v in list(action.kwargs.items()):
                     fp.write("\t{}={}{}".format(k, v, os.linesep))
@@ -269,7 +273,6 @@ class Plan(object):
     def __iter__(self):
         for action in self._actions:
             yield action
-        raise StopIteration
 
     def list_steps(self):
         if self.config["web"]:
@@ -872,7 +875,7 @@ class Plan(object):
             with open(common_password_alias_file, "r") as fp:
                 for line in fp:
                     try:
-                        name, password = xordecode(line).split(":", 1)
+                        name, password = xordecode(_b(line)).split(":", 1)
                     except (binascii.Error, ValueError):
                         try:
                             name, password = line.split(":", 1)
@@ -889,7 +892,7 @@ class Plan(object):
             with open(env_password_alias_file, "r") as fp:
                 for line in fp:
                     try:
-                        name, password = xordecode(line).split(":", 1)
+                        name, password = xordecode(_b(line)).split(":", 1)
                     except (binascii.Error, ValueError):
                         try:
                             name, password = line.split(":", 1)
@@ -974,7 +977,7 @@ class Plan(object):
                 self.deployment_policy = env_tree.find(".//ConfigDeploymentPolicy").get("name")
         if env_tree is not None:
             with open(os.path.join(self.config["out_dir"], "merged_deployment_policy.xcfg"), "w") as fp:
-                fp.write(etree.tostring(env_tree.getroot()))
+                fp.write(_s(etree.tostring(env_tree.getroot())))
 
 class Action(object):
     """A class representing a action to be taken as
@@ -1018,7 +1021,7 @@ class Action(object):
         self.req_file = req_file
         self.resp_file = resp_file
         with open(req_file, "wb") as fp:
-            fp.write(str(self.appliance.request))
+            fp.write(_b(str(self.appliance.request)))
         with open(resp_file, "wb") as fp:
             if "NormalBackup" in self.name:
                 fp.write(ret)
@@ -1091,7 +1094,7 @@ def parse_config(appliances, credentials, environment, service, check_hostname, 
         domain = config.get(
             service,
             "{}-{}".format(appliance.hostname, environment),
-            None
+            fallback=None,
         )
         if domain is None:
             raise ValueError("Appliance '{}' not part of environment '{}'".format(
