@@ -212,6 +212,28 @@ def wait_for_quiesce(appliance, app_domain, services, timeout):
         if time() - start > timeout:
             break
 
+def wait_for_domain_quiesce(appliance, app_domain, timeout):
+    start = time()
+    while True:
+        sleep(5)
+        domain_status = appliance.get_status("DomainStatus").xml
+        if domain_status.find(".//DomainStatus[Domain='{}']".format(app_domain)).findtext("QuiesceState") == "quiesced":
+            # Domain is quiesced
+            break
+        if time() - start > timeout:
+            break
+
+def wait_for_domain_unquiesce(appliance, app_domain, timeout):
+    start = time()
+    while True:
+        sleep(5)
+        domain_status = appliance.get_status("DomainStatus").xml
+        if domain_status.find(".//DomainStatus[Domain='{}']".format(app_domain)).findtext("QuiesceState") == "":
+            # Domain is back up
+            break
+        if time() - start > timeout:
+            break
+
 def wait_for_unquiesce(appliance, app_domain, services, timeout):
     start = time()
     while True:
@@ -400,10 +422,14 @@ class Plan(object):
                 print("\n\tResult: {}".format("\n\t\t".join(response_tree.find(".//{http://www.datapower.com/schemas/management}result").itertext())))
                 log.info("sleeping for 5 seconds")
                 sleep(5)
-            elif "quiesce" in action.name and "unquiesce" not in action.name:
+            elif "quiesce" in action.name and "unquiesce" not in action.name and "domain" not in action.name:
                 print("\n\tResult: {}".format("\n\t\t".join(response_tree.find(".//{http://www.datapower.com/schemas/management}result").itertext())))
                 delay = self.config["quiesce_timeout"] + self.config["quiesce_delay"]
                 wait_for_quiesce(action.appliance, action.kwargs["domain"], self._services, self.config["quiesce_timeout"]+15)
+            elif "quiesce" in action.name and "unquiesce" not in action.name and "domain" in action.name:
+                print("\n\tResult: {}".format("\n\t\t".join(response_tree.find(".//{http://www.datapower.com/schemas/management}result").itertext())))
+                delay = self.config["quiesce_timeout"] + self.config["quiesce_delay"]
+                wait_for_domain_quiesce(action.appliance, action.kwargs["name"], self.config["quiesce_timeout"]+15)
             elif "ObjectStatus" in action.name:
                 readings = response_tree.findall(".//ObjectStatus")
                 readings = filter(lambda node: node.findtext("OpState") == "down", readings)
@@ -426,9 +452,12 @@ class Plan(object):
                 print("\tExec Script Results")
                 for file_node in response_tree.findall(".//exec-script-results/*"):
                     print("\t\t{} {} {}".format(file_node.get("class"), file_node.get("name"), file_node.get("status")))
-            elif "unquiesce" in action.name:
+            elif "unquiesce" in action.name and "domain" not in action.name:
                 print("\n\tResult: {}".format("\n\t\t".join(response_tree.find(".//{http://www.datapower.com/schemas/management}result").itertext())))
                 wait_for_unquiesce(action.appliance, action.kwargs["domain"], self._services, self.config["timeout"])
+            elif "unquiesce" in action.name and "domain" in action.name:
+                print("\n\tResult: {}".format("\n\t\t".join(response_tree.find(".//{http://www.datapower.com/schemas/management}result").itertext())))
+                wait_for_domain_unquiesce(action.appliance, action.kwargs["name"], self.config["timeout"])
             elif "remove-oldest-checkpoint" in action.name:
                 print("\n\tResult: {}".format("\n\t\t".join(response_tree.find(".//{http://www.datapower.com/schemas/management}result").itertext())))
             elif "SaveCheckpoint" in action.name:
@@ -522,6 +551,18 @@ class Plan(object):
                             **kwargs
                         )
                     )
+            if self.config["quiesce_domain"]:
+                ret.append(
+                    Action(
+                        appliance,
+                        self.config,
+                        "{}-quiesce-domain".format(appliance.hostname),
+                        appliance.DomainQuiesce,
+                        name=app_domain,
+                        timeout=self.config["quiesce_timeout"],
+                        delay=self.config["quiesce_delay"],
+                    )
+                )
             ret.extend(self.get_predeployment_steps(appliance, app_domain))
 
             for kwargs in self._password_map_aliases:
@@ -623,6 +664,17 @@ class Plan(object):
                                 **kwargs
                             )
                         )
+
+            if self.config["quiesce_domain"]:
+                ret.append(
+                    Action(
+                        appliance,
+                        self.config,
+                        "{}-unquiesce-domain".format(appliance.hostname),
+                        appliance.DomainUnquiesce,
+                        name=app_domain,
+                    )
+                )
 
             if self.config["quiesce"]:
                 for kwargs in services_to_quiesce:
@@ -1243,6 +1295,7 @@ def git_deploy(
         ignore_save_needed=False,
         ignore_no_deployment_policy=False,
         quiesce=True,
+        quiesce_domain=True,
         object_status=True,
         backup_app_domain=True,
         backup_default_domain=True,
@@ -1296,6 +1349,8 @@ there are no deployment policies
 uploads within configuration exports
 * `-N, --no-quiesce`: If specified, the service will not be quiesced before the
 deployment
+* `--no-quiesce-domain`: If specified, the service will not be quiesced before the
+deployment
 * `--no-object-status`: If specified, no object status will be taken
 * `--no-backup-app-domain`: If specified, the app domain will not be backed up
 * `--no-backup-default-domain`: If specified, the default domain will not be backed up
@@ -1325,6 +1380,7 @@ saved after the deployment is complete
             "ignore_save_needed": ignore_save_needed,
             "ignore_no_deployment_policy": ignore_no_deployment_policy,
             "quiesce": quiesce,
+            "quiesce_domain": quiesce_domain,
             "quiesce_delay": quiesce_delay,
             "quiesce_timeout": quiesce_timeout,
             "save_config": save_config,
