@@ -117,6 +117,7 @@ DO NOT USE.__"""
         "appliance",
         "domain",
         "certificate-object",
+        "password-alias",
         "filename",
         "serial-number",
         "subject",
@@ -141,7 +142,7 @@ DO NOT USE.__"""
             logger.info("In domain {}".format(domain))
             if not web:
                 print "\t", domain
-            config = appliance.get_config("CryptoCertificate", domain=domain)
+            config = appliance.get_config("CryptoCertificate", domain=domain, persisted=False)
             certs = [x for x in config.xml.findall(datapower.CONFIG_XPATH)]
 
             # Filter out disabled objects because the results won't change,
@@ -154,10 +155,13 @@ DO NOT USE.__"""
                 logger.info("Exporting cert {}".format(cert))
                 filename = cert.find("Filename").text
                 name = cert.get("name")
+                password_alias = cert.find("Alias")
+                if password_alias is not None:
+                    password_alias = password_alias.text
                 _filename = name
                 if not web:
                     print "\t\t", name
-                row = [appliance.hostname, domain, name, filename]
+                row = [appliance.hostname, domain, name, password_alias, filename]
 
                 appliance.CryptoExport(
                     domain=domain,
