@@ -29,9 +29,63 @@ import mast.plugin_utils.plugin_utils as util
 from functools import partial, update_wrapper
 import mast.plugin_utils.plugin_functions as pf
 from mast.pprint import pprint_xml
+import random
+from string import (
+    printable,
+    digits,
+    ascii_letters,
+    punctuation,
+    whitespace,
+)
 
 cli = commandr.Commandr()
 
+@logged("mast.datapower.accounts")
+@cli.command('generate-random-password', category='users/groups')
+def random_password(
+        length=8,
+        no_include_digits=False,
+        no_include_letters=False,
+        no_include_punctuation=False,
+        include_whitespace=False,
+        web=False,
+    ):
+    """Generate a random sequence of characters for use as a password.
+Parameters:
+
+* `-l, --length`: The number of characters to produce
+* `-n, --no-include-digits`: If provided, digits will not be included
+in the password
+* `-N, --no-include-letters`: If provided, digits will not be included
+in the password
+* `--no-include-punctuation`: If provided, digits will not be included
+in the password
+* `--include-whitespace`: If provided, whitespace will be included
+in the password. Note that whitespace may contain newlines which might
+be incompatible with some password systems.
+    """
+    collections = []
+    if not no_include_digits:
+        collections.append(digits)
+    if not no_include_letters:
+        collections.append(ascii_letters)
+    if not no_include_punctuation:
+        collections.append(punctuation)
+    if include_whitespace:
+        collections.append(whitespace)
+    if not collections:
+        return "A password cannot be generated with the given options.", "A password cannot be generated with the given options."
+    password = ""
+    while len(password) < length:
+        for collection in collections:
+            password += random.choice(collection)
+    password = password[:length]
+    password = [char for char in password]
+    random.shuffle(password)
+    if web:
+        return "".join(password) + "\r\n", "This command did not communicate with any DataPower appliances"
+    else:
+        print("".join(password))
 
 @logged("mast.datapower.accounts")
 @cli.command('list-groups', category='users/groups')
