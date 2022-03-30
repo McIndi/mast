@@ -445,8 +445,8 @@ DO NOT USE.__"""
     kwargs = {
         'cert': CryptoCertificate,
         'destination': destination,
-        'include_iscsi': include_iscsi,
-        'include_raid': include_raid}
+        'include-iscsi': include_iscsi,
+        'include-raid': include_raid}
     logger.info(
         "Attempting to perform a Secure Backup on {}".format(
             str(env.appliances)))

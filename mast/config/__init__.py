@@ -77,7 +77,7 @@ def get_config(filename):
         config = get_config("config.conf")
         option = config.get("option")
     '''
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(strict=False)
     config.read(os.path.join(MAST_HOME, 'etc', 'default', filename))
     config.read(os.path.join(MAST_HOME, 'etc', 'local', filename))
     return config

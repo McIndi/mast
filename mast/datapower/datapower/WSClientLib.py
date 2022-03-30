@@ -237,7 +237,7 @@ class Request(object):
                     self._namespace_nodes[ns_url] = [tag]
 
         # handle credentials
-        self._credentials = _s(base64.encodestring(_b(credentials))).replace('\n', '')
+        self._credentials = _s(base64.encodebytes(_b(credentials))).replace('\n', '')
 
         # handle url
         self._url = '%s://%s:%s%s' % (scheme, host, port, uri)

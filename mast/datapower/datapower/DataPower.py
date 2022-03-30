@@ -1151,7 +1151,7 @@ class DataPower(object):
                 except:
                     _hist["response"] = str(e).replace("\n", "").replace("\r", "")
                     if hasattr(e, "read"):
-                        _hist["response"] = e.read().replace(
+                        _hist["response"] = e.read().decode().replace(
                                 "\n", "").replace("\r", "")
                     self._history.append(_hist)
                     self.log_error(
@@ -2011,7 +2011,7 @@ class DataPower(object):
             # Handles the case of changing the password of the user which
             # we are using to authenticate to DataPower
             self.credentials = '{}:{}'.format(username, password)
-            self.request._credentials = base64.encodestring(
+            self.request._credentials = base64.encodebytes(
                 self.credentials).strip()
         return resp
 
@@ -2393,7 +2393,7 @@ class DataPower(object):
                     filename,
                     domain))
             raise
-        return _s(base64.decodestring(_file.encode()))
+        return _s(base64.decodebytes(_file.encode()))
 
     @correlate
     @logged("audit")
@@ -2408,7 +2408,7 @@ class DataPower(object):
             :::python
             >>> import base64
             >>> dp = DataPower("localhost", "user:pass")
-            >>> contents = base64.encodestring("Test Succeeded")
+            >>> contents = base64.encodebytes("Test Succeeded")
             >>> resp = dp._set_file(contents, "local:/test.txt", "default")
             >>> print type(resp)
             <class 'mast.datapower.datapower.BooleanResponse'>
@@ -2591,7 +2591,7 @@ class DataPower(object):
         and return
         """
         with open(file_in, 'rb') as f:
-            fin = base64.encodestring(f.read()).decode()
+            fin = base64.encodebytes(f.read()).decode()
             fin = fin.replace("\n", "").replace("\r", "")
         return fin
 
@@ -3009,7 +3009,7 @@ class DataPower(object):
         self.domain = domain
         # Get zip file and base64 encode it to prepare it for travel.
         with open(zip_file, 'rb') as fin:
-            contents = base64.encodestring(fin.read())
+            contents = base64.encodebytes(fin.read())
 
         # SOMA requires boolean values to be 'true' or 'false'.
         dry_run = str(dry_run).lower()
@@ -3382,7 +3382,7 @@ class DataPower(object):
                 "Regular expression failed! Usually This is a connectivity"
                 " error or an invalid request")
             raise
-        return base64.decodestring(response)
+        return base64.decodebytes(response)
 
 
     @correlate
