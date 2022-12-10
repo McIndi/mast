@@ -1,2 +1,3 @@
 *.pyc
 mast.egg-info/
+mast/plugin_utils/cookies.py

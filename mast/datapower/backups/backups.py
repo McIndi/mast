@@ -349,9 +349,9 @@ def get_secure_backup(appliances=[],
                       destination='local:/raid0',
                       include_iscsi=False,
                       include_raid=False,
-                      remove=True,
-                      quiesce_before=True,
-                      unquiesce_after=True,
+                      remove=False,
+                      quiesce_before=False,
+                      unquiesce_after=False,
                       quiesce_timeout=60,
                       web=False):
     """Performs a secure backup of the specified domain.

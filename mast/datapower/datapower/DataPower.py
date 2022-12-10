@@ -22,7 +22,7 @@ class which provides many convenient wrappers around the SOMA XML
 Management Interface as well as some methods to interact with the CLI
 Management Interface (ssh).
 """
-from mast.util import _s
+from mast.util import _s, _b
 from .dpSOMALib import SomaRequest as Request
 from mast.logging import make_logger, logged
 from lxml import etree
@@ -1131,7 +1131,7 @@ class DataPower(object):
         # print(self.request)
         try:
             self.last_response = self.request.send(secure=self.check_hostname)
-            if "Authentication failure" in self.last_response.decode():
+            if b"Authentication failure" in self.last_response.decode():
                 raise AuthenticationFailure(self.last_response)
         except Exception as e:
             _hist["response"] = str(e).replace("\n", "").replace("\r", "")
@@ -1146,7 +1146,7 @@ class DataPower(object):
                     self.log_info("Retrying in {} seconds".format(self.retry_interval))
                     sleep(self.retry_interval)
                     self.last_response = self.request.send(secure=self.check_hostname)
-                    if "Authentication failure" in self.last_response:
+                    if b"Authentication failure" in self.last_response:
                         raise AuthenticationFailure(self.last_response)
                 except:
                     _hist["response"] = str(e).replace("\n", "").replace("\r", "")
@@ -2393,7 +2393,7 @@ class DataPower(object):
                     filename,
                     domain))
             raise
-        return _s(base64.decodebytes(_file.encode()))
+        return _b(base64.decodebytes(_file.encode()))
 
     @correlate
     @logged("audit")
@@ -2499,7 +2499,7 @@ class DataPower(object):
             if self.file_exists(file_out, domain, filestore):
                 self.log_error(
                     "Attempted to overwrite file with overwrite set to False")
-                return False
+                raise ValueError("Attempted to overwrite file with overwrite set to False")
         if self.directory_exists(file_out, domain, filestore) or \
                 self.location_exists(file_out, domain, filestore):
             file_out = "{}/{}".format(file_out, os.path.basename(file_in))
@@ -3365,18 +3365,24 @@ class DataPower(object):
         referenced_files = str(referenced_files).lower()
         referenced_objects = str(referenced_objects).lower()
         persisted = str(persisted).lower()
+        
         self.request.clear()
-        export = self.request.request(
-            domain=domain).do_export(format=format, persisted=persisted)
-        export.set('all-files', all_files)
-        obj = export.object(name=obj)
-        obj.set('class', object_class)
-        obj.set('ref-files', referenced_files)
-        obj.set('ref-objects', referenced_objects)
+        req = self.request.request
+        req.set("domain", self.domain)
+        doexport = etree.SubElement(req, f'{{{MGMT_NAMESPACE}}}do-export')
+        doexport.set('format', format)
+        doexport.set('persisted', persisted)
+
+        doexport.set('all-files', all_files)
+        _obj = etree.SubElement(doexport, f"{{{MGMT_NAMESPACE}}}object")
+        _obj.set('name', obj)
+        _obj.set('class', object_class)
+        _obj.set('ref-files', referenced_files)
+        _obj.set('ref-objects', referenced_objects)
         self.send_request()
         try:
-            response = re.sub(re1, '', self.last_response)
-            response = re.sub(re2, '', response)
+            response = re.sub(_b(re1), b'', self.last_response)
+            response = re.sub(_b(re2), b'', response)
         except:
             self.log_error(
                 "Regular expression failed! Usually This is a connectivity"
@@ -3748,7 +3754,7 @@ class DataPower(object):
 
     @correlate
     @logged("debug")
-    def del_config(self, name, domain="default"):
+    def del_config(self, _class, name, domain="default"):
         """
         Deletes an object from the appliance's configuration.
 
@@ -3760,7 +3766,11 @@ class DataPower(object):
             ['testuser2', 'testuser3', 'testuser4']
         """
         self.request.clear()
-        self.request.request(domain=domain).del_config[_class](name=name)
+        req = self.request.request
+        req.set('domain', domain)
+        del_config = etree.SubElement(req, f"{{{MGMT_NAMESPACE}}}del-config")
+        class_node = etree.SubElement(del_config, _class)
+        class_node.set('name', name)
         resp = self.send_request(boolean=True)
         return resp
 
