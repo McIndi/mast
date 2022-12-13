@@ -39,4 +39,4 @@ class TestForRegressionInGetFile(unittest.TestCase):
             send_request_mock):
         dp = mast.datapower.datapower.DataPower("test", "user:pass")
         result = dp.getfile("default", "logtemp:///default-log.xml.0")
-        self.assertEqual("", result)
+        self.assertEqual("", result.decode())
