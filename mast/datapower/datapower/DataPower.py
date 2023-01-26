@@ -1131,7 +1131,7 @@ class DataPower(object):
         # print(self.request)
         try:
             self.last_response = self.request.send(secure=self.check_hostname)
-            if b"Authentication failure" in self.last_response.decode():
+            if "Authentication failure" in self.last_response.decode():
                 raise AuthenticationFailure(self.last_response)
         except Exception as e:
             _hist["response"] = str(e).replace("\n", "").replace("\r", "")
