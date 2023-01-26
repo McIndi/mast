@@ -298,7 +298,7 @@ def download_history():
         _id)
     return flask.send_file(
         filename,
-        attachment_filename=_id,
+        download_name=_id,
         as_attachment=True)
 
 
