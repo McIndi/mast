@@ -1382,6 +1382,7 @@ class DataPower(object):
         This method accepts no arguments
         """
         # self.request.clear()
+        from urllib.error import URLError
         try:
             resp = self.get_status("Version")
             # Because of lazy-loading we must explicitly prompt xml parsing
@@ -1389,8 +1390,11 @@ class DataPower(object):
             return 'datapower' in resp.text.lower()
         except AuthenticationFailure:
             return 'datapower' in self.last_response.lower()
-        except:
+        except URLError:
+            print("HERE: {self.request}")
+            return False
             # print(self.request)
+        except:
             raise
 
     @correlate
@@ -3948,7 +3952,7 @@ xmlns:dp="http://www.datapower.com/schemas/appliance/management/3.0">
         creds = self.request._credentials.strip()
         req = urllib.request.Request(
             url=url,
-            data=tpl,
+            data=tpl.encode(),
             headers={
                 'Content-Type': 'text/xml',
                 'Authorization': 'Basic {}'.format(creds)})
