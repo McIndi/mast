@@ -24,6 +24,7 @@ from urllib.parse import unquote
 from mast.logging import make_logger
 import cherrypy
 from cheroot.ssl.builtin import BuiltinSSLAdapter
+from markupsafe import Markup
 from cheroot.wsgi import WSGIServer
 import logging
 import random
@@ -122,11 +123,11 @@ def initialize_plugins():
         plugins[name] = _plugin
 
         try:
-            plugins["html"] += flask.Markup(_plugin.html())
-            plugins["tabs"] += flask.Markup(
+            plugins["html"] += Markup(_plugin.html())
+            plugins["tabs"] += Markup(
                 '<li><a href="#mast.datapower.{0}">{0}</a></li>'.format(name))
-            plugins["css"] += flask.Markup(_plugin.css())
-            plugins["js"] += flask.Markup(_plugin.js())
+            plugins["css"] += Markup(_plugin.css())
+            plugins["js"] += Markup(_plugin.js())
         except:
             logger.exception(
                 "An unhandled exception occured while attempting "
@@ -143,7 +144,7 @@ def initialize_plugins():
                 "An unhandled exception occured while attempting "
                 "to assign a handler for web plugin {}".format(name))
             raise
-    # print(flask.Markup(plugins["js"]))
+    # print(Markup(plugins["js"]))
     return plugins
 
 @app.route('/config/<_file>')
