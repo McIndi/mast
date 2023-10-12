@@ -153,7 +153,7 @@ class Cli(object):
         self._command_list[category].append(fn)
 
         desc = fn.__doc__
-        args, _, __, defaults = inspect.getargspec(fn)
+        args, _, __, defaults, ___, ____, _____ = inspect.getfullargspec(fn)
 
         args = [] if not args else args
         defaults = [] if not defaults else defaults
@@ -262,7 +262,7 @@ class Cli(object):
         """
         args = self.parser.parse_args()
         func = args.func
-        _args, _, __, defaults = inspect.getargspec(func)
+        _args, _, __, defaults, ___, ____, _____ = inspect.getfullargspec(func)
         kwargs = {}
         for arg in _args:
             kwargs[arg] = getattr(args, arg)
