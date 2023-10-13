@@ -1390,8 +1390,8 @@ class DataPower(object):
             return 'datapower' in resp.text.lower()
         except AuthenticationFailure:
             return 'datapower' in self.last_response.lower()
-        except URLError:
-            print("HERE: {self.request}")
+        except URLError as e:
+            self.log_error(f"URLError: {self.request}: {e}")
             return False
             # print(self.request)
         except:

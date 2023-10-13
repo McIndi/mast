@@ -15,6 +15,7 @@
 # Copyright 2015-2019, McIndi Solutions, All rights reserved.
 import os
 import flask
+from markupsafe import Markup
 from mast.datapower.datapower import CONFIG_XPATH, STATUS_XPATH
 
 
@@ -171,11 +172,11 @@ def render_list_domains_table(env):
     for appliance in env.appliances:
         domains = appliance.domains
         domains.sort()
-        rows.append((appliance.hostname, flask.Markup("<br />".join(domains))))
+        rows.append((appliance.hostname, Markup("<br />".join(domains))))
         sets.append(set(domains))
     common = list(sets[0].intersection(*sets[1:]))
     common.sort()
-    rows.append(("All", flask.Markup("<br />".join(common))))
+    rows.append(("All", Markup("<br />".join(common))))
     return flask.render_template(
         "results_table.html",
         header_row=header_row,
@@ -329,7 +330,7 @@ def web_list_checkpoints(resp, domain):
                     k,
                     "-".join(v["date"]),
                     ":".join(v["time"]))))
-        rows.append((_host, flask.Markup("<br />".join(_results))))
+        rows.append((_host, Markup("<br />".join(_results))))
     return flask.render_template(
         "results_table.html",
         header_row=header_row,
@@ -344,10 +345,10 @@ def web_list_groups(env):
     rows = []
     for appliance in env.appliances:
         groups = appliance.groups
-        rows.append((appliance.hostname, flask.Markup("<br />".join(groups))))
+        rows.append((appliance.hostname, Markup("<br />".join(groups))))
         sets.append(set(groups))
     common = sets[0].intersection(*sets[1:])
-    rows.append(("All", flask.Markup("<br />".join(common))))
+    rows.append(("All", Markup("<br />".join(common))))
     return flask.render_template(
         "results_table.html",
         header_row=header_row,
@@ -362,10 +363,10 @@ def web_list_users(env):
     rows = []
     for appliance in env.appliances:
         users = appliance.users
-        rows.append((appliance.hostname, flask.Markup("<br />".join(users))))
+        rows.append((appliance.hostname, Markup("<br />".join(users))))
         sets.append(set(users))
     common = sets[0].intersection(*sets[1:])
-    rows.append(("All", flask.Markup("<br />".join(common))))
+    rows.append(("All", Markup("<br />".join(common))))
     return flask.render_template(
         "results_table.html",
         header_row=header_row,
@@ -380,10 +381,10 @@ def web_list_rbm_fallback(env):
     rows = []
     for appliance in env.appliances:
         users = appliance.fallback_users
-        rows.append((appliance.hostname, flask.Markup("<br />".join(users))))
+        rows.append((appliance.hostname, Markup("<br />".join(users))))
         sets.append(set(users))
     common = sets[0].intersection(*sets[1:])
-    rows.append(("All", flask.Markup("<br />".join(common))))
+    rows.append(("All", Markup("<br />".join(common))))
     return flask.render_template(
         "results_table.html",
         header_row=header_row,

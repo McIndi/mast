@@ -43,6 +43,7 @@ import flask
 import inspect
 import zipfile
 import markdown
+from markupsafe import Markup
 import html.entities as html_entities
 from textwrap import dedent
 from mast.config import get_config
@@ -733,7 +734,7 @@ def _get_arguments(plugin, fn_name):
             # print(fn_name, category, item.__name__)
             # print(item.__name__ == fn_name)
             if item.__name__ == fn_name:
-                args, _, __, defaults = inspect.getargspec(item)
+                args, _, __, defaults, ___, ____, _____ = inspect.getfullargspec(item)
                 found = True
                 break
     return (list(zip(args, defaults)), item)
@@ -840,7 +841,7 @@ def get_form(plugin, fn_name, appliances, credentials, no_check_hostname=True):
     arguments, fn = _get_arguments(plugin, fn_name)
     forms.append('<a href="#" class="help">help</a>')
     forms.append('<div class="hidden help_content">{}</div>'.format(
-        flask.Markup(markdown.markdown(dedent(str(fn.__doc__))))))
+        Markup(markdown.markdown(dedent(str(fn.__doc__))))))
     for arg in arguments:
         key, value = arg
         if isinstance(value, bool):
@@ -943,7 +944,7 @@ def _call_method(func, kwargs):
         filename = os.path.join(filename, _id)
         with open(filename, 'wb') as fout:
             fout.write(hist.encode())
-        return flask.Markup(out), _id
+        return Markup(out), _id
 
 
 def call_method(plugin, form):
@@ -1010,7 +1011,7 @@ def call_method(plugin, form):
         _zipdir(kwargs['out_dir'], zip_file)
         zip_file.close()
         #filename = '%s-%s.zip' % (t.timestamp, name)
-        link = flask.Markup(flask.render_template('link.html', filename=fname))
+        link = Markup(flask.render_template('link.html', filename=fname))
     if 'out_file' in kwargs and kwargs["out_file"] is not None:
         import shutil
         config = get_config("server.conf")
@@ -1020,7 +1021,7 @@ def call_method(plugin, form):
                            os.path.basename(kwargs["out_file"]))
         shutil.copyfile(kwargs["out_file"], dst)
 
-        link = flask.Markup(flask.render_template('link.html',
+        link = Markup(flask.render_template('link.html',
                                                   filename=os.path.basename(kwargs["out_file"])))
     out = flask.render_template(
         'output.html',
@@ -1058,7 +1059,7 @@ def handle(plugin):
     elif flask.request.method == 'POST':
         logger.info("Received POST request for {}".format(plugin))
         try:
-            return flask.Markup(str(call_method(plugin, flask.request.form)))
+            return Markup(str(call_method(plugin, flask.request.form)))
         except:
             logger.exception("An unhandled exception occurred during processing of request.")
             raise
