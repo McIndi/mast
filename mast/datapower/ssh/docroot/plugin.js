@@ -9,7 +9,7 @@ $.subscribe("modifyAppliances", function(event, appliances){
     var sshTextbox = "<input type='textbox' name='sshCommand' size='80' /><input type='button' name='sshCommandButton' value='Issue Command' />";
 
     // sshTerminal template
-    var sshTerminal = "<hr /><div id='ssh_<%id%>'><%id%><a href='#' class='sshTranscript' id='download_<%id%>'> download transcript </a><br /><textarea name='textarea_<%id%>' rows='20' cols='20' /></div>";
+    var sshTerminal = "<hr /><div id='ssh_<%id%>'><%id%><a href='#' class='sshTranscript' id='download_<%id%>'> download transcript </a><br /><textarea name='textarea_<%id%>' rows='20' cols='20'></textarea></div>";
 
     // initialize variables
     var htm2 = [];
